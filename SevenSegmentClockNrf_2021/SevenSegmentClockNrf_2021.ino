@@ -188,8 +188,9 @@
 //#define CELSIUS_PREFIX     0x39      //.. Celsius prefix - 'C'
 #define HUMIDITY_PREFIX    0x74      //.. Humidity prefix 'h'
 //#define HUMIDITY_PREFIX    0x76      //.. Humidity prefix 'H'
+#define UVI_PREFIX          0x1C      //.. UV prefix 'u'
+//#define UVI_PREFIX          0x3E      //.. UV prefix 'U'
 #define DECI_POINT         0x10      //.. LED decimal point
-
 /****************** THRESHOLD DEFINES *******************/
 #define LUX_RATE       10000UL
 #define BLINK_RATE      1000
@@ -241,6 +242,7 @@ typedef enum {
                STATE_INDOOR_TEMP,
                STATE_OUTDOOR_TEMP,
                STATE_OUTDOOR_HUM,
+               STATE_OUTDOORE_UVI,
                STATE_CLOCK_UPDATE
 } msm_t;
 
@@ -262,7 +264,8 @@ bool blinkColon     = false;
 bool timeReceived   = false;
 bool belowZero      = false;
 int outdoorTemperature = 99;
-int outdoorHumidity    = 0;
+int outdoorHumidity    =  0;
+float outdoorUvIndex   =  0.0;
 unsigned long lastRequest = 0;
 unsigned long lastBlink = millis();
 unsigned long lastBoxTemperature = millis();
@@ -352,7 +355,13 @@ void receive(const MyMessage &message) {
       if (message.type == V_HUM) {
         outdoorHumidity = static_cast<int>(round(message.getFloat()));
         Serial.print(F("New pergola humidity received: "));
-        Serial.print(message.getFloat());
+        Serial.println(message.getFloat());
+      }
+
+      if (message.type == V_UV) {
+        outdoorUvIndex = message.getFloat();
+        Serial.print(F("UV level: "));
+        Serial.println(outdoorUvIndex);
       }
       break;
   }
@@ -385,52 +394,73 @@ void loop() {
 
   /**  STATE MACHINE  **/
   switch (state) {
+    /** STATE_INDOOR_TEMP **/
     case STATE_INDOOR_TEMP:
       if (!once) {
       printIndoorTemperature(indoorTemperature, INSIDE_DOT);
       once = true;
       }
     
-      if (once && (second(local) == 18) || (second(local) == 48)) {
+      if (once && (second(local) == 17) || (second(local) == 47)) {
         once = false;
         state = STATE_OUTDOOR_TEMP;
       }
       break;
     
+    /** STATE_OUTDOOR_TEMP **/
     case STATE_OUTDOOR_TEMP:
       if (!once) {
         printOutdoorTemperature(outdoorTemperature, OUTSIDE_DOT, belowZero);
         once = true;
       }
     
-      if (once && (second(local) == 21) || (second(local) == 51)) {
+      if (once && (second(local) == 20) || (second(local) == 49)) {
         once = false;
         state = STATE_OUTDOOR_HUM;
       }
       break;
 
+    /** STATE_OUTDOOR_HUM **/
     case STATE_OUTDOOR_HUM:
       if (!once) {
         printOutdoorHumidity(outdoorHumidity, OUTSIDE_DOT);
         once = true;
       }
 
-      if (once && (second(local) == 24) || (second(local) == 54)) {
+      if (once && (second(local) == 22) || (second(local) == 51)) {
+        once = false;
+        state = STATE_OUTDOORE_UVI;
+      }
+      break;
+
+    /** STATE_OTDOOR_UVI **/
+    case STATE_OUTDOORE_UVI:
+      if (!once) {
+        printOutdoorUvIndex(outdoorUvIndex, OUTSIDE_DOT);
+        once = true;
+      }
+
+      if (once && (second(local) == 24) || (second(local) == 53)) {
         once = false;
         state = STATE_CLOCK_UPDATE;
       }
       break;
 
+    /** STATE_CLOCK_UPDATE **/
     case STATE_CLOCK_UPDATE:
-      if (((second(local) >= 15 ) && (second(local) < 18)) || ((second(local) >= 45) && (second(local) < 48))) {
+      if (((second(local) >= 15 ) && (second(local) < 17)) || ((second(local) >= 45) && (second(local) < 47))) {
         state = STATE_INDOOR_TEMP;
       }
     
-      if (((second(local) >= 18 ) && (second(local) < 21)) || ((second(local) >= 48) && (second(local) < 51))) {
+      if (((second(local) >= 17 ) && (second(local) < 20)) || ((second(local) >= 47) && (second(local) < 49))) {
         state = STATE_OUTDOOR_TEMP;
         }
 
-      if (((second(local) >= 21 ) && (second(local) < 24)) || ((second(local) >= 51) && (second(local) < 54))) {
+      if (((second(local) >= 20 ) && (second(local) < 22)) || ((second(local) >= 49) && (second(local) < 51))) {
+        state = STATE_OUTDOOR_HUM;
+        }
+
+      if (((second(local) >= 22 ) && (second(local) < 24)) || ((second(local) >= 51) && (second(local) < 53))) {
         state = STATE_OUTDOOR_HUM;
         }        
     
@@ -439,20 +469,16 @@ void loop() {
         lastClockUpdate = millis();
       }
       break;
-
+      
+      /** STATE_LED_DISPLAY_SETUP **/
       case STATE_LED_DISPLAY_SETUP:
         ledMatrix.clear();
         /** Setup temperature sensors  **/
         temperatureSensorSetup();
         testDisplay();
-        Serial.print("5: ");
-        Serial.println(local);
         state = STATE_CLOCK_UPDATE;
       break;
   }
-
-
-
 
   if (millis() - lastBoxTemperature > INDOOR_TEMPERATURE_FREQUENCE) {
     lastBoxTemperature = millis();
@@ -683,6 +709,7 @@ void testDisplay() {
     ledMatrix.writeDigitRaw(1, 0x0);
     ledMatrix.writeDigitRaw(3, 0x0);
     ledMatrix.writeDigitRaw(4, 0x0);
+    ledMatrix.writeDigitNum(2, 0x00);
     ledMatrix.writeDisplay();
     ledMatrix.clear();
 }  //..  End of testDisplay
@@ -728,12 +755,12 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
 
 /**************************************************************
  *   Function: printOutdoorTemperature()
- * Parameters: int temp, bool zero
+ * Parameters: int temp, int dotpos, bool zero
  *    Returns: nothing
  *************************************************************/
 void printOutdoorTemperature(int temp, int dotpos, bool zero) {
   Serial.print(F("Outdoor Temperature: "));
-  belowZero ? Serial.print("-") : Serial.print(" ");
+  belowZero ? Serial.print("") : Serial.print(" ");
   Serial.println(temp);
   ledMatrix.clear();
   ledMatrix.print(temp);
@@ -753,7 +780,7 @@ void printOutdoorTemperature(int temp, int dotpos, bool zero) {
 
 /**************************************************************
  *   Function: printOutdoorTemperature()
- * Parameters: int temp, bool zero
+ * Parameters: int temp, int dotpos
  *    Returns: nothing
  *************************************************************/
 void printOutdoorHumidity(int8_t hum, int dotpos) {
@@ -767,12 +794,41 @@ void printOutdoorHumidity(int8_t hum, int dotpos) {
     highHumidity = true;
   } else highHumidity = false;
   ledMatrix.clear();
-  if (highHumidity) ledMatrix.writeDigitNum(2, DECI_POINT, true);
+  if (highHumidity) ledMatrix.writeDigitRaw(2, DECI_POINT);
   ledMatrix.print(hum);
   #ifdef HUMIDITY_PREFIX
     ledMatrix.writeDigitRaw(0, HUMIDITY_PREFIX);  //..  Print 'h'/'H' before humidity val
   #endif
   ledMatrix.writeDigitRaw(2, dotpos);
   ledMatrix.writeDisplay();
-
 }  //..  Endof printOutdoorHumidity()
+
+/**************************************************************
+ *   Function: printOutdoorUvLevel
+ * Parameters: float uvi, bool zero
+ *    Returns: nothing
+ *************************************************************/
+void printOutdoorUvIndex(float uvi, int dotpos) {
+  int8_t digit1;
+  int8_t digit2;
+  int8_t digit3;
+  int _uvi = static_cast<int>((uvi  * 10.));
+
+  Serial.print(F("Outdoor UV Index: "));
+  Serial.println(_uvi);
+  
+  ledMatrix.clear();
+  if (_uvi > 99) {
+    digit1 = (_uvi / 100) % 10;
+    ledMatrix.writeDigitNum(1, digit1);
+  }
+  digit2 = (_uvi / 10) % 10;
+  ledMatrix.writeDigitNum(3, digit2);
+  digit3 = _uvi % 10;
+  ledMatrix.writeDigitNum(4, digit3);
+  #ifdef UVI_PREFIX
+    ledMatrix.writeDigitRaw(0, UVI_PREFIX);
+  #endif
+  ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
+  ledMatrix.writeDisplay();
+}
