@@ -259,18 +259,18 @@ DallasTemperature sensors(&oneWire);
 DeviceAddress inboxTemperature, indoorTemperature;
 
 tmElements_t tm;
-bool once           = false;
-bool blinkColon     = false;
-bool timeReceived   = false;
-bool belowZero      = false;
-int outdoorTemperature = 99;
-int outdoorHumidity    =  0;
-float outdoorUvIndex   =  0.0;
-unsigned long lastRequest = 0;
-unsigned long lastBlink = millis();
-unsigned long lastBoxTemperature = millis();
+bool once                           = false;
+bool blinkColon                     = false;
+bool timeReceived                   = false;
+bool belowZero                      = false;
+int outdoorTemperature              = 99;
+int outdoorHumidity                 =  0;
+float outdoorUvIndex                =  0.0;
+unsigned long lastRequest           = 0;
+unsigned long lastBlink             = millis();
+unsigned long lastBoxTemperature    = millis();
 unsigned long lastIndoorTemperature = millis();
-unsigned long lastClockUpdate = millis();
+unsigned long lastClockUpdate       = millis();
 float lastTemperatureBox;
 float lastTemperatureIndoor;
 time_t local;
@@ -292,7 +292,9 @@ void receiveTime(unsigned long controllerTime) {
   
   RTC.set(controllerTime);  /** Set the RTC to the time from controller **/
   time_t local = now();
-  printDateTime(local);
+  #ifdef APP_DEBUG
+    printDateTime(local);
+  #endif
   timeReceived = true;
   ledMatrix.blinkRate(0);
 }
@@ -308,16 +310,21 @@ void setup() {
   delay(200);
   ledMatrix.blinkRate(2);    //.. Blink rate 2 indicates RTC in nod has not synced with controller yet.
   setSyncProvider(RTC.get);  //.. Call the RTC to sync with local Time object.
-  rtcStatus();              //.. Verify status of local RTC chip and print status.
+  #ifdef RTC_DEBUG
+    rtcStatus();              //.. Verify status of local RTC chip and print status.
+  #endif
   local = now();
-  Serial.print(F("RTC sync..."));
-  if (timeStatus() != timeSet)
-    Serial.println(F(" Unable to sync with RTC"));
-  else
-    Serial.println(F("RTC has set the system time"));
+  #ifdef APP_DEBUG
+    Serial.print(F("RTC sync..."));
+    if (timeStatus() != timeSet)
+      Serial.println(F(" Unable to sync with RTC"));
+    else
+      Serial.println(F("RTC has set the system time"));
+  
+    /** Request latest time from controller at startup  **/
+    Serial.println(F("Request time from controller on startup..."));
+  #endif
 
-  /** Request latest time from controller at startup  **/
-  Serial.println(F("Request time from controller on startup..."));
   requestTime();
 }  //-- End of setup
 
@@ -348,20 +355,26 @@ void receive(const MyMessage &message) {
       if (message.type == V_TEMP) {
         belowZero = (message.getFloat() < 0.0) ? true : false;
         outdoorTemperature = static_cast<int>(round(message.getFloat()));
-        Serial.print(F("New pergola temperature received: "));
-        Serial.println(message.getFloat());
+        #ifdef APP_DEBUG
+          Serial.print(F("New pergola temperature received: "));
+          Serial.println(message.getFloat());
+        #endif
       }
 
       if (message.type == V_HUM) {
         outdoorHumidity = static_cast<int>(round(message.getFloat()));
-        Serial.print(F("New pergola humidity received: "));
-        Serial.println(message.getFloat());
+        #ifdef APP_DEBUG
+          Serial.print(F("New pergola humidity received: "));
+          Serial.println(message.getFloat());
+        #endif
       }
 
       if (message.type == V_UV) {
         outdoorUvIndex = message.getFloat();
-        Serial.print(F("UV level: "));
-        Serial.println(outdoorUvIndex);
+        #ifdef APP_DEBUG
+          Serial.print(F("UV level: "));
+          Serial.println(outdoorUvIndex);
+        #endif
       }
       break;
   }
@@ -384,7 +397,9 @@ void loop() {
   if ((!timeReceived && (currentTime - lastRequest) > REQUEST_TIME_ON_STARTUP) ||
      (timeReceived && (currentTime - lastRequest) > REQUEST_TIME_PERIODICALLY)) {
        /** Request time from controller  */
-       Serial.println(F("Requesting time..."));
+      #ifdef APP_DEBUG
+        Serial.println(F("Requesting time..."));
+      #endif
        requestTime();
        ledMatrix.blinkRate(0);
        lastRequest = currentTime;
@@ -505,30 +520,35 @@ void loop() {
  * Parameters: time_t utc
  *    Returns: nothing
  *************************************************************/
+#ifdef APP_DEBUG
 void printDateTime(time_t utc) {
   printDate(utc);
   Serial.print(' ');
   printTime(utc);
   Serial.println();
 }
+#endif
 
 /**************************************************************
  *   Function: printTime
  * Parameters: time_t utc
  *    Returns: nothing
  *************************************************************/
+#ifdef APP_DEBUG
 void printTime(time_t utc)
 {
   printI00(hour(utc), ':');
   printI00(minute(utc), ':');
   printI00(second(utc), ' ');
 }
+#endif
 
 /**************************************************************
  *   Function: printDate
  * Parameters: time_t utc
  *    Returns: nothing
  *************************************************************/
+#ifdef APP_DEBUG
 void printDate(time_t utc)
 {
   Serial.print(year(utc));
@@ -537,6 +557,7 @@ void printDate(time_t utc)
   Serial.print('-');
   printI00(day(utc), 0);
 }
+#endif
 
 /**************************************************************
  *    Function: printI00
@@ -546,6 +567,7 @@ void printDate(time_t utc)
  *               followed by a delimiter character to Serial.
  *               Input value assumed to be between 0 and 99.
  *************************************************************/
+#ifdef APP_DEBUG
 void printI00(int val, char delim)
 {
   if (val < 10) Serial.print('0');
@@ -553,18 +575,21 @@ void printI00(int val, char delim)
     if (delim > 0) Serial.print(delim);
       return;
 }  //.. End of printI00
+#endif
 
 /**************************************************************
  *   Function: print2digits
  * Parameters: int number
  *    Returns: nothing
  *************************************************************/
+#if defined(APP_DEBUG) || defined(RTC_DEBUG)
 void print2digits(int number) {
   if (number >= 0 && number < 10) {
     Serial.write('0');
   }
   Serial.print(number);
 }	 //.. End of print2digits
+#endif
 
 /**************************************************************
  *   Function: showstateId()
@@ -589,6 +614,7 @@ void showstateId() {
  * Parameters: none
  *    Returns: nothing
  *************************************************************/
+#ifdef RTC_DEBUG
 void rtcStatus() {
   if (RTC.read(tm)) {
     Serial.print("Ok, Time = ");
@@ -615,6 +641,7 @@ void rtcStatus() {
     }
 	}
 }  //..  End of rtcStatus
+#endif
 
 /**************************************************************
  *   Function: temperatureSensorSetup()
@@ -622,34 +649,39 @@ void rtcStatus() {
  *    Returns: nothing
  *************************************************************/
 void temperatureSensorSetup() {
-  
-  Serial.println(F("Dallas Temperature sensor search.."));
+  #ifdef DS18B20_DEBUG
+    Serial.println(F("Dallas Temperature sensor search.."));
+  #endif
   sensors.begin();
 
   /**  Locate devices on the bus  **/
-  Serial.print(F("Locating temperature devices..."));
-  Serial.print(F("Found "));
-  Serial.print(sensors.getDeviceCount(), DEC);
-  Serial.println(F(" devices."));
-
-  /** Report parasite power requirements  **/
-  Serial.print(F("Parasite power is "));
-  if (sensors.isParasitePowerMode())
-    Serial.println(F("ON"));
-  else
-    Serial.println(F("OFF"));
+  #ifdef DS18B20_DEBUG
+    Serial.print(F("Locating temperature devices..."));
+    Serial.print(F("Found "));
+    Serial.print(sensors.getDeviceCount(), DEC);
+    Serial.println(F(" devices."));
+  
+    /** Report parasite power requirements  **/
+    Serial.print(F("Parasite power is "));
+    if (sensors.isParasitePowerMode())
+      Serial.println(F("ON"));
+    else
+      Serial.println(F("OFF"));
+  #endif
 
   if (!sensors.getAddress(inboxTemperature, 0)) Serial.println(F("Unable to find address for Device 0"));
   if (!sensors.getAddress(indoorTemperature, 1)) Serial.println(F("Unable to find address for Device 1"));
 
   /** Show the addresses we found on the bus  **/
-  Serial.print(F("Device 0 Address: "));
-  printAddress(inboxTemperature);
-  Serial.println();
-
-  Serial.print(F("Device 1 Address: "));
-  printAddress(indoorTemperature);
-  Serial.println();
+  #ifdef DS18B20_DEBUG
+    Serial.print(F("Device 0 Address: "));
+    printAddress(inboxTemperature);
+    Serial.println();
+  
+    Serial.print(F("Device 1 Address: "));
+    printAddress(indoorTemperature);
+    Serial.println();
+  #endif
   ledMatrix.print(sensors.getDeviceCount(), DEC);
   ledMatrix.writeDisplay();
   delay(2000);
@@ -661,15 +693,17 @@ void temperatureSensorSetup() {
  * Parameters: none
  *    Returns: nothing
  *************************************************************/
-void printAddress(DeviceAddress deviceAddress)
-{
-  for (uint8_t i = 0; i < 8; i++)
+#ifdef DS18B20_DEBUG
+  void printAddress(DeviceAddress deviceAddress)
   {
-    // zero pad the address if necessary
-    if (deviceAddress[i] < 16) Serial.print("0");
-    Serial.print(deviceAddress[i], HEX);
-  }
-}		//..* End of printAddress
+    for (uint8_t i = 0; i < 8; i++)
+    {
+      // zero pad the address if necessary
+      if (deviceAddress[i] < 16) Serial.print("0");
+      Serial.print(deviceAddress[i], HEX);
+    }
+  }		//..* End of printAddress
+#endif
 
 /**************************************************************
  *   Function: testDisplay
@@ -759,9 +793,11 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
  *    Returns: nothing
  *************************************************************/
 void printOutdoorTemperature(int temp, int dotpos, bool zero) {
-  Serial.print(F("Outdoor Temperature: "));
-  belowZero ? Serial.print("") : Serial.print(" ");
-  Serial.println(temp);
+  #ifdef RECIEVE_MSG_DEBUG
+    Serial.print(F("Outdoor Temperature: "));
+    belowZero ? Serial.print("") : Serial.print(" ");
+    Serial.println(temp);
+  #endif
   ledMatrix.clear();
   ledMatrix.print(temp);
   #ifdef CELSIUS_PREFIX
@@ -785,9 +821,11 @@ void printOutdoorTemperature(int temp, int dotpos, bool zero) {
  *************************************************************/
 void printOutdoorHumidity(int8_t hum, int dotpos) {
   bool highHumidity = false;   //.. Max humidity in display = 99 %RH. Humidity above are visualized by lighing the decimal dot
-  Serial.print(F("Outdoor Humidity: "));
-  Serial.print(hum);
-  Serial.println(F(" %Rh"));
+  #ifdef RECIEVE_MSG_DEBUG
+    Serial.print(F("Outdoor Humidity: "));
+    Serial.print(hum);
+    Serial.println(F(" %Rh"));
+  #endif
   
   if (hum > 99) {  //.. Limit humidity valy to 99 %Rh
     hum = 99;
@@ -813,9 +851,11 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   int8_t digit2;
   int8_t digit3;
   int _uvi = static_cast<int>((uvi  * 10.));
-
-  Serial.print(F("Outdoor UV Index: "));
-  Serial.println(_uvi);
+  
+  #ifdef RECIEVE_MSG_DEBUG
+    Serial.print(F("Outdoor UV Index: "));
+    Serial.println(_uvi);
+  #endif
   
   ledMatrix.clear();
   if (_uvi > 99) {
