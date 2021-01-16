@@ -77,11 +77,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1          //..  PATIO_state
-//#define LED_state_ID_2          //..  BEDROOM_state
-//#define LED_state_ID_3          //..  LIVINGROOM_state
-//#define LED_state_ID_4          //..  OFFICE_state
-//#define LED_state_ID_5          //..  KITCHEN_state
+#define LED_state_ID_1          //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_2          //..  BEDROOM_state            Bedroom    = 96
+//#define LED_state_ID_3          //..  LIVINGROOM_state         Livingroom = 97
+//#define LED_state_ID_4          //..  OFFICE_state             Office     = 98
+//#define LED_state_ID_5          //..  KITCHEN_state            Kitchen    = 99
 
 /***************************************************************************************
  * 
@@ -240,6 +240,7 @@ typedef enum {
                STATE_LED_DISPLAY_SETUP,
                STATE_INDOOR_TEMP,
                STATE_OUTDOOR_TEMP,
+               STATE_OUTDOOR_HUM,
                STATE_CLOCK_UPDATE
 } msm_t;
 
@@ -261,6 +262,7 @@ bool blinkColon     = false;
 bool timeReceived   = false;
 bool belowZero      = false;
 int outdoorTemperature = 99;
+int outdoorHumidity    = 0;
 unsigned long lastRequest = 0;
 unsigned long lastBlink = millis();
 unsigned long lastBoxTemperature = millis();
@@ -346,6 +348,12 @@ void receive(const MyMessage &message) {
         Serial.print(F("New pergola temperature received: "));
         Serial.println(message.getFloat());
       }
+
+      if (message.type == V_HUM) {
+        outdoorHumidity = static_cast<int>(round(message.getFloat()));
+        Serial.print(F("New pergola humidity received: "));
+        Serial.print(message.getFloat());
+      }
       break;
   }
 }
@@ -395,7 +403,19 @@ void loop() {
         once = true;
       }
     
-      if (once && (second(local) == 21) || (second(local) == 52)) {
+      if (once && (second(local) == 21) || (second(local) == 51)) {
+        once = false;
+        state = STATE_OUTDOOR_HUM;
+      }
+      break;
+
+    case STATE_OUTDOOR_HUM:
+      if (!once) {
+        printOutdoorHumidity(outdoorHumidity, OUTSIDE_DOT);
+        once = true;
+      }
+
+      if (once && (second(local) == 24) || (second(local) == 54)) {
         once = false;
         state = STATE_CLOCK_UPDATE;
       }
@@ -406,9 +426,13 @@ void loop() {
         state = STATE_INDOOR_TEMP;
       }
     
-      if (((second(local) >= 18 ) && (second(local) < 21)) || ((second(local) >= 48) && (second(local) < 52))) {
+      if (((second(local) >= 18 ) && (second(local) < 21)) || ((second(local) >= 48) && (second(local) < 51))) {
         state = STATE_OUTDOOR_TEMP;
         }
+
+      if (((second(local) >= 21 ) && (second(local) < 24)) || ((second(local) >= 51) && (second(local) < 54))) {
+        state = STATE_OUTDOOR_HUM;
+        }        
     
       if (millis() - lastClockUpdate > 1000) {
         printCurrentTime(local);
@@ -708,15 +732,15 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
  *    Returns: nothing
  *************************************************************/
 void printOutdoorTemperature(int temp, int dotpos, bool zero) {
-  Serial.print(F("OutdoorTemperature: "));
+  Serial.print(F("Outdoor Temperature: "));
   belowZero ? Serial.print("-") : Serial.print(" ");
   Serial.println(temp);
   ledMatrix.clear();
   ledMatrix.print(temp);
   #ifdef CELSIUS_PREFIX
-    ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c/C' before temperature
+    ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
-  if (zero) {
+  if (zero) {  //FIXME Minus sign shall be visible when temperature are -0
     if ((temp < 10) || (temp > -10)) {
       ledMatrix.writeDigitRaw(2, 64);  //.. Show minus (-) if temperature is below 0 degress C
     } else {
@@ -726,3 +750,29 @@ void printOutdoorTemperature(int temp, int dotpos, bool zero) {
   ledMatrix.writeDigitRaw(2, dotpos);
   ledMatrix.writeDisplay();
 }  //.. End of printOutdoorTemperature
+
+/**************************************************************
+ *   Function: printOutdoorTemperature()
+ * Parameters: int temp, bool zero
+ *    Returns: nothing
+ *************************************************************/
+void printOutdoorHumidity(int8_t hum, int dotpos) {
+  bool highHumidity = false;   //.. Max humidity in display = 99 %RH. Humidity above are visualized by lighing the decimal dot
+  Serial.print(F("Outdoor Humidity: "));
+  Serial.print(hum);
+  Serial.println(F(" %Rh"));
+  
+  if (hum > 99) {  //.. Limit humidity valy to 99 %Rh
+    hum = 99;
+    highHumidity = true;
+  } else highHumidity = false;
+  ledMatrix.clear();
+  if (highHumidity) ledMatrix.writeDigitNum(2, DECI_POINT, true);
+  ledMatrix.print(hum);
+  #ifdef HUMIDITY_PREFIX
+    ledMatrix.writeDigitRaw(0, HUMIDITY_PREFIX);  //..  Print 'h'/'H' before humidity val
+  #endif
+  ledMatrix.writeDigitRaw(2, dotpos);
+  ledMatrix.writeDisplay();
+
+}  //..  Endof printOutdoorHumidity()
