@@ -57,6 +57,10 @@
  * ****************************************************************************************************************/
 
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
+// TODO: Add Function to visualise UV Index outside the LED display
+// TODO: Add function for automatic LED brightness (Photo resistor prio 1)
+// TODO: Add function to indicate if the measured value (excpet for UVI) is rising/faling 
+// TODO: Implement function to show air preassure
 
 /***************************************************************************************
  * 
@@ -77,18 +81,21 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1          //..  PATIO_state              NodeId     = 95
-//#define LED_state_ID_2          //..  BEDROOM_state            Bedroom    = 96
-//#define LED_state_ID_3          //..  LIVINGROOM_state         Livingroom = 97
-//#define LED_state_ID_4          //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5          //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_2           //..  BEDROOM_state            Bedroom    = 96
+//#define LED_state_ID_3           //..  LIVINGROOM_state         Livingroom = 97
+//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+
+#define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
+#define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
 
 /***************************************************************************************
  * 
  * DEBUG SWITCHES
  * 
  * ***********************************************************************************/
-//#define MY_DEBUG               //.. MySensors debug information
+//#define MY_DEBUG             //.. MySensors debug information
 //#define APP_DEBUG            //.. Common application debug information
 //#define SM_DEBUG             //.. State machine debug information
 //#define RTC_DEBUG            //.. Debug information for RTC
@@ -199,6 +206,7 @@
 #define INDOOR_TEMPERATURE_FREQUENCE  60000UL
 #define REQUEST_TIME_ON_STARTUP       1000UL * 10UL
 #define REQUEST_TIME_PERIODICALLY     1000UL * 60UL * 60UL
+#define CLOCK_NET_RELAY_SEND          1000UL * 60UL * 2UL    // UNDONE: Remove???
 
 /******************** SELECTION AREA ********************/
 #ifdef DEVELOPMENT_PLATFORM
@@ -234,6 +242,7 @@ MyMessage msgIndoorTemp(CHILD_ID_INDOOR_TEMP, V_TEMP);
 #ifdef LED_state_ID_1
   MyMessage msgRelayTemp(CHILD_RELAY_ID_MSG, V_TEMP);
   MyMessage msgRelayHum(CHILD_RELAY_ID_MSG, V_HUM);
+  MyMessage msgRelayUvi(CHILD_RELAY_ID_MSG, V_UV);
 #endif
 
 /*************** VARIABLE, CONSTANTS & OBJECTS **************/
@@ -260,9 +269,15 @@ DeviceAddress inboxTemperature, indoorTemperature;
 
 tmElements_t tm;
 bool once                           = false;
-bool blinkColon                     = false;
-bool timeReceived                   = false;
-bool belowZero                      = false;
+bool bBlinkColon                    = false;
+bool bTimeReceived                  = false;
+bool bBelowZero                     = false;
+bool bRelayTempMsg                  = false;
+bool bRelayHumMsg                   = false;
+bool bRelayUviMsg                   = false;
+uint8_t nodeDestTempCnt             = 0;
+uint8_t nodeDestHumCnt              = 0;
+uint8_t nodeDestUviCnt              = 0;
 int outdoorTemperature              = 99;
 int outdoorHumidity                 =  0;
 float outdoorUvIndex                =  0.0;
@@ -271,14 +286,15 @@ unsigned long lastBlink             = millis();
 unsigned long lastBoxTemperature    = millis();
 unsigned long lastIndoorTemperature = millis();
 unsigned long lastClockUpdate       = millis();
+unsigned long lastRelayMsgSend      = millis();  // UNDONE: Remove???
 float lastTemperatureBox;
 float lastTemperatureIndoor;
 time_t local;
 
 /**  Create a matrix object for the 7-segment display  **/
-Adafruit_7segment ledMatrix    = Adafruit_7segment();
-int8_t digits[]                = {0,0,2,3};
-static bool drawDots           = false;
+Adafruit_7segment ledMatrix         = Adafruit_7segment();
+int8_t digits[]                     = {0,0,2,3};
+static bool drawDots                = false;
 
 /**************************************************************
  *   Function: receiveTime
@@ -295,7 +311,7 @@ void receiveTime(unsigned long controllerTime) {
   #ifdef APP_DEBUG
     printDateTime(local);
   #endif
-  timeReceived = true;
+  bTimeReceived = true;
   ledMatrix.blinkRate(0);
 }
 
@@ -352,8 +368,10 @@ void receive(const MyMessage &message) {
 
   switch (message.sender) {
     case 27:
+       
       if (message.type == V_TEMP) {
-        belowZero = (message.getFloat() < 0.0) ? true : false;
+        bRelayTempMsg = true;
+        bBelowZero = (message.getFloat() < 0.0) ? true : false;
         outdoorTemperature = static_cast<int>(round(message.getFloat()));
         #ifdef APP_DEBUG
           Serial.print(F("New pergola temperature received: "));
@@ -362,6 +380,7 @@ void receive(const MyMessage &message) {
       }
 
       if (message.type == V_HUM) {
+        bRelayHumMsg = true;
         outdoorHumidity = static_cast<int>(round(message.getFloat()));
         #ifdef APP_DEBUG
           Serial.print(F("New pergola humidity received: "));
@@ -370,6 +389,7 @@ void receive(const MyMessage &message) {
       }
 
       if (message.type == V_UV) {
+        bRelayUviMsg = true;
         outdoorUvIndex = message.getFloat();
         #ifdef APP_DEBUG
           Serial.print(F("UV level: "));
@@ -394,8 +414,8 @@ void loop() {
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
   /**  when time has been received request update every hour  **/
-  if ((!timeReceived && (currentTime - lastRequest) > REQUEST_TIME_ON_STARTUP) ||
-     (timeReceived && (currentTime - lastRequest) > REQUEST_TIME_PERIODICALLY)) {
+  if ((!bTimeReceived && (currentTime - lastRequest) > REQUEST_TIME_ON_STARTUP) ||
+     (bTimeReceived && (currentTime - lastRequest) > REQUEST_TIME_PERIODICALLY)) {
        /** Request time from controller  */
       #ifdef APP_DEBUG
         Serial.println(F("Requesting time..."));
@@ -425,7 +445,7 @@ void loop() {
     /** STATE_OUTDOOR_TEMP **/
     case STATE_OUTDOOR_TEMP:
       if (!once) {
-        printOutdoorTemperature(outdoorTemperature, OUTSIDE_DOT, belowZero);
+        printOutdoorTemperature(outdoorTemperature, OUTSIDE_DOT, bBelowZero);
         once = true;
       }
     
@@ -495,6 +515,7 @@ void loop() {
       break;
   }
 
+  /** SEND LOCAL CLOCK DATA TO CONTROLLER **/
   if (millis() - lastBoxTemperature > INDOOR_TEMPERATURE_FREQUENCE) {
     lastBoxTemperature = millis();
 
@@ -512,6 +533,17 @@ void loop() {
       send(msgBoxTemp.set(temperatureBox, 1));
       send(msgIndoorTemp.set(temperatureIndoor, 1));
     }
+  }
+
+  /** RELAY DATA FROM SOURCE NODE (27 - PERGOLA) TO CLOCKS IN ClockNet **/
+  // if (millis() - lastRelayMsgSend > CLOCK_NET_RELAY_SEND) {
+    // lastRelayMsgSend = millis();
+    // msgRelayToClockNodes();
+  // }
+
+
+  if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg)) {
+    msgRelayToClockNodes();
   }
 }  //.. End of loop()
 
@@ -763,8 +795,8 @@ void printCurrentTime(time_t utc) {
   /**  Print to the 7-segment display  **/
   ledMatrix.writeDigitNum(0, digit0, drawDots);    //.. Hour tenths
   ledMatrix.writeDigitNum(1, digit1, drawDots);    //.. Hour ones
-  blinkColon = !blinkColon;
-  ledMatrix.drawColon(blinkColon);
+  bBlinkColon = !bBlinkColon;
+  ledMatrix.drawColon(bBlinkColon);
   ledMatrix.writeDigitNum(3, digit2, drawDots);    //.. Minute tenths
   ledMatrix.writeDigitNum(4, digit3, drawDots);    //.. Minute ones
   ledMatrix.writeDisplay();                        //.. Save and shopw the value on the display
@@ -795,8 +827,9 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
 void printOutdoorTemperature(int temp, int dotpos, bool zero) {
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
-    belowZero ? Serial.print("") : Serial.print(" ");
-    Serial.println(temp);
+    bBelowZero ? Serial.print("") : Serial.print(" ");
+    Serial.print(temp);
+    Serial.println(F(" C"));
   #endif
   ledMatrix.clear();
   ledMatrix.print(temp);
@@ -871,4 +904,60 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   #endif
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
+}
+
+
+/**************************************************************
+ *   Function: msgRelayToClockNodes
+ * Parameters: ---
+ *    Returns: nothing
+ *************************************************************/
+void msgRelayToClockNodes() {
+  if (bRelayTempMsg) {
+    if (nodeDestTempCnt < CLOCK_NET_DEST_NODES) {
+      msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
+      send(msgRelayTemp.set(outdoorTemperature, 1));
+      #ifdef RELAY_MSG_DEBUG
+        Serial.print(F("Relay message temperature forwarded to node: "));
+        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
+      #endif
+      nodeDestTempCnt++;
+    } else {
+      nodeDestTempCnt = 0;
+      bRelayTempMsg = false;
+    }
+  }
+
+  if (bRelayHumMsg) {
+    if (nodeDestHumCnt < CLOCK_NET_DEST_NODES) {
+      msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
+      send(msgRelayHum.set(outdoorHumidity, 1));
+      #ifdef RELAY_MSG_DEBUG
+        Serial.print(F("Relay message humidity forwarded to node: "));
+        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
+      #endif
+      nodeDestHumCnt++;
+    } else {
+      nodeDestHumCnt = 0;
+      bRelayHumMsg = false;
+    }    
+  }  
+
+  if (bRelayUviMsg) {
+    if (nodeDestUviCnt < CLOCK_NET_DEST_NODES) {
+      msgRelayUvi.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
+      send(msgRelayUvi.set(outdoorUvIndex, 1));
+      #ifdef RELAY_MSG_DEBUG
+        Serial.print(F("Relay message UV-index forwarded to node: "));
+        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
+      #endif
+      nodeDestUviCnt++;
+    } else {
+      nodeDestUviCnt = 0;
+      bRelayUviMsg = false;
+    }
+  }  
+  
+
+
 }
