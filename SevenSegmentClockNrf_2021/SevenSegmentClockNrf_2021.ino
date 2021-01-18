@@ -61,6 +61,9 @@
 // TODO: Add function for automatic LED brightness (Photo resistor prio 1)
 // TODO: Add function to indicate if the measured value (excpet for UVI) is rising/faling 
 // TODO: Implement function to show air preassure
+// TODO: Child nodes shall be initialized when values are read the first time after start up of the Main (relay) node
+
+
 
 /***************************************************************************************
  * 
@@ -81,10 +84,10 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  BEDROOM_state            Bedroom    = 96
 //#define LED_state_ID_3           //..  LIVINGROOM_state         Livingroom = 97
-//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
@@ -95,7 +98,7 @@
  * DEBUG SWITCHES
  * 
  * ***********************************************************************************/
-//#define MY_DEBUG             //.. MySensors debug information
+#define MY_DEBUG             //.. MySensors debug information
 //#define APP_DEBUG            //.. Common application debug information
 //#define SM_DEBUG             //.. State machine debug information
 //#define RTC_DEBUG            //.. Debug information for RTC
@@ -367,36 +370,85 @@ void receive(const MyMessage &message) {
   }
 
   switch (message.sender) {
-    case 27:
-       
-      if (message.type == V_TEMP) {
-        bRelayTempMsg = true;
-        bBelowZero = (message.getFloat() < 0.0) ? true : false;
-        outdoorTemperature = static_cast<int>(round(message.getFloat()));
-        #ifdef APP_DEBUG
-          Serial.print(F("New pergola temperature received: "));
-          Serial.println(message.getFloat());
-        #endif
-      }
+    #ifdef LED_state_ID_1
+      case 27:
+         
+        if (message.type == V_TEMP) {
+          bRelayTempMsg = true;
+          bBelowZero = (message.getFloat() < 0.0) ? true : false;
+          outdoorTemperature = static_cast<int>(round(message.getFloat()));
+          #ifdef RECIEVE_MSG_DEBUG
+            Serial.print(F("New pergola temperature received: "));
+            Serial.println(message.getFloat());
+          #endif
+        }
+  
+        if (message.type == V_HUM) {
+          bRelayHumMsg = true;
+          outdoorHumidity = static_cast<int>(round(message.getFloat()));
+          #ifdef RECIEVE_MSG_DEBUG
+            Serial.print(F("New pergola humidity received: "));
+            Serial.println(message.getFloat());
+          #endif
+        }
+  
+        if (message.type == V_UV) {
+          bRelayUviMsg = true;
+          outdoorUvIndex = message.getFloat();
+          #ifdef RECIEVE_MSG_DEBUG
+            Serial.print(F("New UV level received: "));
+            Serial.println(outdoorUvIndex);
+          #endif
+        }
+        Serial.print(F("b:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.println(bRelayUviMsg);
+        break;
 
-      if (message.type == V_HUM) {
-        bRelayHumMsg = true;
-        outdoorHumidity = static_cast<int>(round(message.getFloat()));
-        #ifdef APP_DEBUG
-          Serial.print(F("New pergola humidity received: "));
-          Serial.println(message.getFloat());
-        #endif
-      }
+    #else
+      case 95:
 
-      if (message.type == V_UV) {
-        bRelayUviMsg = true;
-        outdoorUvIndex = message.getFloat();
-        #ifdef APP_DEBUG
-          Serial.print(F("UV level: "));
-          Serial.println(outdoorUvIndex);
-        #endif
-      }
-      break;
+        // if (message.type == V_TEMP) {
+        //   bBelowZero = (message.getFloat() < 0.0) ? true : false;
+        //   outdoorTemperature = static_cast<int>(round(message.getFloat()));
+        //   Serial.println(F("."));
+        //   #ifdef RECIEVE_MSG_DEBUG
+        //     Serial.print(F("New Pergola temperature received from NodeId 1: "));
+        //     Serial.println(message.getFloat());
+        //   #endif
+        // }
+
+        // if (message.type == V_HUM) {
+        //   outdoorHumidity = static_cast<int>(round(message.getFloat()));
+        //   Serial.println(F(".."));
+        //   #ifdef RECIEVE_MSG_DEBUG
+        //     Serial.print(F("New Pergola humidity received from NodeId 1: "));
+        //     Serial.println(message.getFloat());
+        //   #endif          
+        // }
+
+        // if (message.type == V_UV) {
+        //   outdoorUvIndex = message.getFloat();
+        //   Serial.println(F("..."));
+        //   #ifdef RECIEVE_MSG_DEBUG
+        //     Serial.print(F("New UV level received from NodeId 1: "));
+        //     Serial.println(outdoorUvIndex);
+        //   #endif          
+        // }
+
+       switch (message.type) {
+        case V_TEMP:
+          bBelowZero = (message.getFloat() < 0.0) ? true : false;
+          outdoorTemperature = static_cast<int>(round(message.getFloat()));
+          break;
+
+        case V_HUM:
+          outdoorHumidity = static_cast<int>(round(message.getFloat()));
+          break;
+
+        case V_UV:
+          outdoorUvIndex = message.getFloat();
+          break;  
+       }    
+    #endif
   }
 }
 /**************************************************************
@@ -486,7 +538,8 @@ void loop() {
       if (((second(local) >= 15 ) && (second(local) < 17)) || ((second(local) >= 45) && (second(local) < 47))) {
         state = STATE_INDOOR_TEMP;
       }
-    
+    // NOTE The block below has been restricted to NodeID 1 because of a timing problem witch led to that the display only update once a minute. This may be fixed.
+    #ifdef LED_state_ID_1
       if (((second(local) >= 17 ) && (second(local) < 20)) || ((second(local) >= 47) && (second(local) < 49))) {
         state = STATE_OUTDOOR_TEMP;
         }
@@ -498,6 +551,7 @@ void loop() {
       if (((second(local) >= 22 ) && (second(local) < 24)) || ((second(local) >= 51) && (second(local) < 53))) {
         state = STATE_OUTDOOR_HUM;
         }        
+      #endif
     
       if (millis() - lastClockUpdate > 1000) {
         printCurrentTime(local);
@@ -536,15 +590,11 @@ void loop() {
   }
 
   /** RELAY DATA FROM SOURCE NODE (27 - PERGOLA) TO CLOCKS IN ClockNet **/
-  // if (millis() - lastRelayMsgSend > CLOCK_NET_RELAY_SEND) {
-    // lastRelayMsgSend = millis();
-    // msgRelayToClockNodes();
-  // }
-
-
-  if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg)) {
-    msgRelayToClockNodes();
-  }
+  #ifdef LED_state_ID_1
+    if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg)) {
+      msgRelayToClockNodes();
+    }
+    #endif
 }  //.. End of loop()
 
 /**************************************************************
@@ -872,7 +922,7 @@ void printOutdoorHumidity(int8_t hum, int dotpos) {
   #endif
   ledMatrix.writeDigitRaw(2, dotpos);
   ledMatrix.writeDisplay();
-}  //..  Endof printOutdoorHumidity()
+}  //..  End of printOutdoorHumidity()
 
 /**************************************************************
  *   Function: printOutdoorUvLevel
@@ -912,52 +962,51 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
  * Parameters: ---
  *    Returns: nothing
  *************************************************************/
-void msgRelayToClockNodes() {
-  if (bRelayTempMsg) {
-    if (nodeDestTempCnt < CLOCK_NET_DEST_NODES) {
-      msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
-      send(msgRelayTemp.set(outdoorTemperature, 1));
-      #ifdef RELAY_MSG_DEBUG
-        Serial.print(F("Relay message temperature forwarded to node: "));
-        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
-      #endif
-      nodeDestTempCnt++;
-    } else {
-      nodeDestTempCnt = 0;
-      bRelayTempMsg = false;
+#ifdef LED_state_ID_1
+  void msgRelayToClockNodes() {
+    if (bRelayTempMsg) {
+      if (nodeDestTempCnt < CLOCK_NET_DEST_NODES) {
+        msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
+        send(msgRelayTemp.set(outdoorTemperature, 1));
+        #ifdef RELAY_MSG_DEBUG
+          Serial.print(F("Relay message temperature forwarded to node: "));
+          Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestTempCnt);
+        #endif
+        nodeDestTempCnt++;
+      } else {
+        nodeDestTempCnt = 0;
+        bRelayTempMsg = false;
+      }
     }
-  }
-
-  if (bRelayHumMsg) {
-    if (nodeDestHumCnt < CLOCK_NET_DEST_NODES) {
-      msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
-      send(msgRelayHum.set(outdoorHumidity, 1));
-      #ifdef RELAY_MSG_DEBUG
-        Serial.print(F("Relay message humidity forwarded to node: "));
-        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
-      #endif
-      nodeDestHumCnt++;
-    } else {
-      nodeDestHumCnt = 0;
-      bRelayHumMsg = false;
-    }    
-  }  
-
-  if (bRelayUviMsg) {
-    if (nodeDestUviCnt < CLOCK_NET_DEST_NODES) {
-      msgRelayUvi.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
-      send(msgRelayUvi.set(outdoorUvIndex, 1));
-      #ifdef RELAY_MSG_DEBUG
-        Serial.print(F("Relay message UV-index forwarded to node: "));
-        Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
-      #endif
-      nodeDestUviCnt++;
-    } else {
-      nodeDestUviCnt = 0;
-      bRelayUviMsg = false;
-    }
-  }  
   
-
-
-}
+    if (bRelayHumMsg) {
+      if (nodeDestHumCnt < CLOCK_NET_DEST_NODES) {
+        msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
+        send(msgRelayHum.set(outdoorHumidity, 1));
+        #ifdef RELAY_MSG_DEBUG
+          Serial.print(F("Relay message humidity forwarded to node: "));
+          Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
+        #endif
+        nodeDestHumCnt++;
+      } else {
+        nodeDestHumCnt = 0;
+        bRelayHumMsg = false;
+      }    
+    }  
+  
+    if (bRelayUviMsg) {
+      if (nodeDestUviCnt < CLOCK_NET_DEST_NODES) {
+        msgRelayUvi.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
+        send(msgRelayUvi.set(outdoorUvIndex, 1));
+        #ifdef RELAY_MSG_DEBUG
+          Serial.print(F("Relay message UV-index forwarded to node: "));
+          Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestUviCnt);
+        #endif
+        nodeDestUviCnt++;
+      } else {
+        nodeDestUviCnt = 0;
+        bRelayUviMsg = false;
+      }
+    }  
+  }
+  #endif 
