@@ -1,4 +1,25 @@
-/*******************************************************************************************************************
+/*********************************************************************************************************************
+ *     Processor: Atmega 328P / 16 MHz
+ *     BOD level: 2.7 v
+ * Configuration: Standard
+ * 
+ * 
+ *        Program: Soil Temperature & Humidity Sensor
+ *         Module: soilTemperature
+ *  Creation date: 2020-12-11
+ *         Author: Olle Johansson
+ * ********************************************************************************************************************
+  * Revision history
+ +------------+------------+------------------------------------------------------------------------------------------+
+ | Date       | SW version | HW version | Description                                                                 |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-01-17 | b-2.0.0    | v1.1       | First code for sevenSegmentClockNrf V2                                      |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-01-17 | b-2.0.0    | v1.1       | Addition:                                                                   |
+ |            |            |            | Add function for automatic LED brightness                                   |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
+ 
+
  *  Radio conrolled 7-segment LED state with RTC
  * The state has 1 internal temperature sensor (DS18B20) and a connector to display external temperature sensors
  * (DS18b20). Outdoor temperature is received from an external temperature sensor that sends temperature and
@@ -58,10 +79,9 @@
 
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display
-// TODO: Add function for automatic LED brightness (Photo resistor prio 1)
-// TODO: Add function to indicate if the measured value (excpet for UVI) is rising/faling 
+// TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
 // TODO: Implement function to show air preassure
-// TODO: Child nodes shall be initialized when values are read the first time after start up of the Main (relay) node
+
 
 
 
@@ -84,21 +104,23 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
-//#define LED_state_ID_2           //..  BEDROOM_state            Bedroom    = 96
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95  Exist
+//#define LED_state_ID_2           //..  BEDROOM_state            Bedroom    = 96 
 //#define LED_state_ID_3           //..  LIVINGROOM_state         Livingroom = 97
-#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98  Exits
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
+                                   //.. This offset value has to be changed if other values are set for the clockNet.
+                                   //.. Main node NodeId 1 and its child nodes must be in a consequtive serie.
 
 /***************************************************************************************
  * 
  * DEBUG SWITCHES
  * 
  * ***********************************************************************************/
-#define MY_DEBUG             //.. MySensors debug information
+//#define MY_DEBUG             //.. MySensors debug information
 //#define APP_DEBUG            //.. Common application debug information
 //#define SM_DEBUG             //.. State machine debug information
 //#define RTC_DEBUG            //.. Debug information for RTC
@@ -181,7 +203,8 @@
 
 /**  SET TEMPERATURE RESOLUTION AND CONVERSION TIME  **/
 /** It is not recomended to use higher resolution than 9 because of timing issues  **/
-#define TEMPERATURE_PRECISION 9             //.. Resolution: 0.5000 C, conversion time:  93.75 ms  (max)
+#define TEMPERATURE_PRECISION 9             //.. Resolution: 0.5000 C, conversion time:  93.75 ms  (max) This is the
+                                            //.. preffered resulotion because it has the shortest conversion time.
 //#define TEMPERATURE_PRECISION 10            //.. Resolution: 0.2500 C, conversion time: 187.50 ms  (max) 
 //#define TEMPERATURE_PRECISION 11            //.. Resolution: 0.1250 C, conversion time: 375.00 ms  (max) 
 //#define TEMPERATURE_PRECISION 12            //.. Resolution: 0.0625 C, conversion time: 750.00 ms  (max) 
@@ -271,25 +294,26 @@ DallasTemperature sensors(&oneWire);
 DeviceAddress inboxTemperature, indoorTemperature;
 
 tmElements_t tm;
-bool once                           = false;
-bool bBlinkColon                    = false;
-bool bTimeReceived                  = false;
-bool bBelowZero                     = false;
-bool bRelayTempMsg                  = false;
-bool bRelayHumMsg                   = false;
-bool bRelayUviMsg                   = false;
-uint8_t nodeDestTempCnt             = 0;
-uint8_t nodeDestHumCnt              = 0;
-uint8_t nodeDestUviCnt              = 0;
-int outdoorTemperature              = 99;
-int outdoorHumidity                 =  0;
-float outdoorUvIndex                =  0.0;
+bool          once                  = false;
+bool          bBlinkColon           = false;
+bool          bTimeReceived         = false;
+bool          bBelowZero            = false;
+bool          bRelayTempMsg         = false;
+bool          bRelayHumMsg          = false;
+bool          bRelayUviMsg          = false;
+uint16_t      ledBrightness         = 15;
+uint8_t       nodeDestTempCnt       = 0;
+uint8_t       nodeDestHumCnt        = 0;
+uint8_t       nodeDestUviCnt        = 0;
+int           outdoorTemperature    = 99;
+int           outdoorHumidity       =  0;
+float         outdoorUvIndex        =  0.0;
 unsigned long lastRequest           = 0;
 unsigned long lastBlink             = millis();
 unsigned long lastBoxTemperature    = millis();
 unsigned long lastIndoorTemperature = millis();
 unsigned long lastClockUpdate       = millis();
-unsigned long lastRelayMsgSend      = millis();  // UNDONE: Remove???
+unsigned long lastBrightnessTime    = millis();
 float lastTemperatureBox;
 float lastTemperatureIndoor;
 time_t local;
@@ -405,47 +429,30 @@ void receive(const MyMessage &message) {
 
     #else
       case 95:
-
-        // if (message.type == V_TEMP) {
-        //   bBelowZero = (message.getFloat() < 0.0) ? true : false;
-        //   outdoorTemperature = static_cast<int>(round(message.getFloat()));
-        //   Serial.println(F("."));
-        //   #ifdef RECIEVE_MSG_DEBUG
-        //     Serial.print(F("New Pergola temperature received from NodeId 1: "));
-        //     Serial.println(message.getFloat());
-        //   #endif
-        // }
-
-        // if (message.type == V_HUM) {
-        //   outdoorHumidity = static_cast<int>(round(message.getFloat()));
-        //   Serial.println(F(".."));
-        //   #ifdef RECIEVE_MSG_DEBUG
-        //     Serial.print(F("New Pergola humidity received from NodeId 1: "));
-        //     Serial.println(message.getFloat());
-        //   #endif          
-        // }
-
-        // if (message.type == V_UV) {
-        //   outdoorUvIndex = message.getFloat();
-        //   Serial.println(F("..."));
-        //   #ifdef RECIEVE_MSG_DEBUG
-        //     Serial.print(F("New UV level received from NodeId 1: "));
-        //     Serial.println(outdoorUvIndex);
-        //   #endif          
-        // }
-
-       switch (message.type) {
-        case V_TEMP:
-          bBelowZero = (message.getFloat() < 0.0) ? true : false;
-          outdoorTemperature = static_cast<int>(round(message.getFloat()));
-          break;
-
-        case V_HUM:
-          outdoorHumidity = static_cast<int>(round(message.getFloat()));
-          break;
-
-        case V_UV:
-          outdoorUvIndex = message.getFloat();
+        switch (message.type) {
+          case V_TEMP:
+            bBelowZero = (message.getFloat() < 0.0) ? true : false;
+            outdoorTemperature = static_cast<int>(round(message.getFloat()));
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New Pergola temperature received from NodeId 1: "));
+              Serial.println(message.getFloat());
+            #endif          
+            break;
+  
+          case V_HUM:
+            outdoorHumidity = static_cast<int>(round(message.getFloat()));
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New Pergola humidity received from NodeId 1: "));
+              Serial.println(message.getFloat());
+            #endif            
+            break;
+  
+          case V_UV:
+            outdoorUvIndex = message.getFloat();
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New UV level received from NodeId 1: "));
+              Serial.println(outdoorUvIndex);
+            #endif            
           break;  
        }    
     #endif
@@ -463,6 +470,17 @@ void loop() {
   /** Set currentTime for current iteration **/
   unsigned long now = millis();
   unsigned long currentTime = millis();
+
+  /** SET LED BRIGHTNESS DEPENDING ON ENVIRONMENT LIGHT **/
+  if (currentTime - lastBrightnessTime > 5000) {
+    lastBrightnessTime = millis();
+    uint16_t envLightLevel = analogRead(LIGHT_SENSOR_ANALOG_PIN);
+    if (envLightLevel < 360) envLightLevel = 360;
+    if (envLightLevel > 860) envLightLevel = 860;
+    ledBrightness = map(envLightLevel, 360, 860, 0, 15);
+    ledMatrix.setBrightness(ledBrightness);
+    ledMatrix.writeDisplay();
+  }
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
   /**  when time has been received request update every hour  **/
@@ -981,7 +999,7 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   
     if (bRelayHumMsg) {
       if (nodeDestHumCnt < CLOCK_NET_DEST_NODES) {
-        msgRelayTemp.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
+        msgRelayHum.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestHumCnt);
         send(msgRelayHum.set(outdoorHumidity, 1));
         #ifdef RELAY_MSG_DEBUG
           Serial.print(F("Relay message humidity forwarded to node: "));
