@@ -1,0 +1,37 @@
+/** INCLUDE FILES **/
+
+
+
+/***************************************************************************
+ *
+ *                            GLOBAL DIMENSION PARAMETERS
+ *
+ ***************************************************************************/
+
+ /**  CLOCK BOX OUTSIDE DIMENSIONS  **/
+ CLOCK_BOX_WIDTH          = 170;
+ CLOCK_BOX_DEPTH          =  75;
+ CLOCK_BOX_HEIGHT         = 75;
+ CLOCK_BOX_WALL_THICKNESS =  3;
+
+ /**  CLOCK BOX INSIDE DIMENSIONS  **/
+ CLOCK_BOX_INSIDE_WIDTH = CLOCK_BOX_WIDTH - CLOCK_BOX_WALL_THICKNESS * 2;
+ CLOCK_BOX_INSIDE_DEPTH = CLOCK_BOX_DEPTH - CLOCK_BOX_WALL_THICKNESS * 2;
+ CLOCK_BOX_INSIDE_HEIGHT = CLOCK_BOX_HEIGHT;
+ 
+
+
+ /** FRONT PANEL SECTION  **/
+ FRONT_PANEL_WIDTH  = 180;
+ FRONT_PANEL_HEIGHT =   2.5;
+ FRONT_PANEL_DEPTH  =  75; 
+
+ /**  LED DISPLAY DIMENSIONS  **/
+ LED_DISPLAY_WIDTH  =  121;
+ LED_DISPLAY_HEIGHT =   10;  //** LED Display height without backpack pcb
+ LED_DISPLAY_DEPTH  =   41;
+
+ /**  LED FRAME DIMENSIONS  **/
+ LED_DISPLAY_FRAME_WIDTH  = LED_DISPLAY_WIDTH + 3;
+ LED_DISPLAY_FRAME_HEIGHT = 4;  //LED_DISPLAY_HEIGHT;
+ LED_DISPLAY_FRAME_DEPTH  = LED_DISPLAY_DEPTH + 3;
