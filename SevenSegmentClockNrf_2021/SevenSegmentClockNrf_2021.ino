@@ -104,10 +104,10 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95  Exist
-//#define LED_state_ID_2           //..  BEDROOM_state            Bedroom    = 96 
-//#define LED_state_ID_3           //..  LIVINGROOM_state         Livingroom = 97
-//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98  Exits
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
+//#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
+//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
