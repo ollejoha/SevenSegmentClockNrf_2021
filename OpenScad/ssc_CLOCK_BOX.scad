@@ -18,6 +18,7 @@ date            description
 $fn = 100;
 
 include <ssc_DIMENSIONS.scad>;
+use <ssc_FRONT_PANEL.scad>;
 
 /***************************************************************************
  *
@@ -33,62 +34,32 @@ mainClockBox();
  *
  ***************************************************************************/
 /** main box module  **/
- module mainClockBox() {
-   difference() {
-     union() {
-       /** this is the main box block  **/
-       cube([CLOCK_BOX_WIDTH, CLOCK_BOX_DEPTH,CLOCK_BOX_HEIGHT], center=true);
-     }
-     /**  inner box slot   **/
-     translate([0,0,3])
-       cube([CLOCK_BOX_INSIDE_WIDTH, CLOCK_BOX_INSIDE_DEPTH,CLOCK_BOX_INSIDE_HEIGHT],center=true);
-    /**  led display window  **/
-    translate([0,0, -CLOCK_BOX_HEIGHT/2 + CLOCK_BOX_WALL_THICKNESS / 2])
-      ledDisplayWindow(LED_DISPLAY_WIDTH, LED_DISPLAY_DEPTH, CLOCK_BOX_WALL_THICKNESS + 0.1);
+module mainClockBox() {
+ size_reduction_thru_all = 15;
+  size_reduction = 5;
+  difference() {
+    union() {
+      cube([CLOCK_BOX_WIDTH, CLOCK_BOX_DEPTH,CLOCK_BOX_HEIGHT],center=true);
+    }
+    //** create a hole thru the casing block  **/
+    translate([0, size_reduction, 0])
+      cube([CLOCK_BOX_WIDTH - size_reduction_thru_all, CLOCK_BOX_DEPTH - size_reduction_thru_all/2, CLOCK_BOX_INSIDE_HEIGHT + size_reduction / 2],center=true);
 
-    /**  mounting hole for photoresister  **/
-    translate([CLOCK_BOX_INSIDE_WIDTH / 2 - 8,0, -CLOCK_BOX_HEIGHT/2 + CLOCK_BOX_WALL_THICKNESS / 2])
-      photoResistor(CLOCK_BOX_WALL_THICKNESS);
+    translate([0, 3, 0])
+      cube([CLOCK_BOX_WIDTH - size_reduction, CLOCK_BOX_DEPTH, CLOCK_BOX_INSIDE_HEIGHT - size_reduction-10],center=true);
+      
+    translate([0, 2.1,-33.5 ])
+      blindPlate();
 
-    /** indicator LED  **/
-    translate([-CLOCK_BOX_INSIDE_WIDTH / 2 + 8 ,  6, -CLOCK_BOX_HEIGHT/2 + CLOCK_BOX_WALL_THICKNESS / 2])
-    indicatorLED(CLOCK_BOX_WALL_THICKNESS);      
+    translate([0, 2.1, 33.5 ])
+      blindPlate();      
+  }
+}
 
-    translate([-CLOCK_BOX_INSIDE_WIDTH / 2 + 8 , -6, -CLOCK_BOX_HEIGHT/2 + CLOCK_BOX_WALL_THICKNESS / 2])
-    indicatorLED(CLOCK_BOX_WALL_THICKNESS);          
-   }
- }
-
-/**  LED DISPLAY WINDOW  **/
- module ledDisplayWindow(_width, _depth, _height) {
-   difference() {
-     union() {
-       cube([_width - 2, _depth - 2, _height],center=true);
-     }
-   }
- }
-
-/**  PHOTO TRANSISTOR  **/
- module photoResistor(_wall) {
-   _diameter1 = 4.5;
-   _diameter2 = 6;
-
-   difference() {
-     union() {
-       cylinder(d1=_diameter1, d2=_diameter2, h=_wall + 0.1, center=true);
-     }
-   }
- }
-
- /** LED MOUNTING HOLE  **/
- module indicatorLED(_wall) {
-   _led_diameter        = 6.4;
-   _led_pocket_diameter = 10;
-   difference() {
-     union() {
-       cylinder(d=_led_diameter, h=_wall + 0.1, center=true);
-       translate([0,0, _wall/2 - 0.4])
-       cylinder(d=_led_pocket_diameter, h=1, center=true);
-     }
-   }
- }
+module blindPlate() {
+  difference() {
+    union() {
+      cube([CLOCK_BOX_INSIDE_WIDTH, CLOCK_BOX_INSIDE_DEPTH+2,FRONT_PANEL_HEIGHT+1],center=true);
+    }
+  }
+}

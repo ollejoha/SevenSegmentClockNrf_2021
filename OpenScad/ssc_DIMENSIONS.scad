@@ -9,8 +9,8 @@
  ***************************************************************************/
 
  /**  CLOCK BOX OUTSIDE DIMENSIONS  **/
- CLOCK_BOX_WIDTH          = 170;
- CLOCK_BOX_DEPTH          =  75;
+ CLOCK_BOX_WIDTH          = 185;
+ CLOCK_BOX_DEPTH          = 80;
  CLOCK_BOX_HEIGHT         = 75;
  CLOCK_BOX_WALL_THICKNESS =  3;
 

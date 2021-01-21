@@ -19,7 +19,6 @@ $fn = 50;
 
 /** INCLUDE FILES **/
 include <ssc_DIMENSIONS.scad>;
-use <ssc_LED_FRAME.scad>;
 use <ssc_CLOCK_BOX.scad>;
 
 /***************************************************************************
