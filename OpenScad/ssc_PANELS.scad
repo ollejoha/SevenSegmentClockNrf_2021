@@ -111,7 +111,7 @@ module frontPanel() {
          cube([FRONT_PANEL_DEPTH-10, 8, 5],center=true);                      
     }  //.. end of union
 
-    /** create a hole in the panel width that is 1 mm narrower on ach side and let it go thru the panel  **/
+    /** create a hole in the panel width that is 1 mm narrower on each side and let it go thru the panel  **/
     translate([0,0,-0.1])
       cube([LED_DISPLAY_WIDTH - _led_display_edge,
             LED_DISPLAY_DEPTH - _led_display_edge,
@@ -120,8 +120,8 @@ module frontPanel() {
 
     /**  create a hole that is 1 mm wider than the LED display.  **/
     translate([0,0,FRONT_PANEL_HEIGHT+1])  
-      cube([LED_DISPLAY_WIDTH + 1,
-              LED_DISPLAY_DEPTH + 1,
+      cube([LED_DISPLAY_WIDTH + 0,
+              LED_DISPLAY_DEPTH + 0,
               FRONT_PANEL_HEIGHT + 5],
               center=true);
 
@@ -163,7 +163,7 @@ module backPanel() {
  **              
  ************************************************************************************************************/
 module ledFrame() {
-  _led_frame_width  = LED_DISPLAY_WIDTH + 4;
+  _led_frame_width  = LED_DISPLAY_WIDTH + 3;
   _led_frame_depth  = LED_DISPLAY_DEPTH + 4;
   _led_frame_height = 4;
   _led_display_offset = 1;
@@ -184,3 +184,10 @@ module ledFrame() {
 //*********************************************************************************************************
 //*********************************************************************************************************
 //*********************************************************************************************************
+module ledDisplay() {
+  difference() {
+    union() {
+      cube([LED_DISPLAY_WIDTH, LED_DISPLAY_DEPTH, LED_DISPLAY_HEIGHT],center=true);
+    }
+  }
+}
