@@ -20,13 +20,15 @@ $fn = 50;
 /** INCLUDE FILES **/
 include <ssc_DIMENSIONS.scad>;
 use <ssc_CLOCK_BOX.scad>;
+use <ssc_PANELS.scad>;
 
 /***************************************************************************
  *
  *                                GLOBAL RENDER
  *
  ***************************************************************************/
-mainClockCasing();
+*mainClockCasing();
+
 
  /***************************************************************************
  *
@@ -36,12 +38,19 @@ mainClockCasing();
 module mainClockCasing() {
   difference() {
     union() {
-      /** main clock box mounting case  **/
-      mainClockBox();
+      mainBoxBlock();
+      translate([0,0,-30])
+        frontPanel();
 
-      /** display fixture frame  **/
-      translate([0,0,-CLOCK_BOX_INSIDE_HEIGHT / 2 + CLOCK_BOX_WALL_THICKNESS]) 
-        ledFrame();    
+      translate([0,0,30])
+        backPanel();        
+
     }
+  }
+}
+
+module fillOut() {
+  union() {
+    cube([40, 6, 1.2],center=true);
   }
 }
