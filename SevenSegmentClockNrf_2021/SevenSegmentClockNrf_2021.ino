@@ -107,11 +107,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -409,6 +409,8 @@ void receive(const MyMessage &message) {
           bRelayTempMsg = true;
           bBelowZero = (message.getFloat() < 0.0) ? true : false;
           outdoorTemperature = message.getFloat();
+          Serial.print(F("Received outdoor temp: "));
+          Serial.println(outdoorTemperature);
           #ifdef RECIEVE_MSG_DEBUG
             Serial.print(F("New pergola temperature received: "));
             Serial.println(message.getFloat());
@@ -956,26 +958,27 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   int8_t digit2;
   int8_t digit3;
 
-  int _temp = static_cast<int>((temp * 10.));
+  int _temp = static_cast<int>(round((temp * 10.0)));  // Multiply the float value to get rid of the decimal
+  int absTemp = abs(_temp);
   
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
-    bBelowZero ? Serial.print("") : Serial.print(" ");
+    zero ? Serial.print("") : Serial.print(" ");
     Serial.print(temp);
     Serial.println(F(" C"));
   #endif
 
   ledMatrix.clear();
 
-  if (abs(_temp) > 99 ) {
-    digit1 = (_temp / 100) % 10;
+  if ((_temp > 99) || (_temp < -99)) {
+    digit1 = (absTemp / 100) % 10;
     ledMatrix.writeDigitNum(1, digit1);
   }
 
-  digit2 = (_temp / 10 ) % 10;
+  digit2 = (absTemp / 10 ) % 10;
   ledMatrix.writeDigitNum(3, digit2);
 
-  digit3 = _temp % 10;
+  digit3 = absTemp % 10;
   ledMatrix.writeDigitNum(4, digit3);
 
   #ifdef CELSIUS_PREFIX
@@ -983,9 +986,9 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   #endif
   if (zero) {  //FIXME Minus sign shall be visible when temperature are -0
     if ((temp < 10) || (temp > -10)) {
-      ledMatrix.writeDigitRaw(2, 64);  //.. Show minus (-) if temperature is below 0 degress C
-    } else {
       ledMatrix.writeDigitRaw(1, 64);  //.. Show minus (-) if temperature is below 0 degress C
+    } else {
+      ledMatrix.writeDigitRaw(0, 64);  //.. Show minus (-) if temperature is below 0 degress C
     }
   }
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
