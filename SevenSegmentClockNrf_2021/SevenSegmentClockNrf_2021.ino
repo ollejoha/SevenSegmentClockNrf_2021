@@ -235,7 +235,7 @@
 #define INDOOR_TEMPERATURE_FREQUENCE  60000UL
 #define REQUEST_TIME_ON_STARTUP       1000UL * 10UL
 #define REQUEST_TIME_PERIODICALLY     1000UL * 60UL * 60UL
-#define CLOCK_NET_RELAY_SEND          1000UL * 60UL * 2UL    // UNDONE: Remove???
+#define CLOCK_NET_RELAY_SEND          1000UL * 60UL * 2UL    // UNDONE: Remove??? Not used anywhere.
 
 /******************** SELECTION AREA ********************/
 #ifdef DEVELOPMENT_PLATFORM
@@ -403,9 +403,9 @@ void receive(const MyMessage &message) {
 
   switch (message.sender) {
     #ifdef LED_state_ID_1
-      case 27:
-         
-        if (message.type == V_TEMP) {
+      case 27:  //.. Pegola sensor
+
+        if (message.type == V_TEMP) {           //.. Get temperature from Pegola sensor
           bRelayTempMsg = true;
           bBelowZero = (message.getFloat() < 0.0) ? true : false;
           outdoorTemperature = message.getFloat();
@@ -417,7 +417,7 @@ void receive(const MyMessage &message) {
           #endif
         }
   
-        if (message.type == V_HUM) {
+        if (message.type == V_HUM) {           //.. Get humidiry from Pegola sensor
           bRelayHumMsg = true;
           outdoorHumidity = static_cast<int>(round(message.getFloat()));
           #ifdef RECIEVE_MSG_DEBUG
@@ -425,20 +425,11 @@ void receive(const MyMessage &message) {
             Serial.println(message.getFloat());
           #endif
         }
-  
-        if (message.type == V_UV) {
-          bRelayUviMsg = true;
-          outdoorUvIndex = message.getFloat();
-          #ifdef RECIEVE_MSG_DEBUG
-            Serial.print(F("New UV level received: "));
-            Serial.println(outdoorUvIndex);
-          #endif
-        }
         Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
         break;
 
-        case 31:   // Get air preassure from weather station
-          if (message.type == V_PRESSURE) {
+        case 31:  //.. Weater station
+          if (message.type == V_PRESSURE) {    //.. Get air preassure from weather station
             bRelayAirPresMsg = true;
             airPressure = message.getInt();
             #ifdef RECIEVE_MSG_DEBUG
@@ -446,10 +437,19 @@ void receive(const MyMessage &message) {
               Serial.print(airPressure);
             #endif
           }
+
+          if (message.type == V_UV) {          //.. Get UV-Index from weather station
+            bRelayUviMsg = true;
+            outdoorUvIndex = message.getFloat();
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New UV level received: "));
+              Serial.println(outdoorUvIndex);
+            #endif
+        }          
           break;
 
     #else
-      case 95:
+      case 95:  //.. Patio node. Relay node
         switch (message.type) {
           case V_TEMP:
             bBelowZero = (message.getFloat() < 0.0) ? true : false;
@@ -600,6 +600,7 @@ void loop() {
         state = STATE_INDOOR_TEMP;
       }
     // NOTE The block below has been restricted to NodeID 1 because of a timing problem witch led to that the display only update once a minute. This may be fixed.
+    // NOTE it shall be investigated if theis code block can be completely removed
     #ifdef LED_state_ID_1
       if (((second(local) >= 17 ) && (second(local) < 19)) || ((second(local) >= 47) && (second(local) < 49))) {
         state = STATE_OUTDOOR_TEMP;
@@ -984,7 +985,7 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   #ifdef CELSIUS_PREFIX
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
-  if (zero) {  //FIXME Minus sign shall be visible when temperature are -0
+  if (zero) {
     if ((temp < 10) || (temp > -10)) {
       ledMatrix.writeDigitRaw(1, 64);  //.. Show minus (-) if temperature is below 0 degress C
     } else {
