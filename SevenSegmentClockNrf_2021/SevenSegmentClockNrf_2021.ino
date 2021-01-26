@@ -18,6 +18,9 @@
  | 2021-01-17 | b-2.0.0    | v1.1       | Addition:                                                                   |
  |            |            |            | Added function for automatic LED brightness                                 |
  +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-01-24 | b-2.1.0    | v1.1       | Changed temperature display to show one decimal. Consequence is that the    |
+ |            |            |            | prefix for Celsius 'c' cannot be shown due to limitations in the LED Display|
+ +------------+------------+------------+-----------------------------------------------------------------------------+
  
 
  *  Radio conrolled 7-segment LED state with RTC
@@ -108,7 +111,7 @@
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -217,7 +220,7 @@
 #define INSIDE_DOT          4        //.. Dot to indicate inside temperature on LED display
 #define OUTSIDE_DOT         8        //.. Dot to indicate outside temperature on LED display
 /****************** LED MATRIX OPTIONS ******************/
-#define CELSIUS_PREFIX     0x58      //.. Celsius prefix - 'c'
+//#define CELSIUS_PREFIX     0x58      //.. Celsius prefix - 'c'  //.. Turned off 2021-01-24 for Decimal-temperatures branch
 //#define CELSIUS_PREFIX     0x39      //.. Celsius prefix - 'C'
 #define HUMIDITY_PREFIX    0x74      //.. Humidity prefix 'h'
 //#define HUMIDITY_PREFIX    0x76      //.. Humidity prefix 'H'
@@ -232,7 +235,7 @@
 #define INDOOR_TEMPERATURE_FREQUENCE  60000UL
 #define REQUEST_TIME_ON_STARTUP       1000UL * 10UL
 #define REQUEST_TIME_PERIODICALLY     1000UL * 60UL * 60UL
-#define CLOCK_NET_RELAY_SEND          1000UL * 60UL * 2UL    // UNDONE: Remove???
+#define CLOCK_NET_RELAY_SEND          1000UL * 60UL * 2UL    // UNDONE: Remove??? Not used anywhere.
 
 /******************** SELECTION AREA ********************/
 #ifdef DEVELOPMENT_PLATFORM
@@ -269,6 +272,7 @@ MyMessage msgIndoorTemp(CHILD_ID_INDOOR_TEMP, V_TEMP);
   MyMessage msgRelayTemp(CHILD_RELAY_ID_MSG, V_TEMP);
   MyMessage msgRelayHum(CHILD_RELAY_ID_MSG, V_HUM);
   MyMessage msgRelayUvi(CHILD_RELAY_ID_MSG, V_UV);
+  MyMessage msgRelayAirPres(CHILD_RELAY_ID_MSG, V_PRESSURE);
 #endif
 
 /*************** VARIABLE, CONSTANTS & OBJECTS **************/
@@ -277,7 +281,8 @@ typedef enum {
                STATE_INDOOR_TEMP,
                STATE_OUTDOOR_TEMP,
                STATE_OUTDOOR_HUM,
-               STATE_OUTDOORE_UVI,
+               STATE_OUTDOOR_UVI,
+               STATE_OUTDOOR_PRESSURE,
                STATE_CLOCK_UPDATE
 } msm_t;
 
@@ -301,13 +306,16 @@ bool          bBelowZero            = false;
 bool          bRelayTempMsg         = false;
 bool          bRelayHumMsg          = false;
 bool          bRelayUviMsg          = false;
+bool          bRelayAirPresMsg      = false;
 uint16_t      ledBrightness         = 15;
 uint8_t       nodeDestTempCnt       = 0;
 uint8_t       nodeDestHumCnt        = 0;
 uint8_t       nodeDestUviCnt        = 0;
-int           outdoorTemperature    = 99;
+uint8_t       nodeDestAirPresCnt    = 0;
+float         outdoorTemperature    = 99.0;
 int           outdoorHumidity       =  0;
 float         outdoorUvIndex        =  0.0;
+int           airPressure           = 0;
 unsigned long lastRequest           = 0;
 unsigned long lastBlink             = millis();
 unsigned long lastBoxTemperature    = millis();
@@ -395,19 +403,21 @@ void receive(const MyMessage &message) {
 
   switch (message.sender) {
     #ifdef LED_state_ID_1
-      case 27:
-         
-        if (message.type == V_TEMP) {
+      case 27:  //.. Pegola sensor
+
+        if (message.type == V_TEMP) {           //.. Get temperature from Pegola sensor
           bRelayTempMsg = true;
           bBelowZero = (message.getFloat() < 0.0) ? true : false;
-          outdoorTemperature = static_cast<int>(round(message.getFloat()));
+          outdoorTemperature = message.getFloat();
+          Serial.print(F("Received outdoor temp: "));
+          Serial.println(outdoorTemperature);
           #ifdef RECIEVE_MSG_DEBUG
             Serial.print(F("New pergola temperature received: "));
             Serial.println(message.getFloat());
           #endif
         }
   
-        if (message.type == V_HUM) {
+        if (message.type == V_HUM) {           //.. Get humidiry from Pegola sensor
           bRelayHumMsg = true;
           outdoorHumidity = static_cast<int>(round(message.getFloat()));
           #ifdef RECIEVE_MSG_DEBUG
@@ -415,24 +425,35 @@ void receive(const MyMessage &message) {
             Serial.println(message.getFloat());
           #endif
         }
-  
-        if (message.type == V_UV) {
-          bRelayUviMsg = true;
-          outdoorUvIndex = message.getFloat();
-          #ifdef RECIEVE_MSG_DEBUG
-            Serial.print(F("New UV level received: "));
-            Serial.println(outdoorUvIndex);
-          #endif
-        }
-        Serial.print(F("b:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.println(bRelayUviMsg);
+        Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
         break;
 
+        case 31:  //.. Weater station
+          if (message.type == V_PRESSURE) {    //.. Get air preassure from weather station
+            bRelayAirPresMsg = true;
+            airPressure = message.getInt();
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New air pressure: "));
+              Serial.print(airPressure);
+            #endif
+          }
+
+          if (message.type == V_UV) {          //.. Get UV-Index from weather station
+            bRelayUviMsg = true;
+            outdoorUvIndex = message.getFloat();
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New UV level received: "));
+              Serial.println(outdoorUvIndex);
+            #endif
+        }          
+          break;
+
     #else
-      case 95:
+      case 95:  //.. Patio node. Relay node
         switch (message.type) {
           case V_TEMP:
             bBelowZero = (message.getFloat() < 0.0) ? true : false;
-            outdoorTemperature = static_cast<int>(round(message.getFloat()));
+            outdoorTemperature = message.getFloat();
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New Pergola temperature received from NodeId 1: "));
               Serial.println(message.getFloat());
@@ -454,6 +475,14 @@ void receive(const MyMessage &message) {
               Serial.println(outdoorUvIndex);
             #endif            
           break;  
+
+          case V_PRESSURE:
+            airPressure = message.getInt();
+            #ifdef RECIEVE_MSG_DEBUG
+              Serial.print(F("New air pressure: "));
+              Serial.print(airPressure);
+            #endif
+            break;
        }    
     #endif
   }
@@ -519,7 +548,7 @@ void loop() {
         once = true;
       }
     
-      if (once && (second(local) == 20) || (second(local) == 49)) {
+      if (once && (second(local) == 19) || (second(local) == 49)) {
         once = false;
         state = STATE_OUTDOOR_HUM;
       }
@@ -532,24 +561,38 @@ void loop() {
         once = true;
       }
 
-      if (once && (second(local) == 22) || (second(local) == 51)) {
+      if (once && (second(local) == 21) || (second(local) == 51)) {
         once = false;
-        state = STATE_OUTDOORE_UVI;
+        state = STATE_OUTDOOR_UVI;
       }
       break;
 
     /** STATE_OTDOOR_UVI **/
-    case STATE_OUTDOORE_UVI:
+    case STATE_OUTDOOR_UVI:
       if (!once) {
         printOutdoorUvIndex(outdoorUvIndex, OUTSIDE_DOT);
         once = true;
       }
 
-      if (once && (second(local) == 24) || (second(local) == 53)) {
+      if (once && (second(local) == 23) || (second(local) == 53)) {
+        once = false;
+        state = STATE_OUTDOOR_PRESSURE;
+      }
+      break;
+
+    /** STATE_OTDOOR_PRESSURE **/
+    case STATE_OUTDOOR_PRESSURE:
+      if (!once) {
+        printOutdoorPressure(airPressure, OUTSIDE_DOT);
+        once = true;
+      }
+
+      if (once && (second(local) == 25) || (second(local) == 55)) {
         once = false;
         state = STATE_CLOCK_UPDATE;
       }
       break;
+
 
     /** STATE_CLOCK_UPDATE **/
     case STATE_CLOCK_UPDATE:
@@ -557,18 +600,23 @@ void loop() {
         state = STATE_INDOOR_TEMP;
       }
     // NOTE The block below has been restricted to NodeID 1 because of a timing problem witch led to that the display only update once a minute. This may be fixed.
+    // NOTE it shall be investigated if theis code block can be completely removed
     #ifdef LED_state_ID_1
-      if (((second(local) >= 17 ) && (second(local) < 20)) || ((second(local) >= 47) && (second(local) < 49))) {
+      if (((second(local) >= 17 ) && (second(local) < 19)) || ((second(local) >= 47) && (second(local) < 49))) {
         state = STATE_OUTDOOR_TEMP;
         }
 
-      if (((second(local) >= 20 ) && (second(local) < 22)) || ((second(local) >= 49) && (second(local) < 51))) {
+      if (((second(local) >= 19 ) && (second(local) < 21)) || ((second(local) >= 49) && (second(local) < 51))) {
         state = STATE_OUTDOOR_HUM;
         }
 
-      if (((second(local) >= 22 ) && (second(local) < 24)) || ((second(local) >= 51) && (second(local) < 53))) {
-        state = STATE_OUTDOOR_HUM;
+      if (((second(local) >= 21 ) && (second(local) < 23)) || ((second(local) >= 51) && (second(local) < 53))) {
+        state = STATE_OUTDOOR_PRESSURE;
         }        
+
+      if (((second(local) >= 23 ) && (second(local) < 25)) || ((second(local) >= 53) && (second(local) < 55))) {
+        state = STATE_CLOCK_UPDATE;
+        }                
       #endif
     
       if (millis() - lastClockUpdate > 1000) {
@@ -609,7 +657,7 @@ void loop() {
 
   /** RELAY DATA FROM SOURCE NODE (27 - PERGOLA) TO CLOCKS IN ClockNet **/
   #ifdef LED_state_ID_1
-    if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg)) {
+    if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg) || (bRelayAirPresMsg)) {
       msgRelayToClockNodes();
     }
     #endif
@@ -876,11 +924,25 @@ void printCurrentTime(time_t utc) {
  *    Returns: nothing
  *************************************************************/
 void printIndoorTemperature(DeviceAddress address, int dotpos) {
+  int8_t digit1;
+  int8_t digit2;
+  int8_t digit3;
   float c = sensors.getTempC(address);
-  int temp = round(c);
+  
+  int _c = static_cast<int>((c * 10.));
+  
   ledMatrix.clear();
-  ledMatrix.print(temp);
-  ledMatrix.writeDigitRaw(2,dotpos);       //.. Print insidte dot indicator - upper left dot 
+  if (abs(_c) > 99 ) {
+    digit1 = (_c / 100) % 10;
+    ledMatrix.writeDigitNum(1, digit1);
+  }
+    digit2 = (_c / 10 ) % 10;
+    ledMatrix.writeDigitNum(3, digit2);
+
+     digit3 = _c % 10;
+     ledMatrix.writeDigitNum(4, digit3);
+
+  ledMatrix.writeDigitRaw(2,dotpos + DECI_POINT);
   #ifdef CELSIUS_PREFIX
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c/C' before temperature
   #endif
@@ -892,32 +954,51 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
  * Parameters: int temp, int dotpos, bool zero
  *    Returns: nothing
  *************************************************************/
-void printOutdoorTemperature(int temp, int dotpos, bool zero) {
+void printOutdoorTemperature(float temp, int dotpos, bool zero) {
+  int8_t digit1;
+  int8_t digit2;
+  int8_t digit3;
+
+  int _temp = static_cast<int>(round((temp * 10.0)));  // Multiply the float value to get rid of the decimal
+  int absTemp = abs(_temp);
+  
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
-    bBelowZero ? Serial.print("") : Serial.print(" ");
+    zero ? Serial.print("") : Serial.print(" ");
     Serial.print(temp);
     Serial.println(F(" C"));
   #endif
+
   ledMatrix.clear();
-  ledMatrix.print(temp);
+
+  if ((_temp > 99) || (_temp < -99)) {
+    digit1 = (absTemp / 100) % 10;
+    ledMatrix.writeDigitNum(1, digit1);
+  }
+
+  digit2 = (absTemp / 10 ) % 10;
+  ledMatrix.writeDigitNum(3, digit2);
+
+  digit3 = absTemp % 10;
+  ledMatrix.writeDigitNum(4, digit3);
+
   #ifdef CELSIUS_PREFIX
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
-  if (zero) {  //FIXME Minus sign shall be visible when temperature are -0
+  if (zero) {
     if ((temp < 10) || (temp > -10)) {
-      ledMatrix.writeDigitRaw(2, 64);  //.. Show minus (-) if temperature is below 0 degress C
-    } else {
       ledMatrix.writeDigitRaw(1, 64);  //.. Show minus (-) if temperature is below 0 degress C
+    } else {
+      ledMatrix.writeDigitRaw(0, 64);  //.. Show minus (-) if temperature is below 0 degress C
     }
   }
-  ledMatrix.writeDigitRaw(2, dotpos);
+  ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
 }  //.. End of printOutdoorTemperature
 
 /**************************************************************
- *   Function: printOutdoorTemperature()
- * Parameters: int temp, int dotpos
+ *   Function: printOutdoorHumidity()
+ * Parameters: int hum, int dotpos
  *    Returns: nothing
  *************************************************************/
 void printOutdoorHumidity(int8_t hum, int dotpos) {
@@ -974,6 +1055,21 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   ledMatrix.writeDisplay();
 }
 
+/**************************************************************
+ *   Function: printOutdoorPressure
+ * Parameters: int pressure, bool zero
+ *    Returns: nothing
+ *************************************************************/
+  void printOutdoorPressure(int _pressure, int dotpos) {
+    #ifdef RECIEVE_MSG_DEBUG
+      Serial.print(F("Outdoor air pressure: "));
+      Serial.println(_pressure);
+  #endif
+  ledMatrix.clear();
+  ledMatrix.print(_pressure);
+  ledMatrix.writeDigitRaw(2, dotpos);
+  ledMatrix.writeDisplay();  
+  }
 
 /**************************************************************
  *   Function: msgRelayToClockNodes
@@ -1025,6 +1121,21 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
         nodeDestUviCnt = 0;
         bRelayUviMsg = false;
       }
-    }  
+    }
+
+    if (bRelayAirPresMsg)  {
+      if (nodeDestTempCnt < CLOCK_NET_DEST_NODES) {
+        msgRelayAirPres.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestAirPresCnt);
+        send(msgRelayAirPres.set(airPressure, 1));
+        #ifdef RELAY_MSG_DEBUG
+          Serial.print(F("Relay message air pressure forwarded to node: "));
+          Serial.println(CLOCK_NET_DEST_OFFSET + nodeDestAirPresCnt);
+        #endif
+        nodeDestAirPresCnt++;
+      } else {
+        nodeDestAirPresCnt = 0;
+        bRelayAirPresMsg = false;
+      }
+    }      
   }
   #endif 
