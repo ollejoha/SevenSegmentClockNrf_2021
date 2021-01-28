@@ -107,11 +107,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -990,7 +990,7 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
   if (zero) {
-    if ((temp < 10) || (temp > -10)) {
+    if ((temp < 10.0) || (temp < -10.0)) {
       ledMatrix.writeDigitRaw(1, 64);  //.. Show minus (-) if temperature is below 0 degress C
     } else {
       ledMatrix.writeDigitRaw(0, 64);  //.. Show minus (-) if temperature is below 0 degress C
