@@ -18,7 +18,7 @@
  | 2021-01-17 | b-2.0.0    | v1.1       | Addition:                                                                   |
  |            |            |            | Added function for automatic LED brightness                                 |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- | 2021-01-24 | b-2.1.0    | v1.1       | Changed temperature display to show one decimal. Consequence is that the    |
+ | 2021-01-30 | b-2.1.0    | v1.1       | Changed temperature display to show one decimal. Consequence is that the    |
  |            |            |            | prefix for Celsius 'c' cannot be shown due to limitations in the LED Display|
  +------------+------------+------------+-----------------------------------------------------------------------------+
  
@@ -107,11 +107,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -227,7 +227,7 @@
 #define UVI_PREFIX          0x1C      //.. UV prefix 'u'
 //#define UVI_PREFIX          0x3E      //.. UV prefix 'U'
 #define DECI_POINT         0x10      //.. LED decimal point
-#define MINUS_SIGN         0x40;     //.. Minus sign
+#define MINUS_SIGN         0x40      //.. Minus sign
 /****************** THRESHOLD DEFINES *******************/
 #define LUX_RATE       10000UL
 #define BLINK_RATE      1000
@@ -960,8 +960,17 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   int8_t digit2;
   int8_t digit3;
 
+  /** Convert float temeparature to an integer value raised with a factor the to get 1 decimal in the integer value **/
   int _temp = static_cast<int>(round((temp * 10.0)));  // Multiply the float value to get rid of the decimal
-  int absTemp = abs(_temp);
+  /** if it is a negative number, convert it to positive by multiplying with -1  **/
+  if (_temp < 0) _temp *= -1;
+
+  //int absTemp = abs(_temp);
+
+  Serial.print("float temp: ");
+  Serial.println(temp);
+  Serial.print("static_cast temp: ");
+  Serial.println(_temp);
   
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
@@ -972,25 +981,25 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
 
   ledMatrix.clear();
 
-  if ((_temp > 99) || (_temp < -99)) {
-    digit1 = (absTemp / 100) % 10;
+  if ((temp < 10.0) || (temp >= -10.0)) {
+    digit1 = (_temp / 100) % 10;
     ledMatrix.writeDigitNum(1, digit1);
   }
 
-  digit2 = (absTemp / 10 ) % 10;
+  digit2 = (_temp / 10 ) % 10;
   ledMatrix.writeDigitNum(3, digit2);
 
-  digit3 = absTemp % 10;
+  digit3 = _temp % 10;
   ledMatrix.writeDigitNum(4, digit3);
 
   #ifdef CELSIUS_PREFIX
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
   if (zero) {
-    if ((temp < 10) || (temp > -10)) {
-      ledMatrix.writeDigitRaw(1, MINUS_SIGN);  //.. Show minus (-) if temperature is below 0 degress C
+    if (temp > -10.0) {
+      ledMatrix.writeDigitRaw(1, MINUS_SIGN);  //.. Show minus sign  (-) at digit 1 if temperature is below 0 degress C
     } else {
-      ledMatrix.writeDigitRaw(0, MINUS_SIGN);  //.. Show minus (-) if temperature is below 0 degress C
+      ledMatrix.writeDigitRaw(0, MINUS_SIGN);  //.. Show minus (-) at digit 0  if temperature is below -10 degress C
     }
   }
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
