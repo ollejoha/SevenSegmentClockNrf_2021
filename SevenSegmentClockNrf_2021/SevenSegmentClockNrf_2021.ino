@@ -600,6 +600,7 @@ void loop() {
       if (((second(local) >= 15 ) && (second(local) < 17)) || ((second(local) >= 45) && (second(local) < 47))) {
         state = STATE_INDOOR_TEMP;
       }
+    // NOTE IT IS OK TO REMOVE THE COMMENTED CODE BELOW, IT IS NOT USED. IT WILL BE REMOVED WITH THE NEXT COMPILE ACTION **/
     // NOTE The block below has been restricted to NodeID 1 because of a timing problem witch led to that the display only update once a minute. This may be fixed.
     // NOTE it shall be investigated if theis code block can be completely removed
     // #ifdef LED_state_ID_1
