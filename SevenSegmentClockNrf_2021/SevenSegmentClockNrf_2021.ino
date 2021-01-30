@@ -602,23 +602,27 @@ void loop() {
       }
     // NOTE The block below has been restricted to NodeID 1 because of a timing problem witch led to that the display only update once a minute. This may be fixed.
     // NOTE it shall be investigated if theis code block can be completely removed
-    #ifdef LED_state_ID_1
-      if (((second(local) >= 17 ) && (second(local) < 19)) || ((second(local) >= 47) && (second(local) < 49))) {
-        state = STATE_OUTDOOR_TEMP;
-        }
+    // #ifdef LED_state_ID_1
+    //   if (((second(local) >= 17 ) && (second(local) < 19)) || ((second(local) >= 47) && (second(local) < 49))) {
+    //     state = STATE_OUTDOOR_TEMP;
+    //     Serial.println(F("1 - If we see this, the code below can not be removed!!!"));
+    //     }
 
-      if (((second(local) >= 19 ) && (second(local) < 21)) || ((second(local) >= 49) && (second(local) < 51))) {
-        state = STATE_OUTDOOR_HUM;
-        }
+    //   if (((second(local) >= 19 ) && (second(local) < 21)) || ((second(local) >= 49) && (second(local) < 51))) {
+    //     state = STATE_OUTDOOR_HUM;
+    //     Serial.println(F("2 - If we see this, the code below can not be removed!!!"));        
+    //     }
 
-      if (((second(local) >= 21 ) && (second(local) < 23)) || ((second(local) >= 51) && (second(local) < 53))) {
-        state = STATE_OUTDOOR_PRESSURE;
-        }        
+    //   if (((second(local) >= 21 ) && (second(local) < 23)) || ((second(local) >= 51) && (second(local) < 53))) {
+    //     state = STATE_OUTDOOR_PRESSURE;
+    //     Serial.println(F("3 - If we see this, the code below can not be removed!!!"));        
+    //     }        
 
-      if (((second(local) >= 23 ) && (second(local) < 25)) || ((second(local) >= 53) && (second(local) < 55))) {
-        state = STATE_CLOCK_UPDATE;
-        }                
-      #endif
+    //   if (((second(local) >= 23 ) && (second(local) < 25)) || ((second(local) >= 53) && (second(local) < 55))) {
+    //     state = STATE_CLOCK_UPDATE;
+    //     Serial.println(F("4 - If we see this, the code below can not be removed!!!"));        
+    //     }                
+    //   #endif
     
       if (millis() - lastClockUpdate > 1000) {
         printCurrentTime(local);
