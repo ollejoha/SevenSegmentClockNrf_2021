@@ -107,11 +107,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -128,7 +128,7 @@
 //#define SM_DEBUG             //.. State machine debug information
 //#define RTC_DEBUG            //.. Debug information for RTC
 //#define DS18B20_DEBUG        //.. Temperature sensor debug information
-//#define RECIEVE_MSG_DEBUG    //.. Debug information for receiving messages
+#define RECIEVE_MSG_DEBUG    //.. Debug information for receiving messages
 //#define RELAY_MSG_DEBUG      //.. Debug information for relaying messages
 
 #ifdef LED_state_ID_1          //.. Patio state
@@ -227,6 +227,7 @@
 #define UVI_PREFIX          0x1C      //.. UV prefix 'u'
 //#define UVI_PREFIX          0x3E      //.. UV prefix 'U'
 #define DECI_POINT         0x10      //.. LED decimal point
+#define MINUS_SIGN         0x40;     //.. Minus sign
 /****************** THRESHOLD DEFINES *******************/
 #define LUX_RATE       10000UL
 #define BLINK_RATE      1000
@@ -987,9 +988,9 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   #endif
   if (zero) {
     if ((temp < 10) || (temp > -10)) {
-      ledMatrix.writeDigitRaw(1, 64);  //.. Show minus (-) if temperature is below 0 degress C
+      ledMatrix.writeDigitRaw(1, MINUS_SIGN);  //.. Show minus (-) if temperature is below 0 degress C
     } else {
-      ledMatrix.writeDigitRaw(0, 64);  //.. Show minus (-) if temperature is below 0 degress C
+      ledMatrix.writeDigitRaw(0, MINUS_SIGN);  //.. Show minus (-) if temperature is below 0 degress C
     }
   }
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
