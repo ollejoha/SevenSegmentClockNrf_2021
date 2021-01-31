@@ -475,13 +475,32 @@ void receive(const MyMessage &message) {
           }
 
           if (message.type == V_UV) {          //.. Get UV-Index from weather station
-            bRelayUviMsg = true;
-            outdoorUvIndex = message.getFloat();
-            #ifdef RECIEVE_MSG_DEBUG
-              Serial.print(F("New UV level received: "));
-              Serial.println(outdoorUvIndex);
-            #endif
-        }          
+            if (tm.Hour < 14) {
+              bRelayUviMsg = true;
+              outdoorUvIndex = message.getFloat();
+              #ifdef RECIEVE_MSG_DEBUG
+                Serial.print(F("New UV level received from garden: "));
+                Serial.println(outdoorUvIndex);
+              #endif
+            }
+          }          
+          break;
+
+        case 5:   //..  Frontyard UV & Light sensor
+          if (message.type == V_LEVEL) {
+            //.. not implemented in clock node. Message is sent from Frontyard
+          }
+
+          if (message.type == V_UV) {
+            if (tm.Hour >= 14) {
+              bRelayUviMsg = true;
+              outdoorUvIndex = message.getFloat();
+              #ifdef RECIEVE_MSG_DEBUG
+                Serial.print(F("New UV level received from frontyard: "));
+                Serial.println(outdoorUvIndex);
+              #endif
+            }
+          }
           break;
 
     #else
