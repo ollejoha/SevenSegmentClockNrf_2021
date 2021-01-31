@@ -37,9 +37,9 @@ include <ssc_plexi_DIMENSIONS.scad>;
 *leftSideSection();      //.. Left side section view from front to back
 *rightSideSection();     //.. Right side section view from fron to back
 *blindFrontPanel();      //.. Template for front panel
-*frontPanel();           //.. Front panel
+frontPanel();           //.. Front panel
 *templateBackSection();  //.. Template for tha back section
-backSecionDesktop();    //.. Back section for desk top 
+*backSecionDesktop();    //.. Back section for desk top 
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
 
