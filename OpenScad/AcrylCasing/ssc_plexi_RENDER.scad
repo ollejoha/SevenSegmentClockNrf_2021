@@ -15,7 +15,7 @@ date            description
 2021-01-30	    Start of design
 
 */
-$fn = 5;
+$fn = 50;
 
 /** INCLUDE FILES **/
 include <ssc_plexi_DIMENSIONS.scad>;
@@ -27,7 +27,6 @@ use <ssc_plexi_PANELS.scad>;
  *                                GLOBAL RENDER
  *
  ***************************************************************************/
-*mainClockCasing();
 box();
 
 
@@ -54,9 +53,13 @@ box();
        rightSideSection();
 
        /** front panel **/
-       translate([0,-BOX_DEPTH/2 + FRONT_MATERIAL_THICKNESS/2,BOX_HEIGHT/2])
+       *translate([0,-BOX_DEPTH/2 + FRONT_MATERIAL_THICKNESS/2,BOX_HEIGHT/2])
         rotate([-90,180,0])
           frontPanel();
+
+       translate([0,-BOX_DEPTH/2 + FRONT_MATERIAL_THICKNESS/2,BOX_HEIGHT/2])
+        rotate([-90,180,0])
+          frontPanelExt();
 
        /** back panel desktop**/
        //translate([0,BACK_PANEL_DEPTH/2,BACK_PANEL_DEPTH/2])

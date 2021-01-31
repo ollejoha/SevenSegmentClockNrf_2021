@@ -5,7 +5,7 @@
       <ModificationCount>0</ModificationCount>
       <objects>
         <pline id="26" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>60.625,27.625,3</p>
@@ -15,7 +15,7 @@
           </pts>
         </pline>
         <pline id="29" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.5783,4.57854,-2</p>
@@ -121,7 +121,7 @@
           </pts>
         </pline>
         <pline id="31" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>59.5,26.5,-2</p>
@@ -131,7 +131,7 @@
           </pts>
         </pline>
         <pline id="33" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>81.9,-37.4,3</p>
@@ -141,7 +141,7 @@
           </pts>
         </pline>
         <pline id="34" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-55,-26.45,0.5</p>
@@ -151,7 +151,7 @@
           </pts>
         </pline>
         <pline id="35" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.2631,2.08856,-2</p>
@@ -257,7 +257,7 @@
           </pts>
         </pline>
         <pline id="36" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-55,-20.5,0.5</p>
@@ -267,7 +267,7 @@
           </pts>
         </pline>
         <pline id="38" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.2631,2.08856,3</p>
@@ -373,7 +373,7 @@
           </pts>
         </pline>
         <pline id="39" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>55,-19.5,3</p>
@@ -386,7 +386,7 @@
     </layer>
   </layers>
   <MachiningOptions>
-    <OutFile>{$cbfile.name}.nc</OutFile>
+    <OutFile>E:\Github\SevenSegmentClockNrf_2021\OpenScad\AcrylCasing\stl_files\{$cbfile.name}.nc</OutFile>
     <PostProcessor>Mach3-CutViewer</PostProcessor>
     <Stock>
       <PMin>-90,-50,-3</PMin>
@@ -793,7 +793,7 @@
       </Stock>
       <ToolProfile>Unspecified</ToolProfile>
       <Nesting>
-        <BasePoint>0,0</BasePoint>
+        <BasePoint />
         <NestMethod>None</NestMethod>
       </Nesting>
     </part>

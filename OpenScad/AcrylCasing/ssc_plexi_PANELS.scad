@@ -31,20 +31,36 @@ include <ssc_plexi_DIMENSIONS.scad>;
 
 //...............
 *baseSection();          //.. Template from wich top and bottom sections are derived
-*bottomSection();        //.. Desktop version of bottom section
+
+*translate([0,0,-2])
+  bottomSection();        //.. Desktop version of bottom section
+
 *topSection();           //.. Top section used for both desktop and wall monted casings
+
 *sideSection();          //.. Template for side secions
-*leftSideSection();      //.. Left side section view from front to back
+
+translate([0,0,80])
+  rotate([0,270,0])
+    leftSideSection();      //.. Left side section view from front to back
+
 *rightSideSection();     //.. Right side section view from fron to back
+
 *blindFrontPanel();      //.. Template for front panel
-frontPanel();           //.. Front panel
+
+*frontPanel();           //.. Front panel
+
+*translate([0,0,3])
+  frontPanelExt();
+
 *templateBackSection();  //.. Template for tha back section
+
 *backSecionDesktop();    //.. Back section for desk top 
+
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
 
 /** USE ONLY AS REFERENCE **/
-*translate([0,0,8.5])
+*translate([0,7,8.5])
   ledDisplay();     
  /***************************************************************************
  *
@@ -104,7 +120,7 @@ module ledDisplay() {
  **              
  ************************************************************************************************************/
 module bottomSection() {
-  _vent_diameter = 3;
+  _vent_diameter = 2.5;
   _vent_height = BOX_MATERIAL_THICKNESS;
   
   difference() {
@@ -112,8 +128,8 @@ module bottomSection() {
       baseSection();
     }
     /** air channels **/
-    for (a = [0:5:55])
-      translate([-55/2 +a,0,0])
+    for (a = [0:16:100])
+      translate([-95/2 +a,0,0])
         hull() {
           translate([0,15,0])
             cylinder(d=_vent_diameter, h=_vent_height,center=true);
@@ -212,6 +228,55 @@ module bottomSection() {
    }
  }
 
+module frontPanelExt() {
+  _tighten_cylinder_diam = 4;
+  _tighten_cylinder_height = 6;
+
+  difference() {
+    union() {
+      frontPanel();
+      translate([-LED_DISPLAY_WIDTH/2-2,-7,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+      translate([-LED_DISPLAY_WIDTH/2-2,6.5,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
+
+      translate([-LED_DISPLAY_WIDTH/2-2,20,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);         
+
+
+      translate([LED_DISPLAY_WIDTH/2+2,-7,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+      translate([LED_DISPLAY_WIDTH/2+2,6.5,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
+
+      translate([LED_DISPLAY_WIDTH/2+2,20,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+
+      translate([0,-LED_DISPLAY_DEPTH/2+5,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+      translate([LED_DISPLAY_WIDTH/2-8,-LED_DISPLAY_DEPTH/2+5,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
+
+      translate([-LED_DISPLAY_WIDTH/2+8,-LED_DISPLAY_DEPTH/2+5,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+
+      translate([0,LED_DISPLAY_DEPTH/2+9,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+      translate([LED_DISPLAY_WIDTH/2-8,LED_DISPLAY_DEPTH/2+9,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
+
+      translate([-LED_DISPLAY_WIDTH/2+8,LED_DISPLAY_DEPTH/2+9,0])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+    }
+  }
+}
+
  /************************************************************************************************************
  **  Module:      frontPanel
  **  Parameters : None
@@ -234,8 +299,8 @@ module bottomSection() {
 
         /**  create a hole that is 0.5 mm wider than the LED display.  **/
     translate([0,7,FRONT_PANEL_HEIGHT-5])  
-      cube([LED_DISPLAY_WIDTH + 0.25,
-              LED_DISPLAY_DEPTH + 0.25,
+      cube([LED_DISPLAY_WIDTH + 2,
+              LED_DISPLAY_DEPTH + 2,
               FRONT_PANEL_HEIGHT],
               center=true);
 
@@ -250,7 +315,6 @@ module bottomSection() {
     /** bar trail led stick mounting pocket **/
     translate([-10,-25,4.0])
       barTrailLedStick();
-
    }
  }
 
@@ -287,7 +351,7 @@ module bottomSection() {
         cube([_neopixel_led_width, _neopixel_led_depth,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
-      translate([_led_trail_horiz_offset, -_support_bar_depth+0.3,-_led_trail_bar_height/2 - _neopixel_led_height/2])
+      translate([_led_trail_horiz_offset, -_support_bar_depth+0.3,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
         cube([_support_bar_width, _support_bar_depth,_support_bar_height],center=true);        
      }
    }
