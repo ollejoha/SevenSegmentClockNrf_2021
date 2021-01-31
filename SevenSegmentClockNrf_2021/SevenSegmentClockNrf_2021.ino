@@ -107,11 +107,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -263,6 +263,7 @@
 #include <DallasTemperature.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_LEDBackpack.h>
+#include <Adafruit_NeoPixel.h>
 
 
 /******************** CONSTRUCT MESSAGES ********************/
@@ -327,6 +328,33 @@ float lastTemperatureBox;
 float lastTemperatureIndoor;
 time_t local;
 
+/** neopixel dfinitions **/
+int pin         = 5;    //.. Data pin for neopixel stick
+int numPixels   = 16;   //.. Number of pixels in neopixel stick
+int pixelFormat = NEO_GRB + NEO_KHZ800;
+
+/** define color scheme for UV-Index **/
+uint8_t uvArrayDim [16] [3] ={ {  0, 255,   0},  // Green
+                               {  0, 255,   0},  // Green  
+                               {255, 225,   0},  // Yellow
+                               {255, 225,   0},  // Yellow
+                               {255, 225,   0},  // Yellow
+                               {226, 115,   0},  // Orange
+                               {226, 115,   0},  // Orange
+                               {200,   0,   0},  // Red
+                               {255,   0,   0},  // Red
+                               {255,   0,   0},  // Red
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255}}; // Magenta
+
+/** Create a pointer obkect for neopixel stick **/
+Adafruit_NeoPixel *pixels;
+
+
 /**  Create a matrix object for the 7-segment display  **/
 Adafruit_7segment ledMatrix         = Adafruit_7segment();
 int8_t digits[]                     = {0,0,2,3};
@@ -376,6 +404,13 @@ void setup() {
     /** Request latest time from controller at startup  **/
     Serial.println(F("Request time from controller on startup..."));
   #endif
+
+/** Create a new NeoPixel object dynamically with these values **/
+pixels = new Adafruit_NeoPixel(numPixels, pin, pixelFormat);
+
+pixels->begin();  //.. Initialize NeoPixel strip object
+pixels->show();
+pixels->setBrightness(10);
 
   requestTime();
 }  //-- End of setup
@@ -1068,6 +1103,15 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   #endif
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
+  
+  /** Display the current UV-Ibdex value on NeoPixel stick **/
+  pixels->clear();
+  int uvindex = abs(round(uvi));
+  for (int i = 0; i < uvindex; i++) {
+    uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
+    pixels->setPixelColor(i, color);
+    pixels->show();
+  }
 }
 
 /**************************************************************
