@@ -41,9 +41,7 @@ include <ssc_plexi_DIMENSIONS.scad>;
 
 *sideSection();          //.. Template for side secions
 
-*translate([0,0,80])   // Check this part befor continuing
-  rotate([0,270,0])
-translate([0,0,80])
+*translate([0,0,80])
   rotate([0,-90,0])
     leftSideSection();      //.. Left side section view from front to back
 
@@ -62,6 +60,7 @@ translate([0,0,3])
 
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
+*neopixelStick();
 
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
@@ -277,7 +276,20 @@ module frontPanelExt() {
 
       translate([-LED_DISPLAY_WIDTH/2+8,LED_DISPLAY_DEPTH/2+9,0])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+
+      /** THE TWO SECTIONS BELOW ARE USED TO SHOW HOW THE NEOPIXEL STICKS ARE MOUNTED ON THE FRONTPANEL **/
+      *translate([-54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();
+
+      *translate([54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();      
+
     }
+    /** ACTIVATE TO SE THRU THE CONSTRUKTION **/
+    *translate([60,0,0])
+      cube([50,100,50],center=true)  ;
   }
 }
 
@@ -321,10 +333,10 @@ module frontPanelExt() {
       barTrailLedStick();
      
     /* neo stick attach holes **/ 
-    #translate([-20, -26, 1])
+    translate([-54/2, -27, 1])
       neoStickAttchHoles(); 
 
-    #translate([20, -26, 1])
+    translate([54/2, -27, 1])
       neoStickAttchHoles(); 
 
     /** led attach holes **/
@@ -348,17 +360,17 @@ module frontPanelExt() {
   /** definition for the connection trail **/
   _led_trail_bar_width = 130;
   _led_trail_bar_depth =  11;
-  _led_trail_bar_height = 3;  
+  _led_trail_bar_height =  3;  
   _led_trail_horiz_offset = 0; //10;
 
   /** definion for the neo pixel trail **/
   _neopixel_led_width = 110;
-  _neopixel_led_depth =   5.2;
+  _neopixel_led_depth =   5.5;
   _neopixel_led_height =  2.0;
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  3.5;
+  _support_bar_depth =  3.6;
   _support_bar_height = 2.0;
 
    difference() {
@@ -368,11 +380,11 @@ module frontPanelExt() {
        
       /** neopixel row trail **/
       translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1,-_led_trail_bar_height/2 - _neopixel_led_height/2])
-        cube([_neopixel_led_width, _neopixel_led_depth,_neopixel_led_height],center=true);
+        cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
-      translate([_led_trail_horiz_offset, -_support_bar_depth+0.3,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
-        cube([_support_bar_width, _support_bar_depth,_support_bar_height],center=true);        
+      translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
+        cube([_support_bar_width, _support_bar_depth-1,_support_bar_height],center=true);        
      }
      
    }
@@ -447,6 +459,59 @@ module templateBackSection() {
    difference() {
      union() {
        templateBackSection();
+     }
+   }
+ }
+
+ /************************************************************************************************************
+ **  Module:      neopixelStick
+ **  Parameters : None
+ **  Description: Back panel for DC power connection and FTDI.
+ **              
+ ************************************************************************************************************/
+ module neopixelStick() {
+   _neo_stick_width           = 54;
+   _neo_stick_depth           = 10.3;
+   _neo_stick_height          = 1.6;
+
+   _neo_stick_led_width       = 52.4;
+   _neo_stick_led_depth       = 5;
+   _neo_stick_led_height      = 1.42;
+
+   _neo_stick_resistor_width  = 52.4;
+   _neo_stick_resistor_depth  = 0.95;
+   _neo_stick_resistor_height = 0.9;
+
+   difference() {
+     union() {
+       /** pcb **/
+       cube([_neo_stick_width, _neo_stick_depth, _neo_stick_height],center=true);
+
+       /** leds **/
+       translate([0,-2.65+0.77, _neo_stick_led_height/2 + _neo_stick_height/2])
+        cube([_neo_stick_led_width, _neo_stick_led_depth, _neo_stick_led_height],center=true);
+
+      /** resistors **/
+      translate([0, 4.675 - 0.475, _neo_stick_resistor_height/2 + _neo_stick_height/2])
+        cube([_neo_stick_resistor_width, _neo_stick_resistor_depth, _neo_stick_resistor_height],center=true);
+     }
+     translate([0, 2.15, 0])
+      neoHoles();
+   }
+ }
+
+ module neoHoles() {
+   _neo_hole_diam = 3.1;
+   _neo_hole_length = 1.8;;
+   _neo_hole_dist    = 27/2;
+
+   difference() {
+     union() {
+      translate([_neo_hole_dist, 0, 0])
+        cylinder(d = _neo_hole_diam, h = _neo_hole_length, center=true);
+  
+      translate([-_neo_hole_dist, 0, 0])       
+        cylinder(d = _neo_hole_diam, h = _neo_hole_length, center=true);
      }
    }
  }

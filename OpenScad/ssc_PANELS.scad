@@ -29,7 +29,7 @@ include <ssc_DIMENSIONS.scad>;
  ***************************************************************************/
 *blindPanel();   //.. Base panel from wich all other panels are derived from
 *trailPanel();   //.. Blind panel used top create the trails for front- and back panel trails in the middle section and bottomplate
-frontPanel();   //.. Front panel for LED display, indicator LED's and light sensor
+*frontPanel();   //.. Front panel for LED display, indicator LED's and light sensor
 *backPanel();   //.. Back panel for DC power and FTDI connector for program update
 
 //----
