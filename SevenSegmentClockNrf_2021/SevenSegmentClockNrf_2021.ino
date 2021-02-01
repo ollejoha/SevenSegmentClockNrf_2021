@@ -484,9 +484,9 @@ void receive(const MyMessage &message) {
           #endif
         }
   
-        if (message.type == V_HUM) {           //.. Get humidiry from Pegola sensor
+        if (message.type == V_HUM) {           //.. Get humidity from Pegola sensor
           bRelayHumMsg = true;
-          //outdoorHumidity = static_cast<int>(round(message.getFloat()));
+          outdoorHumidity = static_cast<int>(round(message.getFloat()));
           #ifdef RECIEVE_MSG_DEBUG
             Serial.print(F("New pergola humidity received: "));
             Serial.println(message.getFloat());
