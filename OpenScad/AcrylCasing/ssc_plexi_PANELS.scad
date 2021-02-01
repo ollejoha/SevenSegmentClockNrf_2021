@@ -39,7 +39,7 @@ include <ssc_plexi_DIMENSIONS.scad>;
 
 *sideSection();          //.. Template for side secions
 
-translate([0,0,80])
+*translate([0,0,80])
   rotate([0,270,0])
     leftSideSection();      //.. Left side section view from front to back
 
@@ -49,7 +49,7 @@ translate([0,0,80])
 
 *frontPanel();           //.. Front panel
 
-*translate([0,0,3])
+translate([0,0,3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for tha back section
@@ -313,8 +313,24 @@ module frontPanelExt() {
       cylinder(d=10, h=FRONT_PANEL_HEIGHT,center=true); 
 
     /** bar trail led stick mounting pocket **/
-    translate([-10,-25,4.0])
+    translate([-0,-25,4.0])
       barTrailLedStick();
+     
+    /* neo stick attach holes **/ 
+    #translate([-20, -26, 1])
+      neoStickAttchHoles(); 
+
+    #translate([20, -26, 1])
+      neoStickAttchHoles(); 
+
+    /** led attach holes **/
+    translate([LED_DISPLAY_WIDTH/2 + 8, 7, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles(); 
+
+    translate([-LED_DISPLAY_WIDTH/2 - 8, 7, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles();         
    }
  }
 
@@ -329,7 +345,7 @@ module frontPanelExt() {
   _led_trail_bar_width = 130;
   _led_trail_bar_depth =  11;
   _led_trail_bar_height = 3;  
-  _led_trail_horiz_offset = 10;
+  _led_trail_horiz_offset = 0; //10;
 
   /** definion for the neo pixel trail **/
   _neopixel_led_width = 110;
@@ -354,9 +370,54 @@ module frontPanelExt() {
       translate([_led_trail_horiz_offset, -_support_bar_depth+0.3,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
         cube([_support_bar_width, _support_bar_depth,_support_bar_height],center=true);        
      }
+     
    }
  }
 
+
+ /************************************************************************************************************
+ **  Module:      neoStickAttchHoles
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+module neoStickAttchHoles() {
+  _m3Diamter = 2.6;
+  _m3Height  = 4;
+  _m3Distance = 27/2;
+
+
+  difference() {
+    union() {
+      translate([-_m3Distance, 0, 0])
+        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+      translate([_m3Distance, 0, 0])  
+        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+    }
+  }
+}
+
+ /************************************************************************************************************
+ **  Module:      ledAttchHoles
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+module ledAttchHoles() {
+  _m3Diamter = 2.6;
+  _m3Height  = 4;
+  _m3Distance = 20/2;
+
+
+  difference() {
+    union() {
+      translate([-_m3Distance, 0, 0])
+        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+      translate([_m3Distance, 0, 0])  
+        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+    }
+  }
+}
 
 /************************************************************************************************************
  **  Module:      backSectionDesktop
