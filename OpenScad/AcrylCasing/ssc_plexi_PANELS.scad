@@ -35,12 +35,16 @@ include <ssc_plexi_DIMENSIONS.scad>;
 *translate([0,0,-2])
   bottomSection();        //.. Desktop version of bottom section
 
-*topSection();           //.. Top section used for both desktop and wall monted casings
+*translate([0,0,73])
+  rotate([0,180,0])
+    topSection();           //.. Top section used for both desktop and wall monted casings
 
 *sideSection();          //.. Template for side secions
 
-*translate([0,0,80])
+*translate([0,0,80])   // Check this part befor continuing
   rotate([0,270,0])
+translate([0,0,80])
+  rotate([0,-90,0])
     leftSideSection();      //.. Left side section view from front to back
 
 *rightSideSection();     //.. Right side section view from fron to back
@@ -129,7 +133,7 @@ module bottomSection() {
     }
     /** air channels **/
     for (a = [0:16:100])
-      translate([-95/2 +a,0,0])
+      translate([-96/2 +a,0,0])
         hull() {
           translate([0,15,0])
             cylinder(d=_vent_diameter, h=_vent_height,center=true);
