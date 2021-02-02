@@ -21,6 +21,14 @@
  | 2021-01-30 | b-2.1.0    | v1.1       | Changed temperature display to show one decimal. Consequence is that the    |
  |            |            |            | prefix for Celsius 'c' cannot be shown due to limitations in the LED Display|
  +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-01-31 | b-2.1.1    | v1.1       | Cleaned code in the recieve function to minimze the time it takes to execute|
+ |            |            |            | Corrected a type in the send function for air pressure that flooded the     |
+ |            |            |            | radio communcation. Pressure and UV index shall now be working. UV index    |
+ |            |            |            | needs more testing when thera are sunligt to verify that the NeoPixel stick |
+ |            |            |            | is working as expected. Also added a simple test routine for the NeoPixel   |
+ |            |            |            | stick that lits up and turn off the stick in seuence at startup.            |
+ |            |            |            | >Eventually this routine will be moved to a more sutible location           |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
  
 
  *  Radio conrolled 7-segment LED state with RTC
@@ -81,9 +89,9 @@
  * ****************************************************************************************************************/
 
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
-// TODO: Add Function to visualise UV Index outside the LED display
+// TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
-// TODO: Implement function to show air preassure
+// TODO: Implement function to show air preassure. Implemented. In test phase.
 
 
 
@@ -107,11 +115,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -128,7 +136,7 @@
 //#define SM_DEBUG             //.. State machine debug information
 //#define RTC_DEBUG            //.. Debug information for RTC
 //#define DS18B20_DEBUG        //.. Temperature sensor debug information
-#define RECIEVE_MSG_DEBUG    //.. Debug information for receiving messages
+//#define RECIEVE_MSG_DEBUG    //.. Debug information for receiving messages
 //#define RELAY_MSG_DEBUG      //.. Debug information for relaying messages
 
 #ifdef LED_state_ID_1          //.. Patio state
@@ -263,6 +271,7 @@
 #include <DallasTemperature.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_LEDBackpack.h>
+#include <Adafruit_NeoPixel.h>
 
 
 /******************** CONSTRUCT MESSAGES ********************/
@@ -316,7 +325,7 @@ uint8_t       nodeDestAirPresCnt    = 0;
 float         outdoorTemperature    = 99.0;
 int           outdoorHumidity       =  0;
 float         outdoorUvIndex        =  0.0;
-int           airPressure           = 0;
+float         airPressure           =  0.0;
 unsigned long lastRequest           = 0;
 unsigned long lastBlink             = millis();
 unsigned long lastBoxTemperature    = millis();
@@ -326,6 +335,33 @@ unsigned long lastBrightnessTime    = millis();
 float lastTemperatureBox;
 float lastTemperatureIndoor;
 time_t local;
+
+/** neopixel dfinitions **/
+int pin         = 5;    //.. Data pin for neopixel stick
+int numPixels   = 16;   //.. Number of pixels in neopixel stick
+int pixelFormat = NEO_GRB + NEO_KHZ800;
+
+/** define color scheme for UV-Index **/
+uint8_t uvArrayDim [16] [3] ={ {  0, 255,   0},  // Green
+                               {  0, 255,   0},  // Green  
+                               {255, 225,   0},  // Yellow
+                               {255, 225,   0},  // Yellow
+                               {255, 225,   0},  // Yellow
+                               {226, 115,   0},  // Orange
+                               {226, 115,   0},  // Orange
+                               {200,   0,   0},  // Red
+                               {255,   0,   0},  // Red
+                               {255,   0,   0},  // Red
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255},  // Magenta
+                               {255,   0, 255}}; // Magenta
+
+/** Create a pointer obkect for neopixel stick **/
+Adafruit_NeoPixel *pixels;
+
 
 /**  Create a matrix object for the 7-segment display  **/
 Adafruit_7segment ledMatrix         = Adafruit_7segment();
@@ -377,6 +413,35 @@ void setup() {
     Serial.println(F("Request time from controller on startup..."));
   #endif
 
+/** Create a new NeoPixel object dynamically with these values **/
+pixels = new Adafruit_NeoPixel(numPixels, pin, pixelFormat);
+
+pixels->begin();  //.. Initialize NeoPixel strip object
+pixels->show();
+
+/** Simple test procedure for the NeoPixel stick. Just to se that it is working **/
+pixels->setBrightness(10);
+  for (int i = 0; i < numPixels; i++) {
+    uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
+    pixels->setPixelColor(i, color);
+    pixels->show();
+    delay(200);
+  }
+
+   for (int j = 0; j < numPixels; j++) {
+     pixels->clear();
+      for (int i = numPixels-j; i > 0; i--) {
+        uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
+        pixels->setPixelColor(i, color);
+        pixels->show();
+      }
+      delay(200);
+   }
+   delay(200);
+   pixels->clear();
+   pixels->show();
+/** End of test routine for the NeoPixel stick **/
+
   requestTime();
 }  //-- End of setup
 
@@ -404,21 +469,22 @@ void receive(const MyMessage &message) {
 
   switch (message.sender) {
     #ifdef LED_state_ID_1
-      case 27:  //.. Pegola sensor
+      case 27:  //.. Pergola sensor
 
         if (message.type == V_TEMP) {           //.. Get temperature from Pegola sensor
           bRelayTempMsg = true;
-          bBelowZero = (message.getFloat() < 0.0) ? true : false;
+          //bBelowZero = (message.getFloat() < 0.0) ? true : false;
           outdoorTemperature = message.getFloat();
-          Serial.print(F("Received outdoor temp: "));
-          Serial.println(outdoorTemperature);
+          //bBelowZero = outdoorTemperature < 0.0 ? true : false;
           #ifdef RECIEVE_MSG_DEBUG
+            Serial.print(F("Received outdoor temp: "));
+            Serial.println(outdoorTemperature);
             Serial.print(F("New pergola temperature received: "));
             Serial.println(message.getFloat());
           #endif
         }
   
-        if (message.type == V_HUM) {           //.. Get humidiry from Pegola sensor
+        if (message.type == V_HUM) {           //.. Get humidity from Pegola sensor
           bRelayHumMsg = true;
           outdoorHumidity = static_cast<int>(round(message.getFloat()));
           #ifdef RECIEVE_MSG_DEBUG
@@ -426,35 +492,55 @@ void receive(const MyMessage &message) {
             Serial.println(message.getFloat());
           #endif
         }
-        Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
+        //Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
         break;
 
         case 31:  //.. Weater station
           if (message.type == V_PRESSURE) {    //.. Get air preassure from weather station
             bRelayAirPresMsg = true;
-            airPressure = message.getInt();
+            airPressure = message.getFloat();
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New air pressure: "));
-              Serial.print(airPressure);
+              Serial.println(airPressure);
             #endif
           }
 
           if (message.type == V_UV) {          //.. Get UV-Index from weather station
-            bRelayUviMsg = true;
-            outdoorUvIndex = message.getFloat();
-            #ifdef RECIEVE_MSG_DEBUG
-              Serial.print(F("New UV level received: "));
-              Serial.println(outdoorUvIndex);
-            #endif
-        }          
+            //if (tm.Hour < 14) {
+              bRelayUviMsg = true;
+              outdoorUvIndex = message.getFloat();
+              #ifdef RECIEVE_MSG_DEBUG
+                Serial.print(F("New UV level received from garden: "));
+                Serial.println(outdoorUvIndex);
+              #endif
+            //}
+          }          
+          break;
+
+        case 5:   //..  Frontyard UV & Light sensor
+          if (message.type == V_LEVEL) {
+            //.. not implemented in clock node. Message is sent from Frontyard
+          }
+
+          if (message.type == V_UV) {
+           // if (tm.Hour >= 14) {
+              bRelayUviMsg = true;
+              outdoorUvIndex = message.getFloat();
+              #ifdef RECIEVE_MSG_DEBUG
+                Serial.print(F("New UV level received from frontyard: "));
+                Serial.println(outdoorUvIndex);
+              #endif
+           // }
+          }
           break;
 
     #else
       case 95:  //.. Patio node. Relay node
         switch (message.type) {
           case V_TEMP:
-            bBelowZero = (message.getFloat() < 0.0) ? true : false;
+            //bBelowZero = (message.getFloat() < 0.0) ? true : false;
             outdoorTemperature = message.getFloat();
+            bBelowZero = outdoorTemperature < 0.0 ? true : false;
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New Pergola temperature received from NodeId 1: "));
               Serial.println(message.getFloat());
@@ -478,7 +564,7 @@ void receive(const MyMessage &message) {
           break;  
 
           case V_PRESSURE:
-            airPressure = message.getInt();
+            airPressure = message.getFloat();
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New air pressure: "));
               Serial.print(airPressure);
@@ -545,7 +631,7 @@ void loop() {
     /** STATE_OUTDOOR_TEMP **/
     case STATE_OUTDOOR_TEMP:
       if (!once) {
-        printOutdoorTemperature(outdoorTemperature, OUTSIDE_DOT, bBelowZero);
+        printOutdoorTemperature(outdoorTemperature, OUTSIDE_DOT);
         once = true;
       }
     
@@ -960,26 +1046,22 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
  * Parameters: int temp, int dotpos, bool zero
  *    Returns: nothing
  *************************************************************/
-void printOutdoorTemperature(float temp, int dotpos, bool zero) {
+void printOutdoorTemperature(float temp, int dotpos) {
   int8_t digit1;
   int8_t digit2;
   int8_t digit3;
+
+   /** Check if temperature is below 0.0 degrees C **/
+   bBelowZero = temp < 0.0 ? true : false;
 
   /** Convert float temeparature to an integer value raised with a factor the to get 1 decimal in the integer value **/
   int _temp = static_cast<int>(round((temp * 10.0)));  // Multiply the float value to get rid of the decimal
   /** if it is a negative number, convert it to positive by multiplying with -1  **/
   if (_temp < 0) _temp *= -1;
 
-  //int absTemp = abs(_temp);
-
-  Serial.print("float temp: ");
-  Serial.println(temp);
-  Serial.print("static_cast temp: ");
-  Serial.println(_temp);
-  
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
-    zero ? Serial.print("") : Serial.print(" ");
+    bBelowZero ? Serial.print("") : Serial.print(" ");
     Serial.print(temp);
     Serial.println(F(" C"));
   #endif
@@ -1000,7 +1082,7 @@ void printOutdoorTemperature(float temp, int dotpos, bool zero) {
   #ifdef CELSIUS_PREFIX
     ledMatrix.writeDigitRaw(0, CELSIUS_PREFIX);     //.. Print 'c'/'C' before temperature
   #endif
-  if (zero) {
+  if (bBelowZero) {
     if (temp > -10.0) {
       ledMatrix.writeDigitRaw(1, MINUS_SIGN);  //.. Show minus sign  (-) at digit 1 if temperature is below 0 degress C
     } else {
@@ -1049,11 +1131,6 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   int8_t digit3;
   int _uvi = static_cast<int>((uvi  * 10.));
   
-  #ifdef RECIEVE_MSG_DEBUG
-    Serial.print(F("Outdoor UV Index: "));
-    Serial.println(_uvi);
-  #endif
-  
   ledMatrix.clear();
   if (_uvi > 99) {
     digit1 = (_uvi / 100) % 10;
@@ -1068,6 +1145,15 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   #endif
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
+  
+  /** Display the current UV-Ibdex value on NeoPixel stick **/
+  pixels->clear();
+  int uvindex = abs(round(uvi));
+  for (int i = 0; i < uvindex; i++) {
+    uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
+    pixels->setPixelColor(i, color);
+    pixels->show();
+  }
 }
 
 /**************************************************************
@@ -1139,7 +1225,7 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
     }
 
     if (bRelayAirPresMsg)  {
-      if (nodeDestTempCnt < CLOCK_NET_DEST_NODES) {
+      if (nodeDestAirPresCnt < CLOCK_NET_DEST_NODES) {
         msgRelayAirPres.setDestination(CLOCK_NET_DEST_OFFSET + nodeDestAirPresCnt);
         send(msgRelayAirPres.set(airPressure, 1));
         #ifdef RELAY_MSG_DEBUG
