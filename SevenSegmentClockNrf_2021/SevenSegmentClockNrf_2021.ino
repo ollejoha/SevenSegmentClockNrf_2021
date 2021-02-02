@@ -84,6 +84,39 @@
  * 15 is brightest and is what is initialized by the display when you start blinkRate(rate) - You can blink the
  * entire display. 0 is no blinking. 1, 2 or 3 is for display blinking.
  * 
+ *  * CLOCKNET DISTRIBUTION ALTERNATIVES
+ * ClockNet can be set up in one of two alternative distribution techniques; Star or Serial.
+ * selection of wich alternative to use, is choosen by a switch in the code and will be set when the code compiles.
+ * in the Star alternative distribution is as follow:
+ * 
+ *  ClockId 1 ---+--- ClockId 2
+ *               |
+ *               +-- ClockId 3
+ *               |
+ *               +-- ClockId 4
+ *               |
+ *               +-- ClockId 5
+ * 
+ * In the serial alternative distribbution is as folloes:
+ * 
+ *  ClockId 1 --- ClockId 2 -- ClockId 3 -- ClockId 4 -- ClockId 5
+ * 
+ * 
+ * Star ALTERNATIVE
+ * In this setup ClockNetId 1 serves as the relay node and receives all information from the external sensors and
+ * distributes the to the other clock nodes.
+ * 
+ * Pros:  if one node after nod 1 fails, only the faulty node is affected. 
+ * 
+ * Cons: this alternative gives more load to the gateway node and if the gateway node fails all sub nodes are affected.
+ * 
+ * SERIAL ALTERNATIVE
+ * In this setup, everu node acts as a gateway (relay node) to the next node in the chain.
+ * 
+ * Pros: Less load on Node 1 since all nodes acts as gateway (relay nodes).
+ * 
+ * Cons: if a node fails, all nodes after the failing node is affected.
+ * 
  * ------< HISTORY >-------
  * 2021-01-12  Rewritten for optimization
  * ****************************************************************************************************************/
@@ -98,6 +131,14 @@
 
 /***************************************************************************************
  * 
+ * Set switch below to select between STAR- or Serial dsitribution.
+ * See explanation above about differences between the two alternatives
+ * 
+ * ***********************************************************************************/
+#define STAR_DISTRIBUTION  //.. STAR distribution is the default aöternative
+
+/***************************************************************************************
+ * 
  * Uncomment the line below if sensor shall be connected to the Development plattform
  * 
  * ***********************************************************************************/
@@ -105,7 +146,7 @@
 
 /***************************************************************************************
  * 
- * Uncomment the line if sensor shall be a reapeater node
+ * Uncomment the line if sensor shall be a repeater node
  * 
  * ***********************************************************************************/
 #define MY_REPEATER_FEATURE     //.. Activate node as repeter to extend networking range
@@ -115,8 +156,8 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
-//#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
@@ -466,7 +507,8 @@ void receive(const MyMessage &message) {
   if (message.isAck()) {
     Serial.println(F("GW Ack"));
   }
-
+  /** START distribution is the default distribution alternative **/
+  #ifdef STAR_DISTRIBUTION  //.. <----------------------------------
   switch (message.sender) {
     #ifdef LED_state_ID_1
       case 27:  //.. Pergola sensor
@@ -572,6 +614,9 @@ void receive(const MyMessage &message) {
             break;
        }    
     #endif
+  #endif  //.. End of START distrubution
+
+
   }
 }
 /**************************************************************
@@ -748,11 +793,11 @@ void loop() {
   }
 
   /** RELAY DATA FROM SOURCE NODE (27 - PERGOLA) TO CLOCKS IN ClockNet **/
-  #ifdef LED_state_ID_1
+  #if defined LED_state_ID_1 && STAR_DISTRIBUTION
     if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg) || (bRelayAirPresMsg)) {
       msgRelayToClockNodes();
     }
-    #endif
+  #endif
 }  //.. End of loop()
 
 /**************************************************************
@@ -1172,6 +1217,7 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   ledMatrix.writeDisplay();  
   }
 
+#ifdef STAR_DISTRIBUTION
 /**************************************************************
  *   Function: msgRelayToClockNodes
  * Parameters: ---
