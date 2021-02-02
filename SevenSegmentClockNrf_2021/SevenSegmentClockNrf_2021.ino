@@ -115,7 +115,7 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
