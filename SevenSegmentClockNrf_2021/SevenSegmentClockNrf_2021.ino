@@ -116,7 +116,7 @@
  * 
  * ***********************************************************************************/
 //#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
-//#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
+#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
@@ -1161,11 +1161,13 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
  * Parameters: int pressure, bool zero
  *    Returns: nothing
  *************************************************************/
-  void printOutdoorPressure(int _pressure, int dotpos) {
+  void printOutdoorPressure(float pressure, int dotpos) {
     #ifdef RECIEVE_MSG_DEBUG
       Serial.print(F("Outdoor air pressure: "));
-      Serial.println(_pressure);
+      Serial.println(pressure);
   #endif
+  int _pressure = static_cast<int>(round(pressure));
+
   ledMatrix.clear();
   ledMatrix.print(_pressure);
   ledMatrix.writeDigitRaw(2, dotpos);
