@@ -27,16 +27,8 @@
  |            |            |            | needs more testing when thera are sunligt to verify that the NeoPixel stick |
  |            |            |            | is working as expected. Also added a simple test routine for the NeoPixel   |
  |            |            |            | stick that lits up and turn off the stick in seuence at startup.            |
- |            |            |            | Eventually this routine will be moved to a more sutible location            |
+ |            |            |            | >Eventually this routine will be moved to a more sutible location           |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- | 2021-02-03 |b-2.1.2     |v1.1        | - Added function to show current programversion on the display              |
- |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
- |            |            |            |   reset end updated when the uv-level deceases                              |
- +------------+------------+------------+-----------------------------------------------------------------------------+
- 
- -----  NOTE  -----
- Update the constants that comes direct after thos comment section when the program 
- is updated so that the current program version is shown on the display
  
 
  *  Radio conrolled 7-segment LED state with RTC
@@ -92,12 +84,43 @@
  * 15 is brightest and is what is initialized by the display when you start blinkRate(rate) - You can blink the
  * entire display. 0 is no blinking. 1, 2 or 3 is for display blinking.
  * 
+ *  * CLOCKNET DISTRIBUTION ALTERNATIVES
+ * ClockNet can be set up in one of two alternative distribution techniques; Star or Serial.
+ * selection of wich alternative to use, is choosen by a switch in the code and will be set when the code compiles.
+ * in the Star alternative distribution is as follow:
+ * 
+ *  ClockId 1 ---+--- ClockId 2
+ *               |
+ *               +-- ClockId 3
+ *               |
+ *               +-- ClockId 4
+ *               |
+ *               +-- ClockId 5
+ * 
+ * In the serial alternative distribbution is as folloes:
+ * 
+ *  ClockId 1 --- ClockId 2 -- ClockId 3 -- ClockId 4 -- ClockId 5
+ * 
+ * 
+ * Star ALTERNATIVE
+ * In this setup ClockNetId 1 serves as the relay node and receives all information from the external sensors and
+ * distributes the to the other clock nodes.
+ * 
+ * Pros:  if one node after nod 1 fails, only the faulty node is affected. 
+ * 
+ * Cons: this alternative gives more load to the gateway node and if the gateway node fails all sub nodes are affected.
+ * 
+ * SERIAL ALTERNATIVE
+ * In this setup, everu node acts as a gateway (relay node) to the next node in the chain.
+ * 
+ * Pros: Less load on Node 1 since all nodes acts as gateway (relay nodes).
+ * 
+ * Cons: if a node fails, all nodes after the failing node is affected.
+ * 
  * ------< HISTORY >-------
  * 2021-01-12  Rewritten for optimization
  * ****************************************************************************************************************/
-#define PROGRAM_VERSION 2
-#define UPDATE_VERSION  1
-#define PATCH_VERSION   2
+
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
@@ -108,6 +131,14 @@
 
 /***************************************************************************************
  * 
+ * Set switch below to select between STAR- or Serial dsitribution.
+ * See explanation above about differences between the two alternatives
+ * 
+ * ***********************************************************************************/
+#define STAR_DISTRIBUTION  //.. STAR distribution is the default aöternative
+
+/***************************************************************************************
+ * 
  * Uncomment the line below if sensor shall be connected to the Development plattform
  * 
  * ***********************************************************************************/
@@ -115,7 +146,7 @@
 
 /***************************************************************************************
  * 
- * Uncomment the line if sensor shall be a reapeater node
+ * Uncomment the line if sensor shall be a repeater node
  * 
  * ***********************************************************************************/
 #define MY_REPEATER_FEATURE     //.. Activate node as repeter to extend networking range
@@ -125,8 +156,8 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
-//#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
@@ -246,8 +277,6 @@
 //#define UVI_PREFIX          0x3E      //.. UV prefix 'U'
 #define DECI_POINT         0x10      //.. LED decimal point
 #define MINUS_SIGN         0x40      //.. Minus sign
-#define PROG_INDICATOR     0x73      //.. Prefix for program version displayed at startup. Prefix = 'P'
-#define CENTER_COLON       0x02      //.. Print center coloun i column 2
 /****************** THRESHOLD DEFINES *******************/
 #define LUX_RATE       10000UL
 #define BLINK_RATE      1000
@@ -261,9 +290,9 @@
 /******************** SELECTION AREA ********************/
 #ifdef DEVELOPMENT_PLATFORM
   #define MY_RF24_CHANNEL 83    //.. Radio channel 83 is used for the development platform
-  #define SW "DEV 2.0.2"
+  #define SW "2.0.0"
 #else
-  #define SW "2.0.2"
+  #define SW "DEV"
 #endif
 
 /***************************************************************************************
@@ -400,32 +429,15 @@ void receiveTime(unsigned long controllerTime) {
 }
 
 /**************************************************************
- *   Function: printVersionInfo
- * Parameters: int, int, int
- *    Returns: nothing
- *************************************************************/
-void printVersionInfo() {
-  ledMatrix.clear();
-  ledMatrix.writeDigitRaw(0, PROG_INDICATOR);
-  ledMatrix.writeDigitNum(1, PROGRAM_VERSION);
-  // ledMatrix.drawColon(true);
-  ledMatrix.writeDigitNum(3, UPDATE_VERSION);
-  ledMatrix.writeDigitRaw(2, CENTER_COLON + DECI_POINT);
-  ledMatrix.writeDigitNum(4, PATCH_VERSION);
-  ledMatrix.writeDisplay();
-  delay(10000);
-}
-/**************************************************************
  *   Function: setup
  * Parameters: none
  *    Returns: nothing
  *************************************************************/
 void setup() {
   ledMatrix.begin(LED_ADDRESS);
-  printVersionInfo();
   showstateId();  //.. Show stateId and NodeId on the dislpay
   delay(200);
-  ledMatrix.blinkRate(2);    //.. Blink rate 2 indicates RTC in node has not synced with controller yet.
+  ledMatrix.blinkRate(2);    //.. Blink rate 2 indicates RTC in nod has not synced with controller yet.
   setSyncProvider(RTC.get);  //.. Call the RTC to sync with local Time object.
   #ifdef RTC_DEBUG
     rtcStatus();              //.. Verify status of local RTC chip and print status.
@@ -470,7 +482,7 @@ pixels->setBrightness(10);
    pixels->clear();
    pixels->show();
 /** End of test routine for the NeoPixel stick **/
-  
+
   requestTime();
 }  //-- End of setup
 
@@ -495,7 +507,8 @@ void receive(const MyMessage &message) {
   if (message.isAck()) {
     Serial.println(F("GW Ack"));
   }
-
+  /** START distribution is the default distribution alternative **/
+  #ifdef STAR_DISTRIBUTION  //.. <----------------------------------
   switch (message.sender) {
     #ifdef LED_state_ID_1
       case 27:  //.. Pergola sensor
@@ -601,6 +614,9 @@ void receive(const MyMessage &message) {
             break;
        }    
     #endif
+  #endif  //.. End of START distrubution
+
+
   }
 }
 /**************************************************************
@@ -777,11 +793,11 @@ void loop() {
   }
 
   /** RELAY DATA FROM SOURCE NODE (27 - PERGOLA) TO CLOCKS IN ClockNet **/
-  #ifdef LED_state_ID_1
+  #if defined LED_state_ID_1 && STAR_DISTRIBUTION
     if ((bRelayTempMsg) || (bRelayHumMsg) || (bRelayUviMsg) || (bRelayAirPresMsg)) {
       msgRelayToClockNodes();
     }
-    #endif
+  #endif
 }  //.. End of loop()
 
 /**************************************************************
@@ -1158,7 +1174,7 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   int8_t digit1;
   int8_t digit2;
   int8_t digit3;
-  int _uvi = static_cast<int>(round(uvi  * 10.));
+  int _uvi = static_cast<int>((uvi  * 10.));
   
   ledMatrix.clear();
   if (_uvi > 99) {
@@ -1177,8 +1193,7 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   
   /** Display the current UV-Ibdex value on NeoPixel stick **/
   pixels->clear();
-
-  int uvindex = static_cast<int>(round(uvi));
+  int uvindex = abs(round(uvi));
   for (int i = 0; i < uvindex; i++) {
     uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
     pixels->setPixelColor(i, color);
@@ -1191,19 +1206,18 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
  * Parameters: int pressure, bool zero
  *    Returns: nothing
  *************************************************************/
-  void printOutdoorPressure(float pressure, int dotpos) {
+  void printOutdoorPressure(int _pressure, int dotpos) {
     #ifdef RECIEVE_MSG_DEBUG
       Serial.print(F("Outdoor air pressure: "));
-      Serial.println(pressure);
+      Serial.println(_pressure);
   #endif
-  int _pressure = static_cast<int>(round(pressure));
-
   ledMatrix.clear();
   ledMatrix.print(_pressure);
   ledMatrix.writeDigitRaw(2, dotpos);
   ledMatrix.writeDisplay();  
   }
 
+#ifdef STAR_DISTRIBUTION
 /**************************************************************
  *   Function: msgRelayToClockNodes
  * Parameters: ---
@@ -1272,4 +1286,3 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
     }      
   }
   #endif 
-

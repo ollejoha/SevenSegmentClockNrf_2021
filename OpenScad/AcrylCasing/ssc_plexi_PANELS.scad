@@ -222,12 +222,28 @@ module bottomSection() {
  **              
  ************************************************************************************************************/
  module blindFrontPanel() {
+   _m3Diameter = 2.7;
+   _m3Length = 4;
+   _panel_hole_offset = 6;
+
    difference() {
      union() {
        color("DarkGray") {
        cube([FRONT_PANEL_WIDTH, FRONT_PANEL_DEPTH, FRONT_MATERIAL_THICKNESS],center=true);
        }
      }
+     /** FRONT PANEL ATTACH HOLES **/
+     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+
+     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     #translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     #translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);            
    }
  }
 
@@ -304,6 +320,8 @@ module frontPanelExt() {
  ************************************************************************************************************/
   module frontPanel() {
   _led_display_edge = 2;
+  _m3Diameter = 2.7;
+  _m3Length = 4;
 
    difference() {
      union() {
@@ -343,16 +361,16 @@ module frontPanelExt() {
       neoStickAttchHoles(); 
 
     /** led attach holes **/
-    translate([LED_DISPLAY_WIDTH/2 + 8, 7, 1])
+    #translate([LED_DISPLAY_WIDTH/2 + 6, 6, 1])
       rotate([0, 0, 90])
         ledAttchHoles(); 
 
-    translate([-LED_DISPLAY_WIDTH/2 - 8, 7, 1])
+    #translate([-LED_DISPLAY_WIDTH/2 - 6, 7, 1])
       rotate([0, 0, 90])
         ledAttchHoles();  
 
    /** LED INDICATOR TRAIL **/ 
-   translate([-FRONT_PANEL_WIDTH/2 + 7, 7, FRONT_PANEL_HEIGHT/2 - 1.5])     
+   translate([-FRONT_PANEL_WIDTH/2 + 9, 7, FRONT_PANEL_HEIGHT/2 - 1.5])     
     rotate([0,0,90])
       ledIndicatorTrail();
    }
@@ -531,7 +549,7 @@ module templateBackSection() {
  **              
  ************************************************************************************************************/
   module ledIndicatorTrail() {
-  _led_indicator_trail_width  = LED_DISPLAY_DEPTH; // 30;
+  _led_indicator_trail_width  = LED_DISPLAY_DEPTH - 10; // 30;
   _led_indicator_trail_depth  =  8;
   _led_indicator_trail_height = 3;
 
