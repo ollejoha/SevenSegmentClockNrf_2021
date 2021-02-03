@@ -51,7 +51,7 @@ include <ssc_plexi_DIMENSIONS.scad>;
 
 *frontPanel();           //.. Front panel
 
-translate([0,0,3])
+translate([0,0,-3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for tha back section
@@ -70,7 +70,6 @@ translate([0,0,3])
  *                                MODULES
  *
  ***************************************************************************/
-
 module ledDisplay() {
   difference() {
     union() {
@@ -233,66 +232,75 @@ module bottomSection() {
        }
      }
      /** FRONT PANEL ATTACH HOLES **/
-     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
 
-     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     #translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     #translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);            
    }
  }
 
+ /************************************************************************************************************
+ **  Module:      frontPanelExt
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
 module frontPanelExt() {
   _tighten_cylinder_diam = 4;
   _tighten_cylinder_height = 5.8;
+  _side_attach_knob_offset = 1.8;
+  _lower_knob_attach_offset = 5.2;
+  _upper_knob_attach_offset = 8.8;
 
   difference() {
     union() {
       frontPanel();
 
       /** LEFT DISPLAY ATTACH KNOBS **/
-      translate([-LED_DISPLAY_WIDTH/2 - 1.5,-7, 0.1])
+      translate([-LED_DISPLAY_WIDTH/2 - _side_attach_knob_offset,-7, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([-LED_DISPLAY_WIDTH/2 - 1.5,6.5, 0.1])
+      translate([-LED_DISPLAY_WIDTH/2 - _side_attach_knob_offset,6.5, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2 - 1.5,20, 0.1])
+      translate([-LED_DISPLAY_WIDTH/2 - _side_attach_knob_offset,20, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);         
 
       /** RIGHT DISPLAY ATTACH KNOBS **/
-      translate([LED_DISPLAY_WIDTH/2 + 1.5,-7, 0.1])
+      translate([LED_DISPLAY_WIDTH/2 + _side_attach_knob_offset,-7, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2 + 1.5,6.5, 0.1])
+      translate([LED_DISPLAY_WIDTH/2 + _side_attach_knob_offset,6.5, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([LED_DISPLAY_WIDTH/2 + 1.5,20, 0.1])
+      translate([LED_DISPLAY_WIDTH/2 + _side_attach_knob_offset,20, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
       /** LOWER DISPLAY ATTACH KNOBS **/
-      translate([0,-LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
+      translate([0,-LED_DISPLAY_DEPTH/2 + _lower_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2 - 8,-LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
+      translate([LED_DISPLAY_WIDTH/2 - 8,-LED_DISPLAY_DEPTH/2 + _lower_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2+8, - LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
+      translate([-LED_DISPLAY_WIDTH/2+8, - LED_DISPLAY_DEPTH/2 + _lower_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
       /** UPPER DISPLAY ATTACH KNOBS **/
-      translate([0, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
+      translate([0, LED_DISPLAY_DEPTH/2 + _upper_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2 - 8, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
+      translate([LED_DISPLAY_WIDTH/2 - 8, LED_DISPLAY_DEPTH/2 + _upper_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height, center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2 + 8, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
+      translate([-LED_DISPLAY_WIDTH/2 + 8, LED_DISPLAY_DEPTH/2 + _upper_knob_attach_offset, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height, center=true);
 
       /** THE TWO SECTIONS BELOW ARE USED TO SHOW HOW THE NEOPIXEL STICKS ARE MOUNTED ON THE FRONTPANEL **/
@@ -336,8 +344,8 @@ module frontPanelExt() {
 
         /**  create a hole that is 0.5 mm wider than the LED display.  **/
     translate([0,7,FRONT_PANEL_HEIGHT-5])  
-      cube([LED_DISPLAY_WIDTH + 2,
-              LED_DISPLAY_DEPTH + 2,
+      cube([LED_DISPLAY_WIDTH + 1,
+              LED_DISPLAY_DEPTH + 1,
               FRONT_PANEL_HEIGHT],
               center=true);
 
@@ -361,11 +369,11 @@ module frontPanelExt() {
       neoStickAttchHoles(); 
 
     /** led attach holes **/
-    #translate([LED_DISPLAY_WIDTH/2 + 6, 6, 1])
+    translate([LED_DISPLAY_WIDTH/2 + 6, 6, 1])
       rotate([0, 0, 90])
         ledAttchHoles(); 
 
-    #translate([-LED_DISPLAY_WIDTH/2 - 6, 7, 1])
+    translate([-LED_DISPLAY_WIDTH/2 - 6, 7, 1])
       rotate([0, 0, 90])
         ledAttchHoles();  
 
@@ -478,7 +486,7 @@ module templateBackSection() {
 /************************************************************************************************************
  **  Module:      backSectionDesktop
  **  Parameters : None
- **  Description: Back panel for DC power connection and FTDI.
+ **  Description:
  **              
  ************************************************************************************************************/
  module backSecionDesktop() {
@@ -492,7 +500,7 @@ module templateBackSection() {
  /************************************************************************************************************
  **  Module:      neopixelStick
  **  Parameters : None
- **  Description: Back panel for DC power connection and FTDI.
+ **  Description:
  **              
  ************************************************************************************************************/
  module neopixelStick() {
@@ -526,6 +534,12 @@ module templateBackSection() {
    }
  }
 
+ /************************************************************************************************************
+ **  Module:      neoHoles
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
  module neoHoles() {
    _neo_hole_diam = 3.1;
    _neo_hole_length = 1.8;;
@@ -545,7 +559,7 @@ module templateBackSection() {
   /************************************************************************************************************
  **  Module:      ledIndicatorTrail
  **  Parameters : None
- **  Description: Front panel
+ **  Description: 
  **              
  ************************************************************************************************************/
   module ledIndicatorTrail() {
