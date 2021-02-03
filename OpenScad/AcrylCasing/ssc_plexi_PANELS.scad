@@ -233,51 +233,54 @@ module bottomSection() {
 
 module frontPanelExt() {
   _tighten_cylinder_diam = 4;
-  _tighten_cylinder_height = 6;
+  _tighten_cylinder_height = 5.8;
 
   difference() {
     union() {
       frontPanel();
-      translate([-LED_DISPLAY_WIDTH/2-2,-7,0])
+
+      /** LEFT DISPLAY ATTACH KNOBS **/
+      translate([-LED_DISPLAY_WIDTH/2 - 1.5,-7, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([-LED_DISPLAY_WIDTH/2-2,6.5,0])
+      translate([-LED_DISPLAY_WIDTH/2 - 1.5,6.5, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2-2,20,0])
+      translate([-LED_DISPLAY_WIDTH/2 - 1.5,20, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);         
 
-
-      translate([LED_DISPLAY_WIDTH/2+2,-7,0])
+      /** RIGHT DISPLAY ATTACH KNOBS **/
+      translate([LED_DISPLAY_WIDTH/2 + 1.5,-7, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2+2,6.5,0])
+      translate([LED_DISPLAY_WIDTH/2 + 1.5,6.5, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([LED_DISPLAY_WIDTH/2+2,20,0])
+      translate([LED_DISPLAY_WIDTH/2 + 1.5,20, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-
-      translate([0,-LED_DISPLAY_DEPTH/2+5,0])
+      /** LOWER DISPLAY ATTACH KNOBS **/
+      translate([0,-LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2-8,-LED_DISPLAY_DEPTH/2+5,0])
+      translate([LED_DISPLAY_WIDTH/2 - 8,-LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2+8,-LED_DISPLAY_DEPTH/2+5,0])
+      translate([-LED_DISPLAY_WIDTH/2+8, - LED_DISPLAY_DEPTH/2 + 5.75, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-
-      translate([0,LED_DISPLAY_DEPTH/2+9,0])
+      /** UPPER DISPLAY ATTACH KNOBS **/
+      translate([0, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
         cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
 
-      translate([LED_DISPLAY_WIDTH/2-8,LED_DISPLAY_DEPTH/2+9,0])
-        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);        
+      translate([LED_DISPLAY_WIDTH/2 - 8, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height, center=true);        
 
-      translate([-LED_DISPLAY_WIDTH/2+8,LED_DISPLAY_DEPTH/2+9,0])
-        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height,center=true);
+      translate([-LED_DISPLAY_WIDTH/2 + 8, LED_DISPLAY_DEPTH/2 + 8.25, 0.1])
+        cylinder(d=_tighten_cylinder_diam, h=_tighten_cylinder_height, center=true);
 
       /** THE TWO SECTIONS BELOW ARE USED TO SHOW HOW THE NEOPIXEL STICKS ARE MOUNTED ON THE FRONTPANEL **/
+      ////////////////////////////////////////////
       *translate([-54/2,-25,4])
         rotate([0, 180, 180])
         neopixelStick();
@@ -287,7 +290,7 @@ module frontPanelExt() {
         neopixelStick();      
 
     }
-    /** ACTIVATE TO SE THRU THE CONSTRUKTION **/
+    /** ACTIVATE TO SE THRU THE CONSTRUCTION **/
     *translate([60,0,0])
       cube([50,100,50],center=true)  ;
   }
@@ -333,10 +336,10 @@ module frontPanelExt() {
       barTrailLedStick();
      
     /* neo stick attach holes **/ 
-    translate([-54/2, -27, 1])
+    translate([-54/2, -28, 1])
       neoStickAttchHoles(); 
 
-    translate([54/2, -27, 1])
+    translate([54/2 + 0.5, -28, 1])
       neoStickAttchHoles(); 
 
     /** led attach holes **/
@@ -346,7 +349,12 @@ module frontPanelExt() {
 
     translate([-LED_DISPLAY_WIDTH/2 - 8, 7, 1])
       rotate([0, 0, 90])
-        ledAttchHoles();         
+        ledAttchHoles();  
+
+   /** LED INDICATOR TRAIL **/ 
+   translate([-FRONT_PANEL_WIDTH/2 + 7, 7, FRONT_PANEL_HEIGHT/2 - 1.5])     
+    rotate([0,0,90])
+      ledIndicatorTrail();
    }
  }
 
@@ -398,7 +406,7 @@ module frontPanelExt() {
  **              
  ************************************************************************************************************/
 module neoStickAttchHoles() {
-  _m3Diamter = 2.6;
+  _m3Diameter = 2.7;
   _m3Height  = 4;
   _m3Distance = 27/2;
 
@@ -406,9 +414,9 @@ module neoStickAttchHoles() {
   difference() {
     union() {
       translate([-_m3Distance, 0, 0])
-        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+        cylinder(d = _m3Diameter, h = _m3Height, center=true);
       translate([_m3Distance, 0, 0])  
-        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+        cylinder(d = _m3Diameter, h = _m3Height, center=true);
     }
   }
 }
@@ -420,7 +428,7 @@ module neoStickAttchHoles() {
  **              
  ************************************************************************************************************/
 module ledAttchHoles() {
-  _m3Diamter = 2.6;
+  _m3Diameter = 2.7;
   _m3Height  = 4;
   _m3Distance = 20/2;
 
@@ -428,9 +436,9 @@ module ledAttchHoles() {
   difference() {
     union() {
       translate([-_m3Distance, 0, 0])
-        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+        cylinder(d = _m3Diameter, h = _m3Height, center=true);
       translate([_m3Distance, 0, 0])  
-        cylinder(d = _m3Diamter, h = _m3Height, center=true);
+        cylinder(d = _m3Diameter, h = _m3Height, center=true);
     }
   }
 }
@@ -515,3 +523,30 @@ module templateBackSection() {
      }
    }
  }
+
+  /************************************************************************************************************
+ **  Module:      ledIndicatorTrail
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+  module ledIndicatorTrail() {
+  _led_indicator_trail_width  = LED_DISPLAY_DEPTH; // 30;
+  _led_indicator_trail_depth  =  8;
+  _led_indicator_trail_height = 3;
+
+  _m3Diameter = 2.7;
+  _m3Length   = 4;
+  _attach_hole_distance = _led_indicator_trail_width/2 + 3;
+  _attach_hole_height_offset = -0;
+
+  difference() {
+    union() {
+      cube([_led_indicator_trail_width, _led_indicator_trail_depth, _led_indicator_trail_height], center=true);
+      translate([_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+      translate([-_attach_hole_distance,0, _attach_hole_height_offset])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+    }
+  }
+  }
