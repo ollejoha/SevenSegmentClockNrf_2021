@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CADFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="0.9.8.0" Name="ssc_Front_PANELS_prod">
+<CADFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="0.9.8.0" Name="ssc_Front_PANELS_prod_v2">
   <layers>
     <layer name="Default" color="127,255,0">
       <ModificationCount>0</ModificationCount>
@@ -2464,50 +2464,6 @@
           <StartPoint state="Default" />
           <CustomMOPHeader state="Default" />
           <CustomMOPFooter state="Default" />
-          <Name>NEO_stick_base</Name>
-          <StockSurface state="Default">0</StockSurface>
-          <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
-          <SpindleDirection state="Default">CW</SpindleDirection>
-          <SpindleSpeed state="Default">1000</SpindleSpeed>
-          <SpindleRange state="Default">0</SpindleRange>
-          <VelocityMode state="Default">Undefined</VelocityMode>
-          <primitive>
-            <prim>79</prim>
-          </primitive>
-          <TargetDepth state="Value">-1</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
-          <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
-          <CutOrdering state="Default">DepthFirst</CutOrdering>
-          <StepOver state="Default">0.4</StepOver>
-          <StepoverFeedrate state="Default">Plunge Feedrate</StepoverFeedrate>
-          <MillingDirection state="Default">Conventional</MillingDirection>
-          <CollisionDetection state="Default">True</CollisionDetection>
-          <LeadInMove state="Default">
-            <LeadInType>Spiral</LeadInType>
-            <SpiralAngle>0</SpiralAngle>
-            <TangentRadius>0</TangentRadius>
-            <LeadInFeedrate>0</LeadInFeedrate>
-          </LeadInMove>
-          <LeadOutMove state="Default" />
-          <RegionFillStyle state="Default">InsideOutsideOffsets</RegionFillStyle>
-          <FinishStepover state="Default">0</FinishStepover>
-          <FinishStepoverAtTargetDepth state="Default">False</FinishStepoverAtTargetDepth>
-        </pocket>
-        <pocket>
-          <Style>cutout</Style>
-          <WorkPlane state="Default">XY</WorkPlane>
-          <OptimisationMode state="Default">Experimental</OptimisationMode>
-          <RoughingFinishing state="Value">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2.5</ToolDiameter>
-          <ToolNumber state="Default">4</ToolNumber>
-          <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">150</PlungeFeedrate>
-          <CutFeedrate state="Value">400</CutFeedrate>
-          <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
-          <StartPoint state="Default" />
-          <CustomMOPHeader state="Default" />
-          <CustomMOPFooter state="Default" />
           <Name>LED_indicator</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
@@ -2553,7 +2509,7 @@
           <CustomMOPHeader state="Default" />
           <CustomMOPFooter state="Default" />
           <Name>NEO_resistor_trail</Name>
-          <StockSurface state="Value">-1</StockSurface>
+          <StockSurface state="Value">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
           <ClearancePlane state="Value">6</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
@@ -2563,7 +2519,7 @@
           <primitive>
             <prim>65</prim>
           </primitive>
-          <TargetDepth state="Value">-2</TargetDepth>
+          <TargetDepth state="Value">-1.5</TargetDepth>
           <DepthIncrement state="Value">0.3</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
@@ -2597,7 +2553,7 @@
           <CustomMOPHeader state="Default" />
           <CustomMOPFooter state="Default" />
           <Name>NEO_led_trail</Name>
-          <StockSurface state="Value">-1</StockSurface>
+          <StockSurface state="Value">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
           <ClearancePlane state="Value">6</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
@@ -2607,7 +2563,7 @@
           <primitive>
             <prim>64</prim>
           </primitive>
-          <TargetDepth state="Value">-3</TargetDepth>
+          <TargetDepth state="Value">-2</TargetDepth>
           <DepthIncrement state="Value">0.3</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>

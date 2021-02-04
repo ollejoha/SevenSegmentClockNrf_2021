@@ -5,7 +5,7 @@
       <ModificationCount>0</ModificationCount>
       <objects>
         <pline id="64" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-55,-20.35,-0.5</p>
@@ -15,7 +15,7 @@
           </pts>
         </pline>
         <pline id="65" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-14.7215,-27.4252,-0.5</p>
@@ -181,7 +181,7 @@
           </pts>
         </pline>
         <pline id="70" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.5783,4.57854,-5</p>
@@ -287,7 +287,7 @@
           </pts>
         </pline>
         <pline id="76" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>75.1065,-30.3078,0</p>
@@ -393,7 +393,7 @@
           </pts>
         </pline>
         <pline id="77" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-73.6935,-12.5922,0</p>
@@ -499,7 +499,7 @@
           </pts>
         </pline>
         <pline id="79" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>65,-30.5,0</p>
@@ -509,7 +509,7 @@
           </pts>
         </pline>
         <pline id="80" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.2631,2.08856,0</p>
@@ -615,7 +615,7 @@
           </pts>
         </pline>
         <pline id="81" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>59.5,26.5,-5</p>
@@ -625,7 +625,7 @@
           </pts>
         </pline>
         <pline id="82" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-75.1065,30.3078,0</p>
@@ -731,7 +731,7 @@
           </pts>
         </pline>
         <pline id="83" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-67.5922,17.7935,0</p>
@@ -837,7 +837,7 @@
           </pts>
         </pline>
         <pline id="87" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>65.4078,16.7935,0</p>
@@ -943,7 +943,7 @@
           </pts>
         </pline>
         <pline id="89" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>75.1065,30.3078,0</p>
@@ -1049,7 +1049,7 @@
           </pts>
         </pline>
         <pline id="91" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>81.9,37.4,0</p>
@@ -1059,7 +1059,7 @@
           </pts>
         </pline>
         <pline id="93" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>65.7065,-2.90783,0</p>
@@ -1165,7 +1165,7 @@
           </pts>
         </pline>
         <pline id="95" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-72.1065,26.5922,0</p>
@@ -1271,7 +1271,7 @@
           </pts>
         </pline>
         <pline id="96" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>39.9078,-27.2065,-4</p>
@@ -1377,7 +1377,7 @@
           </pts>
         </pline>
         <pline id="97" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-60.9309,-5.54206,0</p>
@@ -1735,7 +1735,7 @@
           </pts>
         </pline>
         <pline id="98" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>12.9078,-28.7935,-4</p>
@@ -1841,7 +1841,7 @@
           </pts>
         </pline>
         <pline id="99" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-14.5922,-27.2065,-4</p>
@@ -1947,7 +1947,7 @@
           </pts>
         </pline>
         <pline id="100" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-41.5922,-28.7935,-4</p>
@@ -2053,7 +2053,7 @@
           </pts>
         </pline>
         <pline id="101" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-67.2935,-1.90783,0</p>
@@ -2159,7 +2159,7 @@
           </pts>
         </pline>
         <pline id="102" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-76.6935,-30.3078,0</p>
@@ -2265,7 +2265,7 @@
           </pts>
         </pline>
         <pline id="103" Closed="true">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-68.9,22.5,0</p>
@@ -2275,7 +2275,7 @@
           </pts>
         </pline>
         <rect id="104" Closed="true" p="-55,-9,0" w="111" h="32">
-          <ModificationCount>3</ModificationCount>
+          <ModificationCount>1</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-55,-9,0</p>
@@ -2322,7 +2322,7 @@
           <Name>M3_holes</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2344,7 +2344,7 @@
             <prim>89</prim>
           </primitive>
           <TargetDepth state="Value">-4</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2379,7 +2379,7 @@
           <Name>LDR_attach_hole</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2387,8 +2387,8 @@
           <primitive>
             <prim>80</prim>
           </primitive>
-          <TargetDepth state="Value">-5</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <TargetDepth state="Value">-5.2</TargetDepth>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2421,9 +2421,9 @@
           <CustomMOPHeader state="Default" />
           <CustomMOPFooter state="Default" />
           <Name>LDR_lens</Name>
-          <StockSurface state="Value">-4.9</StockSurface>
+          <StockSurface state="Value">5</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2432,52 +2432,8 @@
             <prim>70</prim>
           </primitive>
           <TargetDepth state="Value">-6.2</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Value">0.1</FinalDepthIncrement>
-          <CutOrdering state="Default">DepthFirst</CutOrdering>
-          <StepOver state="Default">0.4</StepOver>
-          <StepoverFeedrate state="Default">Plunge Feedrate</StepoverFeedrate>
-          <MillingDirection state="Default">Conventional</MillingDirection>
-          <CollisionDetection state="Default">True</CollisionDetection>
-          <LeadInMove state="Default">
-            <LeadInType>Spiral</LeadInType>
-            <SpiralAngle>0</SpiralAngle>
-            <TangentRadius>0</TangentRadius>
-            <LeadInFeedrate>0</LeadInFeedrate>
-          </LeadInMove>
-          <LeadOutMove state="Default" />
-          <RegionFillStyle state="Default">InsideOutsideOffsets</RegionFillStyle>
-          <FinishStepover state="Default">0</FinishStepover>
-          <FinishStepoverAtTargetDepth state="Default">False</FinishStepoverAtTargetDepth>
-        </pocket>
-        <pocket>
-          <Style>cutout</Style>
-          <WorkPlane state="Default">XY</WorkPlane>
-          <OptimisationMode state="Default">Experimental</OptimisationMode>
-          <RoughingFinishing state="Value">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2.5</ToolDiameter>
-          <ToolNumber state="Default">4</ToolNumber>
-          <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">150</PlungeFeedrate>
-          <CutFeedrate state="Value">400</CutFeedrate>
-          <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
-          <StartPoint state="Default" />
-          <CustomMOPHeader state="Default" />
-          <CustomMOPFooter state="Default" />
-          <Name>NEO_stick_base</Name>
-          <StockSurface state="Default">0</StockSurface>
-          <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
-          <SpindleDirection state="Default">CW</SpindleDirection>
-          <SpindleSpeed state="Default">1000</SpindleSpeed>
-          <SpindleRange state="Default">0</SpindleRange>
-          <VelocityMode state="Default">Undefined</VelocityMode>
-          <primitive>
-            <prim>79</prim>
-          </primitive>
-          <TargetDepth state="Value">-1</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
-          <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
           <StepoverFeedrate state="Default">Plunge Feedrate</StepoverFeedrate>
@@ -2511,7 +2467,7 @@
           <Name>LED_indicator</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2520,7 +2476,51 @@
             <prim>103</prim>
           </primitive>
           <TargetDepth state="Value">-2</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
+          <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
+          <CutOrdering state="Default">DepthFirst</CutOrdering>
+          <StepOver state="Default">0.4</StepOver>
+          <StepoverFeedrate state="Default">Plunge Feedrate</StepoverFeedrate>
+          <MillingDirection state="Default">Conventional</MillingDirection>
+          <CollisionDetection state="Default">True</CollisionDetection>
+          <LeadInMove state="Default">
+            <LeadInType>Spiral</LeadInType>
+            <SpiralAngle>0</SpiralAngle>
+            <TangentRadius>0</TangentRadius>
+            <LeadInFeedrate>0</LeadInFeedrate>
+          </LeadInMove>
+          <LeadOutMove state="Default" />
+          <RegionFillStyle state="Default">InsideOutsideOffsets</RegionFillStyle>
+          <FinishStepover state="Default">0</FinishStepover>
+          <FinishStepoverAtTargetDepth state="Default">False</FinishStepoverAtTargetDepth>
+        </pocket>
+        <pocket>
+          <Style>cutout</Style>
+          <WorkPlane state="Default">XY</WorkPlane>
+          <OptimisationMode state="Default">Experimental</OptimisationMode>
+          <RoughingFinishing state="Value">Finishing</RoughingFinishing>
+          <ToolDiameter state="Default">2.5</ToolDiameter>
+          <ToolNumber state="Default">4</ToolNumber>
+          <ToolProfile state="Default">EndMill</ToolProfile>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">400</CutFeedrate>
+          <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
+          <StartPoint state="Default" />
+          <CustomMOPHeader state="Default" />
+          <CustomMOPFooter state="Default" />
+          <Name>NEO_stick_base</Name>
+          <StockSurface state="Default">0</StockSurface>
+          <RoughingClearance state="Default">0</RoughingClearance>
+          <ClearancePlane state="Default">3</ClearancePlane>
+          <SpindleDirection state="Default">CW</SpindleDirection>
+          <SpindleSpeed state="Default">1000</SpindleSpeed>
+          <SpindleRange state="Default">0</SpindleRange>
+          <VelocityMode state="Default">Undefined</VelocityMode>
+          <primitive>
+            <prim>79</prim>
+          </primitive>
+          <TargetDepth state="Value">-1</TargetDepth>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2555,7 +2555,7 @@
           <Name>NEO_resistor_trail</Name>
           <StockSurface state="Value">-1</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2564,7 +2564,7 @@
             <prim>65</prim>
           </primitive>
           <TargetDepth state="Value">-2</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2599,7 +2599,7 @@
           <Name>NEO_led_trail</Name>
           <StockSurface state="Value">-1</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2608,7 +2608,7 @@
             <prim>64</prim>
           </primitive>
           <TargetDepth state="Value">-3</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2634,7 +2634,7 @@
           <ToolDiameter state="Default">2.5</ToolDiameter>
           <ToolNumber state="Default">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <PlungeFeedrate state="Default">300</PlungeFeedrate>
           <CutFeedrate state="Value">400</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
@@ -2643,7 +2643,7 @@
           <Name>DISPLAY_pocket</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2653,7 +2653,7 @@
             <prim>97</prim>
           </primitive>
           <TargetDepth state="Value">-5</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <StepOver state="Default">0.4</StepOver>
@@ -2688,7 +2688,7 @@
           <Name>Profile1</Name>
           <StockSurface state="Value">0.5</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2697,7 +2697,7 @@
             <prim>81</prim>
           </primitive>
           <TargetDepth state="Value">-6.2</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Value">0.1</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <CutWidth state="Default">0</CutWidth>
@@ -2744,7 +2744,7 @@
           <Name>Profile2</Name>
           <StockSurface state="Default">0</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
-          <ClearancePlane state="Value">6</ClearancePlane>
+          <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
           <SpindleSpeed state="Default">1000</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
@@ -2753,7 +2753,7 @@
             <prim>91</prim>
           </primitive>
           <TargetDepth state="Value">-6.2</TargetDepth>
-          <DepthIncrement state="Value">0.3</DepthIncrement>
+          <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
           <CutWidth state="Default">0</CutWidth>
@@ -2796,7 +2796,7 @@
       <ToolNumber>4</ToolNumber>
       <ToolProfile>EndMill</ToolProfile>
       <Nesting>
-        <BasePoint>0,0</BasePoint>
+        <BasePoint />
         <NestMethod>None</NestMethod>
       </Nesting>
     </part>

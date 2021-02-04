@@ -2387,7 +2387,7 @@
           <primitive>
             <prim>80</prim>
           </primitive>
-          <TargetDepth state="Value">-5</TargetDepth>
+          <TargetDepth state="Value">-5.2</TargetDepth>
           <DepthIncrement state="Value">0.3</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
@@ -2421,7 +2421,7 @@
           <CustomMOPHeader state="Default" />
           <CustomMOPFooter state="Default" />
           <Name>LDR_lens</Name>
-          <StockSurface state="Value">-4.9</StockSurface>
+          <StockSurface state="Value">5</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
           <ClearancePlane state="Value">6</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
@@ -2634,7 +2634,7 @@
           <ToolDiameter state="Default">2.5</ToolDiameter>
           <ToolNumber state="Default">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <PlungeFeedrate state="Default">300</PlungeFeedrate>
           <CutFeedrate state="Value">400</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />

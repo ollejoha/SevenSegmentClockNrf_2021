@@ -315,7 +315,7 @@ module frontPanelExt() {
 
     }
     /** ACTIVATE TO SE THRU THE CONSTRUCTION **/
-    *translate([60,0,0])
+    translate([60,0,0])
       cube([50,100,50],center=true)  ;
   }
 }
@@ -404,7 +404,7 @@ module frontPanelExt() {
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  3.6;
+  _support_bar_depth =  4.6;
   _support_bar_height = 2.0;
 
    difference() {
