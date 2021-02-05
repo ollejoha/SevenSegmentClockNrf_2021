@@ -2519,7 +2519,7 @@
           <primitive>
             <prim>65</prim>
           </primitive>
-          <TargetDepth state="Value">-2</TargetDepth>
+          <TargetDepth state="Value">-1.5</TargetDepth>
           <DepthIncrement state="Default">0.4</DepthIncrement>
           <FinalDepthIncrement state="Default">0</FinalDepthIncrement>
           <CutOrdering state="Default">DepthFirst</CutOrdering>
