@@ -125,10 +125,10 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
-//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
@@ -1175,11 +1175,12 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
   
-  /** Display the current UV-Ibdex value on NeoPixel stick **/
-  pixels->clear();
-
-  int uvindex = static_cast<int>(round(uvi));
-  for (int i = 0; i < uvindex; i++) {
+  /** Display the current UV-Index value on NeoPixel stick **/
+  int uvindex = static_cast<int>(round(uvi));   //.. transform the measured UV-Index to an integer between 0 - 16
+  pixels->clear();                              //.. clear the UV-stick
+  pixels->show();
+  if (uvindex > 0)
+  for (int i = 0; i <= uvindex-1; i++) {
     uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
     pixels->setPixelColor(i, color);
     pixels->show();
