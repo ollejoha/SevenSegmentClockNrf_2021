@@ -31,7 +31,7 @@ use <ssc_plexi_PANELS.scad>;
 *ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
-
+connectorMatrix();
 
  /***************************************************************************
  *
@@ -39,6 +39,26 @@ use <ssc_plexi_PANELS.scad>;
  *
  ***************************************************************************/
 
+/************************************************************************************************************
+ **  Module:      connectorMatrix
+ **  Parameters : None
+ **  Description: Combination of connector items to simplify milling
+ **              
+ ************************************************************************************************************/
+module connectorMatrix() {
+  difference() {
+    union() {
+      for (a = [0:3]) {
+        translate([a*12,0,-2])
+        cornerPanelConnectorFront();
+      }
+      for (a = [0:3]) {
+        translate([a*12,18,-2])
+        cornerPanelConnectorRear();
+      }      
+    }
+  }
+}
 
 /************************************************************************************************************
  **  Module:      ldrPanelAdaptor
