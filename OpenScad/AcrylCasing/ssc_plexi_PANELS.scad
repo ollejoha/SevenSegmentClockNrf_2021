@@ -45,16 +45,18 @@ include <ssc_plexi_DIMENSIONS.scad>;
   rotate([0,-90,0])
     leftSideSection();      //.. Left side section view from front to back
 
-*rightSideSection();     //.. Right side section view from fron to back
+*translate([0,0,80])
+  rotate([0,90,0])
+    rightSideSection();     //.. Right side section view from fron to back
 
 *blindFrontPanel();      //.. Template for front panel
 
 *frontPanel();           //.. Front panel
 
-translate([0,0,-3])
+*translate([0,0,-3])
   frontPanelExt();
 
-*templateBackSection();  //.. Template for tha back section
+*templateBackSection();  //.. Template for the back section
 
 *backSecionDesktop();    //.. Back section for desk top 
 
@@ -315,7 +317,7 @@ module frontPanelExt() {
 
     }
     /** ACTIVATE TO SE THRU THE CONSTRUCTION **/
-    translate([60,0,0])
+    *translate([60,0,0])
       cube([50,100,50],center=true)  ;
   }
 }
@@ -399,7 +401,7 @@ module frontPanelExt() {
 
   /** definion for the neo pixel trail **/
   _neopixel_led_width = 110;
-  _neopixel_led_depth =   5.5;
+  _neopixel_led_depth =   5.7;
   _neopixel_led_height =  2.0;
 
   /** support resistor bar **/
@@ -410,10 +412,11 @@ module frontPanelExt() {
    difference() {
      union() {
        /** connection stick trail **/
-       cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
+       /** Removed 2021-02-07, it is not needed. It is better to get more material in fron of the LED to get a more diffuse look **/
+      *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1,-_led_trail_bar_height/2 - _neopixel_led_height/2])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
