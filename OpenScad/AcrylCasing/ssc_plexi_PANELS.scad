@@ -19,6 +19,7 @@ date            description
 $fn = 100;
 
 include <ssc_plexi_DIMENSIONS.scad>;
+use <ssc_plexi_DETAIL_PARTS.scad>;
 
 /***************************************************************************
  *
@@ -67,11 +68,37 @@ include <ssc_plexi_DIMENSIONS.scad>;
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
   ledDisplay();     
+
+  /** MILLING MODULES **/
+boxPanels();   //.. Bottom. sides & top panels
+
+
  /***************************************************************************
  *
  *                                MODULES
  *
  ***************************************************************************/
+  /** MILLING MODULES **/
+module boxPanels() {   //.. Bottom. sides & top panels
+  difference() {
+    union() {
+      translate([0, 0, -2])
+        bottomSection();
+      
+      translate([-5, -87, 80])
+        rotate([0, -90, 0])
+          leftSideSection();
+
+      translate([0, -87, 80])
+        rotate([0, 90, 0])
+          rightSideSection();
+
+      translate([30, 50, 0])
+        connectorMatrix();
+    }
+  }
+}
+
 module ledDisplay() {
   difference() {
     union() {
