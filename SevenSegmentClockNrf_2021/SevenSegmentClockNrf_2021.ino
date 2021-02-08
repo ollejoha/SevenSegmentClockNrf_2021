@@ -232,6 +232,20 @@
 
 /********************* PIN DEFINES **********************/
 #define LIGHT_SENSOR_ANALOG_PIN  A0  //.. Used for automatic LED brightness control
+                                     //..    +-------- +5V
+                                     //..    |
+                                     //..   +-+
+                                     //..   | | <-  GP0 (A0) (LDR 18K - 50K)
+                                     //..   +-+
+                                     //..    |
+                                     //..   +-+
+                                     //..   | |  100K  (R1)
+                                     //..   +-+
+                                     //..    |
+                                     //..    +-------- Gnd
+                                     //..
+                                     //.. Brightness reading 200 - 1000 map to 0 - 15
+
 #define ONE_WIRE_BUS              7  //.. Used for temperature sensors DS18b20
 
 /****************** LED MATRIX DEFINES ******************/
@@ -620,11 +634,15 @@ void loop() {
   if (currentTime - lastBrightnessTime > 5000) {
     lastBrightnessTime = millis();
     uint16_t envLightLevel = analogRead(LIGHT_SENSOR_ANALOG_PIN);
-    if (envLightLevel < 360) envLightLevel = 360;
-    if (envLightLevel > 860) envLightLevel = 860;
-    ledBrightness = map(envLightLevel, 360, 860, 0, 15);
+    if (envLightLevel < 200) envLightLevel = 200;  // TEST --- if (envLightLevel < 360) envLightLevel = 360;
+    if (envLightLevel > 1000) envLightLevel = 1000;  // TEST --if (envLightLevel > 860) envLightLevel = 860;
+    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
     ledMatrix.writeDisplay();
+    // Serial.print(F("LED Brightness: "));
+    // Serial.print(ledBrightness);
+    // Serial.print(F(" "));
+    // Serial.println(envLightLevel);
   }
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
