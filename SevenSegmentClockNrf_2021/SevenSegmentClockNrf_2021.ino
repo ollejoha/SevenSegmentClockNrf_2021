@@ -639,6 +639,7 @@ void loop() {
     ledBrightness = map(envLightLevel, 200, 1000, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
     ledMatrix.writeDisplay();
+    // TEMPORARY DEBUG CODE
     // Serial.print(F("LED Brightness: "));
     // Serial.print(ledBrightness);
     // Serial.print(F(" "));
