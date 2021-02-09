@@ -5,7 +5,7 @@
       <ModificationCount>0</ModificationCount>
       <objects>
         <pline id="58" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-41.5922,-28.7935,-1</p>
@@ -111,7 +111,7 @@
           </pts>
         </pline>
         <pline id="66" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>75.1065,-30.3078,3</p>
@@ -217,7 +217,7 @@
           </pts>
         </pline>
         <pline id="68" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-73.6935,-12.5922,3</p>
@@ -323,7 +323,7 @@
           </pts>
         </pline>
         <pline id="69" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.5783,4.57854,-2</p>
@@ -429,7 +429,7 @@
           </pts>
         </pline>
         <pline id="71" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>70.2631,2.08856,3</p>
@@ -535,7 +535,7 @@
           </pts>
         </pline>
         <pline id="72" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-75.1065,30.3078,3</p>
@@ -641,7 +641,7 @@
           </pts>
         </pline>
         <pline id="73" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-67.5922,17.7935,3</p>
@@ -747,7 +747,7 @@
           </pts>
         </pline>
         <pline id="74" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>65.4078,16.7935,3</p>
@@ -853,7 +853,7 @@
           </pts>
         </pline>
         <pline id="75" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>59.5,26.5,-2</p>
@@ -863,7 +863,7 @@
           </pts>
         </pline>
         <pline id="78" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>75.1065,30.3078,3</p>
@@ -969,7 +969,7 @@
           </pts>
         </pline>
         <pline id="80" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>81.9,37.4,3</p>
@@ -979,7 +979,7 @@
           </pts>
         </pline>
         <pline id="83" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>65.7065,-2.90783,3</p>
@@ -1085,7 +1085,7 @@
           </pts>
         </pline>
         <pline id="84" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>60.9309,5.04206,3</p>
@@ -1443,7 +1443,7 @@
           </pts>
         </pline>
         <pline id="85" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>55,-19.35,3</p>
@@ -1453,7 +1453,7 @@
           </pts>
         </pline>
         <pline id="90" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>39.9078,-28.7935,-1</p>
@@ -1559,7 +1559,7 @@
           </pts>
         </pline>
         <pline id="91" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-72.1065,26.5922,3</p>
@@ -1665,7 +1665,7 @@
           </pts>
         </pline>
         <pline id="92" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>12.9078,-28.7935,-1</p>
@@ -1771,7 +1771,7 @@
           </pts>
         </pline>
         <pline id="94" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-67.2935,-1.90783,3</p>
@@ -1877,7 +1877,7 @@
           </pts>
         </pline>
         <pline id="95" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-76.6935,-30.3078,3</p>
@@ -1983,7 +1983,7 @@
           </pts>
         </pline>
         <pline id="96" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-14.5922,-28.7935,-1</p>
@@ -2089,7 +2089,7 @@
           </pts>
         </pline>
         <pline id="97" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-68.9,22.5,3</p>
@@ -2099,7 +2099,7 @@
           </pts>
         </pline>
         <pline id="310" Closed="true">
-          <ModificationCount>5</ModificationCount>
+          <ModificationCount>3</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>-12.15,-28,3</p>
@@ -2144,8 +2144,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2200,8 +2200,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2256,8 +2256,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2313,8 +2313,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2357,18 +2357,18 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
           <CustomMOPFooter state="Default" />
           <Name>LDR_lens_pocket</Name>
-          <StockSurface state="Value">-4.9</StockSurface>
+          <StockSurface state="Value">4.9</StockSurface>
           <RoughingClearance state="Default">0</RoughingClearance>
           <ClearancePlane state="Default">3</ClearancePlane>
           <SpindleDirection state="Default">CW</SpindleDirection>
-          <SpindleSpeed state="Value">9000</SpindleSpeed>
+          <SpindleSpeed state="Value">2300</SpindleSpeed>
           <SpindleRange state="Default">0</SpindleRange>
           <VelocityMode state="Default">Undefined</VelocityMode>
           <primitive>
@@ -2401,8 +2401,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2445,8 +2445,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2489,8 +2489,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
@@ -2532,8 +2532,8 @@
           <ToolDiameter state="Default">2</ToolDiameter>
           <ToolNumber state="Default">2</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
-          <PlungeFeedrate state="Value">300</PlungeFeedrate>
-          <CutFeedrate state="Value">800</CutFeedrate>
+          <PlungeFeedrate state="Value">150</PlungeFeedrate>
+          <CutFeedrate state="Value">100</CutFeedrate>
           <MaxCrossoverDistance state="Default">0.7</MaxCrossoverDistance>
           <StartPoint state="Default" />
           <CustomMOPHeader state="Value" />
