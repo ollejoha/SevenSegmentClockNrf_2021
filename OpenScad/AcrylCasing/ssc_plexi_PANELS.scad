@@ -51,10 +51,9 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
     rightSideSection();     //.. Right side section view from fron to back
 
 *blindFrontPanel();      //.. Template for front panel
-
 *frontPanel();           //.. Front panel
 
-*translate([0,0,-3])
+translate([0, 0,-3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for the back section
@@ -70,8 +69,12 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
   ledDisplay();     
 
   /** MILLING MODULES **/
-boxPanels();   //.. Bottom. sides & top panels
+*boxPanels();   //.. Bottom. sides & top panels
 
+////////////////////////////////////////////////////////////////////////////////
+////                     3D PRINTER MODULES RENDER                          ////
+////////////////////////////////////////////////////////////////////////////////
+*3dFrontPanel();
 
  /***************************************************************************
  *
@@ -433,7 +436,7 @@ module frontPanelExt() {
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  4.6;
+  _support_bar_depth =  4.0;
   _support_bar_height = 2.0;
 
    difference() {
@@ -443,7 +446,7 @@ module frontPanelExt() {
       *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
@@ -605,6 +608,291 @@ module templateBackSection() {
   difference() {
     union() {
       cube([_led_indicator_trail_width, _led_indicator_trail_depth, _led_indicator_trail_height], center=true);
+      translate([_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+      translate([-_attach_hole_distance,0, _attach_hole_height_offset])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+    }
+  }
+  }
+
+
+
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ /////                                3D PRINTER MODULES                                    /////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+/************************************************************************************************************
+**  Module:      3dFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dFrontPanel() {
+  _triangle_diameter = 1;    
+   _m3Diameter = 2.7;
+   _m3Length = 4;
+   _panel_hole_offset = 6;  
+  _led_display_edge = 2;   
+  _tighten_cylinder_diam = 4;
+  _tighten_cylinder_height = 5.8;
+  _side_attach_knob_offset = 1.8;
+  _lower_knob_attach_offset = 5.2;
+  _upper_knob_attach_offset = 8.8;  
+ difference() {
+    union() {
+      3dBlindFrontPanel();
+      /** CORNET ATTACHMENT TRIANGLES **/
+
+       translate([-FRONT_PANEL_WIDTH/2 + _triangle_diameter, FRONT_PANEL_DEPTH/2 - _triangle_diameter, 0 ])
+         rotate([0, 0,0])
+           3dCornerTriangle(_triangle_diameter);
+ 
+       translate([-FRONT_PANEL_WIDTH/2 + _triangle_diameter, -FRONT_PANEL_DEPTH/2 + _triangle_diameter, 0 ])
+         rotate([0, 0, 90])
+           3dCornerTriangle(_triangle_diameter);          
+ 
+       translate([FRONT_PANEL_WIDTH/2 - _triangle_diameter, FRONT_PANEL_DEPTH/2 - _triangle_diameter, 0 ])
+         rotate([0, 0, -90])
+           3dCornerTriangle(_triangle_diameter);
+ 
+       translate([FRONT_PANEL_WIDTH/2 - _triangle_diameter, -FRONT_PANEL_DEPTH/2 + _triangle_diameter, 0 ])
+         rotate([0, 0, 180])
+           3dCornerTriangle(_triangle_diameter);                    
+
+      /** THE TWO SECTIONS BELOW ARE USED TO SHOW HOW THE NEOPIXEL STICKS ARE MOUNTED ON THE FRONTPANEL **/
+      ////////////////////////////////////////////
+      *translate([-54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();
+
+      *translate([54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();   
+
+      /** LED WINDOW SECTION **/
+      translate([1, 7, 0])
+        cube([LED_DISPLAY_WIDTH_3D + 17, LED_DISPLAY_DEPTH_3D + 5, FRONT_PANEL_HEIGHT],center=true);
+
+      /** add a hole sink for the photo resistor **/
+      translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,0])
+        cylinder(d=14, h=FRONT_PANEL_HEIGHT+0.1,center=true);
+       
+      /** neobar led stick block **/
+      translate([0,-25,0])
+        cube([130, 15, FRONT_PANEL_HEIGHT],center=true);
+
+   /** LED INDICATOR BLOCK **/ 
+   translate([-FRONT_PANEL_WIDTH/2 + 9, 7, 0])     
+    rotate([0,0,90])
+      ledIndicatorBlock_3D();        
+        
+    }
+  /** FRONT PANEL ATTACH HOLES **/
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);  
+
+    /** LED DISPLAY WINDOW SECTION **/
+        /** create a hole in the panel width that is 1 mm narrower on each side and let it go thru the panel  **/
+    translate([0,7,0])
+      cube([LED_DISPLAY_WIDTH - _led_display_edge,
+            LED_DISPLAY_DEPTH - _led_display_edge,
+            FRONT_PANEL_HEIGHT],
+            center=true);
+
+        /**  create a hole that is 0.5 mm wider than the LED display.  **/
+    translate([0,7,FRONT_PANEL_HEIGHT-5])  
+      cube([LED_DISPLAY_WIDTH,
+              LED_DISPLAY_DEPTH + 0.1,
+              FRONT_PANEL_HEIGHT],
+              center=true);
+
+    /** add a hole for the photo resistor **/
+    translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,0])
+      cylinder(d=5, h=FRONT_PANEL_HEIGHT+0.1,center=true);
+
+    /** add a hole sink for the photo resistor **/
+    translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,1])
+      cylinder(d= 8.8, h=FRONT_PANEL_HEIGHT,center=true); 
+
+    /** bar trail led stick mounting pocket **/
+    translate([-0,-25,4.0])
+      barTrailLedStick_3D();
+     
+    /* neo stick attach holes **/ 
+    translate([-54/2, -28, 1])
+      neoStickAttchHoles(); 
+
+    translate([54/2 + 0.5, -28, 1])
+      neoStickAttchHoles(); 
+
+    /** led attach holes **/
+    translate([LED_DISPLAY_WIDTH/2 + 6, 6, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles(); 
+
+    translate([-LED_DISPLAY_WIDTH/2 - 6, 7, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles();  
+
+   /** LED INDICATOR TRAIL **/ 
+   translate([-FRONT_PANEL_WIDTH/2 + 9, 7,1])     
+    rotate([0,0,90])
+      ledIndicatorTrail_3D();
+
+
+
+
+  }
+}
+
+/************************************************************************************************************
+**  Module:      3dBlindFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dBlindFrontPanel() {
+  _main_pocket_reduce_edge = 4;
+  difference() {
+    union() {
+      blindFrontPanel(); 
+      }  
+      translate([0, 0, 1.5])
+        cube([FRONT_PANEL_WIDTH - _main_pocket_reduce_edge, FRONT_PANEL_DEPTH - _main_pocket_reduce_edge, FRONT_PANEL_HEIGHT],center=true);
+  }
+}
+
+/************************************************************************************************************
+**  Module:      3dBlindFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dCornerTriangle(tr_diam) {
+_triangle_size = 14;
+  difference() {
+    union() {
+      translate([0,0,-FRONT_PANEL_HEIGHT/2])
+      hull()   {
+        cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+        translate([_triangle_size,0,0])
+          cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+        translate([0,-_triangle_size,0])
+          cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+      }      
+    }
+  }
+}
+
+ /************************************************************************************************************
+ **  Module:      barTrailLedStick_3D
+ **  Parameters : None
+ **  Description: Module for mounting NEOPIXEL LED stick
+ **              
+ ************************************************************************************************************/
+ module barTrailLedStick_3D() {
+  /** definition for the connection trail **/
+  _led_trail_bar_width = 130;
+  _led_trail_bar_depth =  11;
+  _led_trail_bar_height =  3;  
+  _led_trail_horiz_offset = 0; //10;
+
+  /** definion for the neo pixel trail **/
+  _neopixel_led_width = 110;
+  _neopixel_led_depth =   5.7;
+  _neopixel_led_height =  2.0;
+  _neopixel_led_view_height =  FRONT_PANEL_HEIGHT;
+  _neopixel_led_view_depth =  3;  
+
+  /** support resistor bar **/
+  _support_bar_width = _neopixel_led_width;
+  _support_bar_depth =  4.0;
+  _support_bar_height = 2.0;
+
+   difference() {
+     union() {
+       /** connection stick trail **/
+       /** Removed 2021-02-07, it is not needed. It is better to get more material in fron of the LED to get a more diffuse look **/
+      *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
+       
+      /** neopixel row trail **/
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+        cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
+
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.75,-_led_trail_bar_height/2 - _neopixel_led_height/2-1.5])
+        cube([_neopixel_led_width - 5, _neopixel_led_view_depth,_neopixel_led_view_height+10],center=true);        
+
+      /** support resistor bar **/
+      translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
+        cube([_support_bar_width, _support_bar_depth-1,_support_bar_height],center=true);        
+     }
+     
+   }
+ }
+
+   /************************************************************************************************************
+ **  Module:      ledIndicatorBlock_3D
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+  module ledIndicatorBlock_3D() {
+  _led_indicator_block_width  = LED_DISPLAY_DEPTH + 5; // 30;
+  _led_indicator_block_depth  =  12;
+  _led_indicator_block_height = FRONT_PANEL_HEIGHT;
+
+  _m3Diameter = 2.7;
+  _m3Length   = 4;
+  _attach_hole_distance = _led_indicator_block_width/2 + 3;
+  _attach_hole_height_offset = -0;
+
+  difference() {
+    union() {
+      cube([_led_indicator_block_width, _led_indicator_block_depth, _led_indicator_block_height], center=true);
+      *translate([_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+      *translate([-_attach_hole_distance,0, _attach_hole_height_offset])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+    }
+  }
+  }
+
+
+    /************************************************************************************************************
+ **  Module:      ledIndicatorTrail_3D
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+  module ledIndicatorTrail_3D() {
+  _led_indicator_trail_width  = LED_DISPLAY_DEPTH - 10; // 30;
+  _led_indicator_trail_depth  =  8;
+  _led_indicator_trail_height = FRONT_PANEL_HEIGHT;
+
+  _m3Diameter = 2.7;
+  _m3Length   = 4;
+  _attach_hole_distance = _led_indicator_trail_width/2 + 3;
+  _attach_hole_height_offset = 0;
+
+  difference() {
+    union() {
+
+        cube([_led_indicator_trail_width, _led_indicator_trail_depth, _led_indicator_trail_height], center=true);
+      translate([0,0,-1])
+        cube([_led_indicator_trail_width - 2, _led_indicator_trail_depth - 2, _led_indicator_trail_height], center=true);
       translate([_attach_hole_distance,0, _attach_hole_height_offset])
         cylinder(d=_m3Diameter, h=_m3Length, center=true);
       translate([-_attach_hole_distance,0, _attach_hole_height_offset])
