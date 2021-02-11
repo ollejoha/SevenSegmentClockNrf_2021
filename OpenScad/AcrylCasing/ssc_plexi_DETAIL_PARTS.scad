@@ -28,10 +28,10 @@ use <ssc_plexi_PANELS.scad>;
  *
  ***************************************************************************/
 *frontPanelExt();
-*ldrPanelAdaptor();
+ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
-connectorMatrix();
+*connectorMatrix();
 
  /***************************************************************************
  *
@@ -67,7 +67,7 @@ module connectorMatrix() {
  **              
  ************************************************************************************************************/
 module ldrPanelAdaptor() {
-   adaptor_u_diameter          = 8.5;
+   adaptor_u_diameter          = 8.3;
    adaptor_height              = 7;
 
    adaptor_cable_hole_diameter = 4;
@@ -93,8 +93,14 @@ module ldrPanelAdaptor() {
       translate([0,0,adaptor_height - adaptor_fixing_ring_height])
         cylinder(d=adaptor_fixing_ring_diameter, adaptor_fixing_ring_height);
      }
-     cylinder(d=adaptor_cable_hole_diameter, h=adaptor_height);
-     cylinder(d=ldr_fixture_diameter, h=ldr_fixture_height);
+     translate([0,0,-0.1])
+       cylinder(d=adaptor_cable_hole_diameter, h=adaptor_height+2);
+
+      translate([0, 0, 2])
+        cylinder(d2=adaptor_cable_hole_diameter-1,d1=adaptor_cable_hole_diameter+2, h=7);
+
+     translate([0,0,-0.1])       
+       cylinder(d=ldr_fixture_diameter, h=ldr_fixture_height);
 
 
      *cylinder(d=adaptor_i_diameter, h=adaptor_inner_ring_height);

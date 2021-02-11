@@ -53,7 +53,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 *blindFrontPanel();      //.. Template for front panel
 *frontPanel();           //.. Front panel
 
-*translate([0, 0,-3])
+translate([0, 0,-3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for the back section
@@ -74,7 +74,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 ////////////////////////////////////////////////////////////////////////////////
 ////                     3D PRINTER MODULES RENDER                          ////
 ////////////////////////////////////////////////////////////////////////////////
-3dFrontPanel();
+*3dFrontPanel();
 
  /***************************************************************************
  *
