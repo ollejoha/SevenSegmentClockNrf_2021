@@ -125,11 +125,11 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
 //#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
@@ -638,6 +638,7 @@ void loop() {
     if (envLightLevel > 1000) envLightLevel = 1000;  // TEST --if (envLightLevel > 860) envLightLevel = 860;
     ledBrightness = map(envLightLevel, 200, 1000, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
+    ledMatrix.setBrightness(10);  //  // HACK: Set fixed brightness of display temporarily
     ledMatrix.writeDisplay();
     // TEMPORARY DEBUG CODE
     // Serial.print(F("LED Brightness: "));

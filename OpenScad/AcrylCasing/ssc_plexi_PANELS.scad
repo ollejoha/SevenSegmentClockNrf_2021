@@ -53,7 +53,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 *blindFrontPanel();      //.. Template for front panel
 *frontPanel();           //.. Front panel
 
-*translate([0,0,-3])
+*translate([0, 0,-3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for the back section
@@ -436,7 +436,7 @@ module frontPanelExt() {
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  4.6;
+  _support_bar_depth =  4.0;
   _support_bar_height = 2.0;
 
    difference() {
@@ -446,7 +446,7 @@ module frontPanelExt() {
       *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
@@ -798,9 +798,9 @@ _triangle_size = 14;
 }
 
  /************************************************************************************************************
- **  Module:      barTrailLedStick
+ **  Module:      barTrailLedStick_3D
  **  Parameters : None
- **  Description: Back panel for DC power connection and FTDI.
+ **  Description: Module for mounting NEOPIXEL LED stick
  **              
  ************************************************************************************************************/
  module barTrailLedStick_3D() {
@@ -819,7 +819,7 @@ _triangle_size = 14;
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  4.6;
+  _support_bar_depth =  4.0;
   _support_bar_height = 2.0;
 
    difference() {
@@ -829,11 +829,11 @@ _triangle_size = 14;
       *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2,-_led_trail_bar_height/2 - _neopixel_led_height/2-1.5])
-        cube([_neopixel_led_width, _neopixel_led_view_depth,_neopixel_led_view_height],center=true);        
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.75,-_led_trail_bar_height/2 - _neopixel_led_height/2-1.5])
+        cube([_neopixel_led_width - 5, _neopixel_led_view_depth,_neopixel_led_view_height+10],center=true);        
 
       /** support resistor bar **/
       translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
