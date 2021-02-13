@@ -1097,7 +1097,7 @@ void printOutdoorTemperature(float temp, int dotpos) {
 
   ledMatrix.clear();
 
-  if ((temp < 10.0) || (temp >= -10.0)) {
+  if ((temp > 9.9) || (temp >= -10.0)) {   // FIXME: Original code: if temp < 10.0 || 
     digit1 = (_temp / 100) % 10;
     ledMatrix.writeDigitNum(1, digit1);
   }
