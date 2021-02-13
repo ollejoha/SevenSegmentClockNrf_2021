@@ -28,11 +28,12 @@ use <ssc_plexi_PANELS.scad>;
  *
  ***************************************************************************/
 *frontPanelExt();
-ldrPanelAdaptor();
+*ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
 *connectorMatrix();
-*attachDisplayHook();
+attachDisplayHookLeft();
+*attachDisplayHookRight();
 
  /***************************************************************************
  *
@@ -189,17 +190,114 @@ module cornerPanelConnectorRear() {
    }
   }
 
-
-
-  /************************************************************************************************************
- **  Module:      attachDisplayHook
+   /************************************************************************************************************
+ **  Module:      cornerPanelConnectorRear
  **  Parameters : None
  **  Description: Detail for attaching the front and back panels to the middle section of the box.
  **               This detail is glued to the inner cornar at the back and front panels.
  **               The front panel is screwed from the insida of the box.
  **              
  ************************************************************************************************************/
-  module attachDisplayHook() {
+module cornerPanelConnectorRear() {
+   _angle_connector_width = 12;
+   _angle_screw_hole_diam = 3;
+   _angle_screw_height    = 3;
+   difference() {
+     union() {
+       hull() {
+         cylinder(d=_angle_screw_hole_diam, _angle_screw_height);
+         
+         translate([_angle_connector_width-5, 0, 0])  
+           cylinder(d=_angle_screw_hole_diam, _angle_screw_height);
+
+          translate([0,  _angle_connector_width, 0])  
+            cylinder(d=_angle_screw_hole_diam, _angle_screw_height);
+       }
+     }
+     translate([2.65, 2.6, 0])
+       cylinder(d=_angle_screw_hole_diam-0.3, _angle_screw_height);
+   }
+  }
+
+  /************************************************************************************************************
+ **  Module:      attachDisplayHookLeft
+ **  Parameters : None
+ **  Description: Detail for attaching the front and back panels to the middle section of the box.
+ **               This detail is glued to the inner cornar at the back and front panels.
+ **               The front panel is screwed from the insida of the box.
+ **              
+ ************************************************************************************************************/
+  module attachDisplayHookLeft() {
+
+    _base_width  = 35;
+    _base_depth  =  7;
+    _base_height =  3;
+
+    _wall_width = _base_width;
+    _wall_depth = 1.5;
+    _wall_height = 9;
+
+    _hook_width = _base_width;
+    _hook_depth = 5;
+    _hook_height = 1.5;
+
+    _m3_diameter = 3.3;
+    _m3_length   = 4;
+
+    _slot_width = 13;
+    _slot_depth  =  10;
+    _slot_height = _base_height;
+
+    difference() {
+      union() {
+
+        *color("green") {
+          translate([0, -5,3])
+            cube([26, 6, 6],center=true);
+        }  
+        /** base segment **/
+        cube([_base_width, _base_depth, _base_height],center=true);
+        
+        /** wall segment **/
+        translate([0, -_base_depth/2 + _wall_depth/2, _wall_height/2 - _base_height/2])
+          cube([_wall_width, _wall_depth, _wall_height],center=true);
+
+        /** hook segment **/
+        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height - _hook_height/2])
+          cube([_hook_width, _hook_depth, _hook_height],center=true);        
+        
+        translate([0, -6, 6])
+          rotate([0,90,0])
+            cylinder(d=1, h =26, center=true);
+      }
+      translate([10, 0,-2])
+        hull() {
+          cylinder(d=_m3_diameter, h=_m3_length);
+          translate([0, 3, 0])
+            cylinder(d=_m3_diameter, h=_m3_length);
+        }
+
+      translate([-10, 0 ,-2])
+        hull() {
+          cylinder(d=_m3_diameter, h=_m3_length);
+          translate([0, 3, 0])
+            cylinder(d=_m3_diameter, h=_m3_length);
+        }
+
+      translate([0, 1.1, 0])
+        cube([_slot_width, _slot_depth, _slot_height + 0.1],center=true);        
+    }
+  }
+
+  /************************************************************************************************************
+ **  Module:      attachDisplayHookRight
+ **  Parameters : None
+ **  Description: Detail for attaching the front and back panels to the middle section of the box.
+ **               This detail is glued to the inner cornar at the back and front panels.
+ **               The front panel is screwed from the insida of the box.
+ **              
+ ************************************************************************************************************/
+  module attachDisplayHookRight() {
 
     _base_width  = 35;
     _base_depth  =  7+5;
@@ -216,8 +314,9 @@ module cornerPanelConnectorRear() {
     _m3_diameter = 3.3;
     _m3_length   = 4;
 
-    _m13_diameter = 13;
-    _m13_length   =  4;
+    _slot_width = 13;
+    _slot_depth  =  10;
+    _slot_height = _base_height;
 
     difference() {
       union() {
@@ -255,7 +354,10 @@ module cornerPanelConnectorRear() {
             cylinder(d=_m3_diameter, h=_m3_length);
         }
 
-      translate([0, 7,-2])
+      translate([0, 1.1, 0])
+        cube([_slot_width, _slot_depth, _slot_height + 0.1],center=true);        
+
+      *translate([0, 7,-2])
         cylinder(d=_m13_diameter, h=_m13_length);        
     }
   }
