@@ -67,7 +67,7 @@ module connectorMatrix() {
  **              
  ************************************************************************************************************/
 module ldrPanelAdaptor() {
-   adaptor_u_diameter          = 8.3;
+   adaptor_u_diameter          = 10;
    adaptor_height              = 7;
 
    adaptor_cable_hole_diameter = 4;
@@ -75,7 +75,7 @@ module ldrPanelAdaptor() {
    ldr_fixture_diameter = 5.5;
    ldr_fixture_height    = 2.3;
 
-   adaptor_fixing_ring_diameter = 10;
+   adaptor_fixing_ring_diameter = 13;
    adaptor_fixing_ring_height    =  2;
 
 
