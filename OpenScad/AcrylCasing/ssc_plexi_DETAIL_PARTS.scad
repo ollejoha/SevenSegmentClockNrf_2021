@@ -32,6 +32,7 @@ ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
 *connectorMatrix();
+*attachDisplayHook();
 
  /***************************************************************************
  *
@@ -67,7 +68,7 @@ module connectorMatrix() {
  **              
  ************************************************************************************************************/
 module ldrPanelAdaptor() {
-   adaptor_u_diameter          = 10;
+   adaptor_u_diameter          = 10.0;
    adaptor_height              = 7;
 
    adaptor_cable_hole_diameter = 4;
@@ -101,6 +102,9 @@ module ldrPanelAdaptor() {
 
      translate([0,0,-0.1])       
        cylinder(d=ldr_fixture_diameter, h=ldr_fixture_height);
+
+      translate([0,-7.7,5])
+        cube([10,5,5],center=true);
 
 
      *cylinder(d=adaptor_i_diameter, h=adaptor_inner_ring_height);
@@ -156,7 +160,7 @@ module cornerPanelConnectorFront() {
    }
   }
 
-  /************************************************************************************************************
+ /************************************************************************************************************
  **  Module:      cornerPanelConnectorRear
  **  Parameters : None
  **  Description: Detail for attaching the front and back panels to the middle section of the box.
@@ -183,4 +187,57 @@ module cornerPanelConnectorRear() {
      translate([2.65, 2.6, 0])
        cylinder(d=_angle_screw_hole_diam-0.3, _angle_screw_height);
    }
+  }
+
+
+
+  /************************************************************************************************************
+ **  Module:      attachDisplayHook
+ **  Parameters : None
+ **  Description: Detail for attaching the front and back panels to the middle section of the box.
+ **               This detail is glued to the inner cornar at the back and front panels.
+ **               The front panel is screwed from the insida of the box.
+ **              
+ ************************************************************************************************************/
+  module attachDisplayHook() {
+
+    _base_width  = 26;
+    _base_depth  =  7;
+    _base_height =  3;
+
+    _wall_width = _base_width;
+    _wall_depth = 1.5;
+    _wall_height = 9;
+
+    _hook_width = _base_width;
+    _hook_depth = 4.5;
+    _hook_height = 1.5;
+
+    _m3_diameter = 3.2;
+    _m3_length   = 4;
+
+    _m13_diameter = 13;
+    _m13_length   =  4;
+
+    difference() {
+      union() {
+        /** base segment **/
+        cube([_base_width, _base_depth, _base_height],center=true);
+        
+        /** wall segment **/
+        translate([0, -_base_depth/2 + _wall_depth/2, _wall_height/2 - _base_height/2])
+          cube([_wall_width, _wall_depth, _wall_height],center=true);
+
+        /** hook segment **/
+        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height/2])
+          cube([_hook_width, _hook_depth, _hook_height],center=true);        
+      }
+      translate([10,2.5,-2])
+        cylinder(d=_m3_diameter, h=_m3_length);
+      translate([-10,2.5,-2])
+        cylinder(d=_m3_diameter, h=_m3_length);
+
+      translate([0, 7,-2])
+        cylinder(d=_m13_diameter, h=_m13_length);        
+    }
   }
