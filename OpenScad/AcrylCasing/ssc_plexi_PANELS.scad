@@ -53,12 +53,12 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 *blindFrontPanel();      //.. Template for front panel
 *frontPanel();           //.. Front panel
 
-translate([0, 0,-3])
+*translate([0, 0,-3])
   frontPanelExt();
 
 *templateBackSection();  //.. Template for the back section
 
-*backSecionDesktop();    //.. Back section for desk top 
+backSecionDesktop();    //.. Back section for desk top 
 
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
@@ -523,10 +523,22 @@ module templateBackSection() {
  **              
  ************************************************************************************************************/
  module backSecionDesktop() {
+   _modular_pocket_width = 20;
+   _modular_pocket_depth = 20;
+   _modular_pocket_height = 3;
+
+   _modular_contact_width = 15;
+   _modular_contact_depth = 15;
+   _modular_contact_height = 2;
+
+
+
    difference() {
      union() {
        templateBackSection();
      }
+     modularJack();
+     dcJack();
    }
  }
 
@@ -617,6 +629,52 @@ module templateBackSection() {
   }
 
 
+/************************************************************************************************************
+ **  Module:      modularJack
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+ module modularJack() {
+     _modular_pocket_width = 20;
+     _modular_pocket_depth = 20;
+     _modular_pocket_height = 3;
+  
+     _modular_contact_width = 15;
+     _modular_contact_depth = 15;
+     _modular_contact_height = 2;
+
+     difference() {
+       union() {
+         /** modular pocket **/
+        translate([0, 0, 0.6])
+          cube([_modular_pocket_width, _modular_pocket_depth, _modular_pocket_height],center=true);   
+        /** modular jack **/
+        translate([0, 0, -1])
+          cube([_modular_contact_width, _modular_contact_depth, _modular_contact_height],center=true);
+       }
+
+   }
+ }
+
+ /************************************************************************************************************
+ **  Module:      dcJack
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/   
+ module dcJack() {
+   _dc_diameter = 12;
+   _dc_length = 6;
+
+   difference() {
+     union() {
+       translate([-50, 0, 0])
+         rotate([0, 0, 90])
+           cylinder(d=_dc_diameter, h=_dc_length, center=true);
+     }
+   }
+ }
 
  ////////////////////////////////////////////////////////////////////////////////////////////////////
  ////////////////////////////////////////////////////////////////////////////////////////////////////
