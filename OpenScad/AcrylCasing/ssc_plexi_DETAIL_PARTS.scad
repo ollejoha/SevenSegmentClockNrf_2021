@@ -31,10 +31,10 @@ use <ssc_plexi_PANELS.scad>;
 *ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
-*connectorMatrix();
+connectorMatrix();
 *attachDisplayHookLeft();
 *attachDisplayHookRight();
-clockStand();
+*clockStand();
 
  /***************************************************************************
  *

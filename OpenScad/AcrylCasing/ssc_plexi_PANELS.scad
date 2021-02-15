@@ -436,7 +436,7 @@ module frontPanelExt() {
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  4.0;
+  _support_bar_depth =  3.0;
   _support_bar_height = 2.0;
 
    difference() {
@@ -446,11 +446,11 @@ module frontPanelExt() {
       *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
-      translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
+      translate([_led_trail_horiz_offset, -_support_bar_depth-0.9,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
         cube([_support_bar_width, _support_bar_depth-1,_support_bar_height],center=true);        
      }
      
