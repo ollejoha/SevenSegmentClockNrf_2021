@@ -32,8 +32,9 @@ use <ssc_plexi_PANELS.scad>;
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
 *connectorMatrix();
-attachDisplayHookLeft();
+*attachDisplayHookLeft();
 *attachDisplayHookRight();
+clockStand();
 
  /***************************************************************************
  *
@@ -361,3 +362,34 @@ module cornerPanelConnectorRear() {
         cylinder(d=_m13_diameter, h=_m13_length);        
     }
   }
+
+
+  /************************************************************************************************************
+ **  Module:      clockStand();
+ **  Parameters : None
+ **  Description: Temporary clock stand during development
+ ************************************************************************************************************/
+ module clockStand() {
+
+   _stand_width = 50;
+   _stand_depth = 6;
+   _stand_height =9;
+
+   _bar_width = 20;
+   _bar_depth = 4;
+   _bar_height = 4;
+
+   _clock_panel_width = 6.5;
+   _clock_panel_depth =_stand_depth;
+   _clock_panel_height = _stand_height - 2;
+
+   difference() {
+     union() {
+       cube([_stand_width, _stand_depth, _stand_height],center=true);
+       translate([_bar_width + _stand_depth/2, 0, -_stand_height/2 + _bar_height/2])
+         cube([_bar_depth, _bar_width, _bar_height],center = true);
+     }
+     translate([-_stand_width/2 + _clock_panel_depth,0,_stand_height/2 - _clock_panel_height/2 + 0.1])
+       cube([_clock_panel_depth, _clock_panel_width, _clock_panel_height], center= true);
+   }
+ }
