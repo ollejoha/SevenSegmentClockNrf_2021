@@ -33,7 +33,10 @@
  |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
  |            |            |            |   reset end updated when the uv-level deceases                              |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- 
+ | 2021-02-15 |b-2.1.3     |v1.1        | - Updated funtion for writing the outdoor temperature to the display so that|
+ |            |            |            |   that there is no leading zero when temperature is betewwn 0.0 - 9.9       |
+ |            |            |            |    degrees C.                                                               |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
  -----  NOTE  -----
  Update the constants that comes direct after thos comment section when the program 
  is updated so that the current program version is shown on the display
@@ -97,7 +100,7 @@
  * ****************************************************************************************************************/
 #define PROGRAM_VERSION 2
 #define UPDATE_VERSION  1
-#define PATCH_VERSION   2
+#define PATCH_VERSION   3
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
@@ -128,7 +131,7 @@
 //#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
-#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
@@ -1097,7 +1100,7 @@ void printOutdoorTemperature(float temp, int dotpos) {
 
   ledMatrix.clear();
 
-  if ((temp > 9.9) || (temp >= -10.0)) {   // FIXME: Original code: if temp < 10.0 || 
+  if ((temp > 9.9) || (temp < -9.9)) {   // FIXME: Original code: if temp < 10.0 || 
     digit1 = (_temp / 100) % 10;
     ledMatrix.writeDigitNum(1, digit1);
   }
