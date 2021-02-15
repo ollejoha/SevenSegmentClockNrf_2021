@@ -391,5 +391,9 @@ module cornerPanelConnectorRear() {
      }
      translate([-_stand_width/2 + _clock_panel_depth,0,_stand_height/2 - _clock_panel_height/2 + 0.1])
        cube([_clock_panel_depth, _clock_panel_width, _clock_panel_height], center= true);
+    
+    translate([12,0,4])
+      cube([_stand_width+0.1, _stand_depth+0.1, _stand_height+0.1],center=true);
+    
    }
  }
