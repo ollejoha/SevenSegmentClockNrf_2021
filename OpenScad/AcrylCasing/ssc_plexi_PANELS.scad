@@ -611,7 +611,7 @@ module templateBackSection() {
       translate([_attach_hole_distance,0, _attach_hole_height_offset])
         cylinder(d=_m3Diameter, h=_m3Length, center=true);
       translate([-_attach_hole_distance,0, _attach_hole_height_offset])
-      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
     }
   }
   }

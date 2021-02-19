@@ -31,10 +31,21 @@ use <ssc_plexi_PANELS.scad>;
 *ldrPanelAdaptor();
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
-connectorMatrix();
-*attachDisplayHookLeft();
-*attachDisplayHookRight();
+*connectorMatrix();
+
+*translate([-65, 7, 4.5])
+  rotate([0, 0, 90])
+    attachDisplayHookLeft();
+
+translate([65, 7, 4.5])
+  rotate([0, 0, -90])
+    attachDisplayHookRight();
+
 *clockStand();
+
+translate([65.7, 7, 7])
+  rotate([0, 0, -90])
+    sensorAdaptorBoard();
 
  /***************************************************************************
  *
@@ -300,7 +311,7 @@ module cornerPanelConnectorRear() {
  ************************************************************************************************************/
   module attachDisplayHookRight() {
 
-    _base_width  = 35;
+    _base_width  = 45;
     _base_depth  =  7+5;
     _base_height =  3;
 
@@ -334,10 +345,10 @@ module cornerPanelConnectorRear() {
           cube([_wall_width, _wall_depth, _wall_height],center=true);
 
         /** hook segment **/
-        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height - _hook_height/2])
+        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height - _hook_height/2 - 1.5])
           cube([_hook_width, _hook_depth, _hook_height],center=true);        
         
-        translate([0, -6, 6])
+        *translate([0, -6, 6])
           rotate([0,90,0])
             cylinder(d=1, h =26, center=true);
       }
@@ -364,8 +375,8 @@ module cornerPanelConnectorRear() {
   }
 
 
-  /************************************************************************************************************
- **  Module:      clockStand();
+/************************************************************************************************************
+ **  Module:      clockStand()
  **  Parameters : None
  **  Description: Temporary clock stand during development
  ************************************************************************************************************/
@@ -397,3 +408,71 @@ module cornerPanelConnectorRear() {
     
    }
  }
+
+/************************************************************************************************************
+ **  Module:      sensorAdaptorBoard()
+ **  Parameters : None
+ **  Description: Temporary clock stand during development
+ ************************************************************************************************************/
+module sensorAdaptorBoard() {
+  _frontpanel_bar_width = 45;
+  _frontpanel_bar_depth = 5.5;
+  _frontpanel_bar_height = 2;
+
+  _m3_diameter = 3.3;
+  _m3_thread_diameter = 2.7;
+  _m3_length   = 5;  
+
+  _pcb_attach_cube_width          = 8;
+  _pcb_attach_cube_depth          = 13.5;
+  _pcb_attach_cube_height         = 3;
+  _pcb_attach_cube_height_offset  = 11;
+
+  _pcb_stand_width         = 8;
+  _pcb_stand_depth         = 5.5;
+  _pcb_stand_height        = 12;
+  _pcb_stand_offset_height = 5;
+
+  difference() {
+    union() {
+      /** frontpanel bar **/
+      *cube([_frontpanel_bar_width, _frontpanel_bar_depth, _frontpanel_bar_height], center= true);
+
+      /** left pcb cube **/
+      translate([18.5, -7.9, _pcb_attach_cube_height_offset])
+        cube([_pcb_attach_cube_width, _pcb_attach_cube_depth, _pcb_attach_cube_height], center=true);
+
+      translate([18.5, -3.9, _pcb_stand_offset_height])
+        cube([_pcb_stand_width, _pcb_stand_depth, _pcb_stand_height],center=true);
+
+      /** right pcb cube **/
+      translate([-18.5, -7.9, _pcb_attach_cube_height_offset])
+        cube([_pcb_attach_cube_width, _pcb_attach_cube_depth, _pcb_attach_cube_height], center=true);
+
+      translate([-18.5, -3.9, _pcb_stand_offset_height])
+        cube([_pcb_stand_width, _pcb_stand_depth, _pcb_stand_height],center=true);        
+    }
+    
+
+      *translate([10, -0.5,-2])
+        hull() {
+          cylinder(d=_m3_diameter, h=_m3_length);
+          translate([0, 6, 0])
+            cylinder(d=_m3_diameter, h=_m3_length);
+        }
+
+      *translate([-10, -0.5 ,-2])
+        hull() {
+          cylinder(d=_m3_diameter, h=_m3_length);
+          translate([0, 6, 0])
+            cylinder(d=_m3_diameter, h=_m3_length);
+        }    
+      /** left screw hole **/
+      translate([18.5, -11, _pcb_attach_cube_height_offset])
+        cylinder(d=_m3_thread_diameter, h=_m3_length, center=true);
+
+      /** rigth screw hole **/
+      translate([-18.5, -11, _pcb_attach_cube_height_offset])
+        cylinder(d=_m3_thread_diameter, h=_m3_length, center=true);        
+  }
+}
