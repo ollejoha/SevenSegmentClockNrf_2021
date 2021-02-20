@@ -131,7 +131,7 @@
 //#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
-//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
@@ -623,11 +623,16 @@ void loop() {
   if (currentTime - lastBrightnessTime > 5000) {
     lastBrightnessTime = millis();
     uint16_t envLightLevel = analogRead(LIGHT_SENSOR_ANALOG_PIN);
-    if (envLightLevel < 360) envLightLevel = 360;
-    if (envLightLevel > 860) envLightLevel = 860;
-    ledBrightness = map(envLightLevel, 360, 860, 0, 15);
+    if (envLightLevel < 200) envLightLevel = 200;          // TEST --- 360) envLightLevel = 360;
+    if (envLightLevel > 1000) envLightLevel = 1000;        // TEST --- 860) envLightLevel = 860;
+    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);  // TEST --- map(envLightLevel, 360, 860, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
     ledMatrix.writeDisplay();
+    // TEMPORARY DEBUG CODE
+    Serial.print(F("LED Brightness: "));
+    Serial.print(ledBrightness);
+    Serial.print(F(" "));
+    Serial.println(envLightLevel);    
   }
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
