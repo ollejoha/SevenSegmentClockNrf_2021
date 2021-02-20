@@ -43,7 +43,7 @@ translate([65, 7, 4.5])
 
 *clockStand();
 
-translate([65.7, 7, 7])
+*translate([65.7, 7, 7])
   rotate([0, 0, -90])
     sensorAdaptorBoard();
 
@@ -317,7 +317,7 @@ module cornerPanelConnectorRear() {
 
     _wall_width = _base_width;
     _wall_depth = 1.5;
-    _wall_height = 9;
+    _wall_height = 7.2;
 
     _hook_width = _base_width;
     _hook_depth = 4.5;
@@ -345,7 +345,7 @@ module cornerPanelConnectorRear() {
           cube([_wall_width, _wall_depth, _wall_height],center=true);
 
         /** hook segment **/
-        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height - _hook_height/2 - 1.5])
+        translate([0, -_base_depth/2 + _wall_depth/2 - _hook_depth/2 + _wall_depth/2, _wall_height - _hook_height - _hook_height/2])
           cube([_hook_width, _hook_depth, _hook_height],center=true);        
         
         *translate([0, -6, 6])
