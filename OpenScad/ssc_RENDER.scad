@@ -15,7 +15,7 @@ date            description
 2021-01-21	    Start of design
 
 */
-$fn = 50;
+$fn = $preview ? 10 : 64;
 
 /** INCLUDE FILES **/
 include <ssc_DIMENSIONS.scad>;

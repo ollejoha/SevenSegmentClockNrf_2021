@@ -16,7 +16,8 @@ date            description
 2021-01-21	    Start of re-design
 
 */
-$fn = 100;
+//$fn = 20;
+$fn = $preview ? 10 : 64;
 
 include <ssc_plexi_DIMENSIONS.scad>;
 use <ssc_plexi_DETAIL_PARTS.scad>;
@@ -58,7 +59,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
 *templateBackSection();  //.. Template for the back section
 
-backSecionDesktop();    //.. Back section for desk top 
+*backSecionDesktop();    //.. Back section for desk top 
 
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
@@ -69,7 +70,7 @@ backSecionDesktop();    //.. Back section for desk top
   ledDisplay();     
 
   /** MILLING MODULES **/
-*boxPanels();   //.. Bottom. sides & top panels
+boxPanels();   //.. Bottom. sides & top panels
 
 ////////////////////////////////////////////////////////////////////////////////
 ////                     3D PRINTER MODULES RENDER                          ////
@@ -87,6 +88,10 @@ module boxPanels() {   //.. Bottom. sides & top panels
     union() {
       translate([0, 0, -2])
         bottomSection();
+
+      translate([0, 88, 73])
+      rotate([180,0,0])
+        topSection();        
       
       translate([-5, -87, 80])
         rotate([0, -90, 0])
@@ -96,7 +101,7 @@ module boxPanels() {   //.. Bottom. sides & top panels
         rotate([0, 90, 0])
           rightSideSection();
 
-      translate([30, 50, 0])
+      translate([30, 140, 0])
         connectorMatrix();
     }
   }
@@ -221,12 +226,24 @@ module bottomSection() {
  **              
  ************************************************************************************************************/
  module leftSideSection() {
+
    difference() {
      union() {
        translate([-BOX_WIDTH/2 + BOX_MATERIAL_THICKNESS/2,0,BOX_HEIGHT/2])
         rotate([90,0,90])
          sideSection();
      }
+
+    c_pos = 22;
+    
+    translate([-85,0,BOX_HEIGHT/2])
+      rotate([0, 90, 0])
+      for(j = [0 : 15])
+        rotate([0,0,j*22.5])
+          for(i=[1 : 4 : c_pos]) {
+            translate([i - 1 + 5, 0, BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 1, h = 6, center=true);
+      }
    }
  }
 
@@ -243,6 +260,17 @@ module bottomSection() {
         rotate([-90,0,90])
          sideSection();
      }
+
+     c_pos = 22;
+    
+    translate([85,0,BOX_HEIGHT/2])
+      rotate([0, 90, 0])
+      for(j = [0 : 15])
+        rotate([0,0,j*22.5])
+          for(i=[1 : 4 : c_pos]) {
+            translate([i - 1 + 5, 0, -BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 1, h = 6, center=true);
+      }
    }
  }
 
