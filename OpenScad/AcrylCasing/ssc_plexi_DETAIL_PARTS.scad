@@ -63,11 +63,11 @@ module connectorMatrix() {
   difference() {
     union() {
       for (a = [0:3]) {
-        translate([a*12,0,-2])
+        translate([a*12 -25,0,-2])
         cornerPanelConnectorFront();
       }
       for (a = [0:3]) {
-        translate([a*12,18,-2])
+        translate([a*12 - 80, 0,-2])
         cornerPanelConnectorRear();
       }      
     }

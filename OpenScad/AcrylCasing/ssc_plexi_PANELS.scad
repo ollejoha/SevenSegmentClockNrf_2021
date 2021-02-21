@@ -29,13 +29,15 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
  *
  ***************************************************************************/
 //----
-*ledFrame();
+//ledFrame();
 
 //...............
 *baseSection();          //.. Template from wich top and bottom sections are derived
 
 *translate([0,0,-2])
   bottomSection();        //.. Desktop version of bottom section
+
+  *dht22Sensor();         //.. DHT22 sensor
 
 *translate([0,0,73])
   rotate([0,180,0])
@@ -65,12 +67,14 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
 *neopixelStick();
 
+connectorMatrix();
+
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
   ledDisplay();     
 
   /** MILLING MODULES **/
-boxPanels();   //.. Bottom. sides & top panels
+*boxPanels();   //.. Bottom. sides & top panels
 
 ////////////////////////////////////////////////////////////////////////////////
 ////                     3D PRINTER MODULES RENDER                          ////
@@ -161,6 +165,8 @@ module ledDisplay() {
 module bottomSection() {
   _vent_diameter = 2.5;
   _vent_height = BOX_MATERIAL_THICKNESS;
+  _dht_attach_hole_diameter = 1.8;
+  _dht_attach_hole_length = 3;
   
   difference() {
     union() {
@@ -175,6 +181,10 @@ module bottomSection() {
           translate([0,-15,0])
             cylinder(d=_vent_diameter, h=_vent_height,center=true);
         }
+    translate([0, 27, -1])
+      dht22Sensor();
+    *translate([0, 0, 3.5])
+      cylinder(d = _dht_attach_hole_diameter, h = _dht_attach_hole_length, center = true);
   }
 }
 
@@ -234,15 +244,15 @@ module bottomSection() {
          sideSection();
      }
 
-    c_pos = 22;
+    c_pos = 20;
     
-    translate([-85,0,BOX_HEIGHT/2])
+    translate([-84,0,BOX_HEIGHT/2])
       rotate([0, 90, 0])
       for(j = [0 : 15])
         rotate([0,0,j*22.5])
           for(i=[1 : 4 : c_pos]) {
-            translate([i - 1 + 5, 0, BOX_MATERIAL_THICKNESS/2])
-              cylinder(d = 1, h = 6, center=true);
+            translate([i + 2 + 10, 0, BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 2.5, h = 6, center=true);
       }
    }
  }
@@ -261,15 +271,15 @@ module bottomSection() {
          sideSection();
      }
 
-     c_pos = 22;
+     c_pos = 20;
     
-    translate([85,0,BOX_HEIGHT/2])
+    translate([84,0,BOX_HEIGHT/2])
       rotate([0, 90, 0])
       for(j = [0 : 15])
         rotate([0,0,j*22.5])
           for(i=[1 : 4 : c_pos]) {
-            translate([i - 1 + 5, 0, -BOX_MATERIAL_THICKNESS/2])
-              cylinder(d = 1, h = 6, center=true);
+            translate([i + 2 + 10, 0, -BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 2.5, h = 6, center=true);
       }
    }
  }
@@ -985,4 +995,33 @@ _triangle_size = 14;
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
     }
   }
-  }
+}
+
+/************************************************************************************************************
+ **  Module:      dht22Sensor
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+ module dht22Sensor() {
+   _dht_sensor_width            = 21;
+   _dht_sensor_top_width        = 27;
+   _dht_sensor_depth            = 16;
+   _dht_sensor_cabin_height     =  6.2;
+   _dht_sensor_top_plane_height =  1.5;
+   _dht_sensor_screw_diameter   = 2.2;
+   _dht_sensor_center_dist      = 2.6;
+
+   difference() {
+     union() {
+       cube([_dht_sensor_width, _dht_sensor_depth, _dht_sensor_cabin_height],center = true);
+       translate([(-_dht_sensor_width + _dht_sensor_top_width)/2, 0,_dht_sensor_cabin_height/2 + _dht_sensor_top_plane_height/2])
+         cube([_dht_sensor_top_width, _dht_sensor_depth, _dht_sensor_top_plane_height],center = true);
+
+     translate([_dht_sensor_width/2 + _dht_sensor_center_dist, 0, _dht_sensor_cabin_height/2 + 0.1])
+       cylinder(d = _dht_sensor_screw_diameter, h = BOX_MATERIAL_THICKNESS, center = true);              
+     }
+     *translate([_dht_sensor_width/2 + _dht_sensor_center_dist, 0, _dht_sensor_cabin_height/2])
+       cylinder(d = _dht_sensor_screw_diameter, h = BOX_MATERIAL_THICKNESS, center = true);     
+   }
+ }
