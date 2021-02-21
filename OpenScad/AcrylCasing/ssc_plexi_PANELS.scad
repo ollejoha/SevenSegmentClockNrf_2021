@@ -43,7 +43,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
   rotate([0,180,0])
     topSection();           //.. Top section used for both desktop and wall monted casings
 
-*sideSection();          //.. Template for side secions
+sideSection();          //.. Template for side secions
 
 *translate([0,0,80])
   rotate([0,-90,0])
@@ -67,7 +67,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
 *neopixelStick();
 
-connectorMatrix();
+*connectorMatrix();
 
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
@@ -153,6 +153,19 @@ module ledDisplay() {
     translate([BOX_WIDTH/2 - COMMON_TRAIL_WIDTH/2, 0 , COMMON_TRAIL_HEIGHT/2]) 
       rotate([0,0,90])
         cube([BOX_DEPTH, COMMON_TRAIL_WIDTH, COMMON_TRAIL_HEIGHT],center=true);        
+
+    /** corner connector pockets **/
+    translate([BOX_WIDTH/2 - 17/2 - 4, BOX_DEPTH/2 - 4/2 - 4, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([-BOX_WIDTH/2 + 17/2 + 4, BOX_DEPTH/2 - 4/2 - 4, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([BOX_WIDTH/2 - 17/2 - 4, -BOX_DEPTH/2 + 4/2 + 6, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([-BOX_WIDTH/2 + 17/2 + 4, -BOX_DEPTH/2 + 4/2 + 6, 1.8])
+      cornerConnectorPocketLong();      
    }
  }
 
@@ -225,6 +238,24 @@ module bottomSection() {
     translate([BOX_DEPTH/2 - COMMON_TRAIL_WIDTH/2,0 ,BOX_MATERIAL_THICKNESS/2 - FRONT_TRAIL_HEIGHT/2]) 
       rotate([0,0,0])
         cube([COMMON_TRAIL_WIDTH, BOX_HEIGHT, FRONT_TRAIL_HEIGHT],center=true);        
+
+    /** corner connector pockets **/
+    translate([BOX_DEPTH/2 - 4/2 - 4 , BOX_HEIGHT/2 - 12/2 - 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([-BOX_DEPTH/2 + 4/2 + 6 , BOX_HEIGHT/2 - 12/2 - 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([BOX_DEPTH/2 - 4/2 - 4, -BOX_HEIGHT/2 + 12/2 + 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([-BOX_DEPTH/2 + 4/2 + 6, -BOX_HEIGHT/2 + 12/2 + 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();      
+
 
    }
  }
@@ -302,16 +333,16 @@ module bottomSection() {
        }
      }
      /** FRONT PANEL ATTACH HOLES **/
-     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
 
-     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);            
    }
  }
@@ -1023,5 +1054,39 @@ _triangle_size = 14;
      }
      *translate([_dht_sensor_width/2 + _dht_sensor_center_dist, 0, _dht_sensor_cabin_height/2])
        cylinder(d = _dht_sensor_screw_diameter, h = BOX_MATERIAL_THICKNESS, center = true);     
+   }
+ }
+
+  /************************************************************************************************************
+ **  Module:      cornerConnectorPocketLong
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+ module cornerConnectorPocketLong() {
+   _pocket_width = 17.2;
+   _pocket_depth = 4.2;
+   _pocket_height = 0.5;
+   difference() {
+     union() {
+       cube([_pocket_width, _pocket_depth, _pocket_height],center = true);
+     }
+   }
+ }
+
+   /************************************************************************************************************
+ **  Module:      cornerConnectorPocketShort
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+ module cornerConnectorPocketShort() {
+   _pocket_width = 17.2 - 3;
+   _pocket_depth = 4.2;
+   _pocket_height = 0.5;
+   difference() {
+     union() {
+       cube([_pocket_width, _pocket_depth, _pocket_height],center = true);
+     }
    }
  }

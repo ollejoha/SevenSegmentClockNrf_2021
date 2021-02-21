@@ -15,7 +15,7 @@ date            description
 2021-01-30	    Start of design
 
 */
-$fn = 50;
+$fn = $preview ? 10 : 20; //64;
 
 /** INCLUDE FILES **/
 include <ssc_plexi_DIMENSIONS.scad>;
@@ -54,7 +54,7 @@ box();
        rightSideSection();
 
        /** front panel **/
-       *translate([0,-BOX_DEPTH/2 + FRONT_MATERIAL_THICKNESS/2,BOX_HEIGHT/2])
+       ***translate([0,-BOX_DEPTH/2 + FRONT_MATERIAL_THICKNESS/2,BOX_HEIGHT/2])
         rotate([-90,180,0])
           frontPanel();
 
@@ -64,57 +64,88 @@ box();
 
        /** back panel desktop**/
        //translate([0,BACK_PANEL_DEPTH/2,BACK_PANEL_DEPTH/2])
-       *translate([0,BACK_PANEL_DEPTH/2+3,BACK_PANEL_DEPTH/2])
+       translate([0,BACK_PANEL_DEPTH/2+3,BACK_PANEL_DEPTH/2])
         rotate([90,0,0])
           backSecionDesktop();
 
        /** Corner front attachment modules **/
        /** upper left **/
-       translate([78.5, -36.5, 71.5,])
+      //  *translate([78.5, -36.5, 71.5,])
+        //  rotate([-90, 90, 0])
+          //  cornerPanelConnectorFront();
+           
+       *translate([80.5, -34.5, 73.5])
          rotate([-90, 90, 0])
-           cornerPanelConnectorFront();
+           cornerPanelFrontSharp();  
 
        /** lower left **/
-       translate([78.5, -33.5, 3.5])
+      //  *translate([78.5, -33.5, 3.5])
+        //  rotate([90, -90, 0])
+          //  cornerPanelConnectorFront();           
+
+       translate([80.5, -34.5, 1.5])
          rotate([90, -90, 0])
-           cornerPanelConnectorFront();           
+           cornerPanelFrontSharp();             
 
        /** upper right **/
-       translate([-78.5, -33.5, 71.5,])
+      //  *translate([-78.5, -33.5, 71.5,])
+        //  rotate([90, 90, 0])
+          //  cornerPanelConnectorFront();
+
+       translate([-80.5, -34.5, 73.5,])
          rotate([90, 90, 0])
-           cornerPanelConnectorFront();
+           cornerPanelFrontSharp();           
 
        /** lower right **/
-       translate([-78.5, -33.5, 3.5])
+      //  *translate([-78.5, -33.5, 3.5])
+        //  rotate([-90, -90, 0])
+          //  cornerPanelConnectorFront();                      
+
+       translate([-80.5, -33.5, 1.5])
          rotate([-90, -90, 0])
-           cornerPanelConnectorFront();                      
+           cornerPanelFrontSharp();            
 
        /** Rear front attachment modules **/
        /** upper left **/
-       translate([78.5, 36.5, 71.5,])
+      //  *translate([78.5, 34.5, 7.5,])
+        //  rotate([-90, 90, 0])
+          //  cornerPanelConnectorRear();
+
+       translate([80.5, 36.5, 73.5,])
          rotate([-90, 90, 0])
-           cornerPanelConnectorRear();
+           cornerPanelRearSharp();           
 
        /** lower left **/
-       translate([78.5, 38.5, 3.5])
+      //  *translate([78.5, 38.5, 3.5])
+        //  rotate([90, -90, 0])
+          //  cornerPanelConnectorRear();           
+
+       translate([80.5, 36.5, 1.5])
          rotate([90, -90, 0])
-           cornerPanelConnectorRear();           
+           cornerPanelRearSharp();               
 
        /** upper right **/
-       translate([-78.5, 38.5, 71.5,])
+      //  *translate([-78.5, 38.5, 71.5,])
+        //  rotate([90, 90, 0])
+          //  cornerPanelConnectorRear();
+
+       translate([-80.5, 36.5, 73.5,])
          rotate([90, 90, 0])
-           cornerPanelConnectorRear();
+           cornerPanelRearSharp();           
 
        /** lower right **/
-       translate([-78.5, 36.5, 3.5])
+      //  *translate([-78.5, 36.5, 3.5])
+        //  rotate([-90, -90, 0])
+          //  cornerPanelConnectorRear();           
+
+       translate([-80.5, 36.5, 1.5])
          rotate([-90, -90, 0])
-           cornerPanelConnectorRear();           
+           cornerPanelRearSharp();            
 
        /** LDR Adaptor **/
         translate([-71.2, -42,44.5])
          rotate([90, 0, 180])
           ldrPanelAdaptor();
-
      }
    }
  }

@@ -33,11 +33,14 @@ use <ssc_plexi_PANELS.scad>;
 *cornerPanelConnectorRear();
 *connectorMatrix();
 
+
+cornerPanelFrontSharp();
+
 *translate([-65, 7, 4.5])
   rotate([0, 0, 90])
     attachDisplayHookLeft();
 
-translate([65, 7, 4.5])
+*translate([65, 7, 4.5])
   rotate([0, 0, -90])
     attachDisplayHookRight();
 
@@ -173,6 +176,28 @@ module cornerPanelConnectorFront() {
    }
   }
 
+  /************************************************************************************************************
+ **  Module:      cornerPanelFrontSharp
+ **  Parameters : None
+ **  Description: Detail for attaching the front and back panels to the middle section of the box.
+ **               This detail is glued to the inner cornar at the back and front panels.
+ **               The front panel is screwed from the insida of the box.
+ **              
+ ************************************************************************************************************/
+module cornerPanelFrontSharp() {
+  _angle_connector_width = 17;
+  _angle_screw_hole_diam = 3;
+  _angle_screw_height    = 4.2;
+  difference() {
+    union() {
+      a = [[0,0], [0, _angle_connector_width],[_angle_connector_width-5,0],[0,0]];
+      linear_extrude(height = 4, center = true)
+        polygon(a);
+    }
+     translate([4.65, 4.6, -2.1])
+       cylinder(d=_angle_screw_hole_diam, _angle_screw_height);
+  }
+}
  /************************************************************************************************************
  **  Module:      cornerPanelConnectorRear
  **  Parameters : None
@@ -202,6 +227,28 @@ module cornerPanelConnectorRear() {
    }
   }
 
+   /************************************************************************************************************
+ **  Module:      cornerPanelRearSharp
+ **  Parameters : None
+ **  Description: Detail for attaching the front and back panels to the middle section of the box.
+ **               This detail is glued to the inner cornar at the back and front panels.
+ **               The front panel is screwed from the insida of the box.
+ **              
+ ************************************************************************************************************/
+module cornerPanelRearSharp() {
+  _angle_connector_width = 17;
+  _angle_screw_hole_diam = 3;
+  _angle_screw_height    = 4.2;
+  difference() {
+    union() {
+      a = [[0,0], [0, _angle_connector_width],[_angle_connector_width-5,0],[0,0]];
+      linear_extrude(height = 4, center = true)
+        polygon(a);
+    }
+     translate([4.65, 4.6, -2.1])
+       cylinder(d=_angle_screw_hole_diam, _angle_screw_height);
+  }
+}
    /************************************************************************************************************
  **  Module:      cornerPanelConnectorRear
  **  Parameters : None
