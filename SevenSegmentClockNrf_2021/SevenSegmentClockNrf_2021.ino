@@ -629,10 +629,10 @@ void loop() {
     ledMatrix.setBrightness(ledBrightness);
     ledMatrix.writeDisplay();
     // TEMPORARY DEBUG CODE
-    Serial.print(F("LED Brightness: "));
-    Serial.print(ledBrightness);
-    Serial.print(F(" "));
-    Serial.println(envLightLevel);    
+    // Serial.print(F("LED Brightness: "));
+    // Serial.print(ledBrightness);
+    // Serial.print(F(" "));
+    // Serial.println(envLightLevel);    
   }
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
