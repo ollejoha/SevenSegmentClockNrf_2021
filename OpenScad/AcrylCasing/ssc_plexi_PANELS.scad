@@ -16,9 +16,11 @@ date            description
 2021-01-21	    Start of re-design
 
 */
-$fn = 100;
+//$fn = 20;
+$fn = $preview ? 10 : 64;
 
 include <ssc_plexi_DIMENSIONS.scad>;
+use <ssc_plexi_DETAIL_PARTS.scad>;
 
 /***************************************************************************
  *
@@ -27,13 +29,15 @@ include <ssc_plexi_DIMENSIONS.scad>;
  *
  ***************************************************************************/
 //----
-*ledFrame();
+//ledFrame();
 
 //...............
 *baseSection();          //.. Template from wich top and bottom sections are derived
 
 *translate([0,0,-2])
   bottomSection();        //.. Desktop version of bottom section
+
+  *dht22Sensor();         //.. DHT22 sensor
 
 *translate([0,0,73])
   rotate([0,180,0])
@@ -45,16 +49,17 @@ include <ssc_plexi_DIMENSIONS.scad>;
   rotate([0,-90,0])
     leftSideSection();      //.. Left side section view from front to back
 
-*rightSideSection();     //.. Right side section view from fron to back
+*translate([0,0,80])
+  rotate([0,90,0])
+    rightSideSection();     //.. Right side section view from fron to back
 
 *blindFrontPanel();      //.. Template for front panel
-
 *frontPanel();           //.. Front panel
 
-translate([0,0,-3])
+*translate([0, 0,-3])
   frontPanelExt();
 
-*templateBackSection();  //.. Template for tha back section
+*templateBackSection();  //.. Template for the back section
 
 *backSecionDesktop();    //.. Back section for desk top 
 
@@ -62,14 +67,50 @@ translate([0,0,-3])
 
 *neopixelStick();
 
+*connectorMatrix();
+
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
   ledDisplay();     
+
+  /** MILLING MODULES **/
+*boxPanels();   //.. Bottom. sides & top panels
+
+////////////////////////////////////////////////////////////////////////////////
+////                     3D PRINTER MODULES RENDER                          ////
+////////////////////////////////////////////////////////////////////////////////
+*3dFrontPanel();
+
  /***************************************************************************
  *
  *                                MODULES
  *
  ***************************************************************************/
+  /** MILLING MODULES **/
+module boxPanels() {   //.. Bottom. sides & top panels
+  difference() {
+    union() {
+      translate([0, 0, -2])
+        bottomSection();
+
+      translate([0, 88, 73])
+      rotate([180,0,0])
+        topSection();        
+      
+      translate([-5, -87, 80])
+        rotate([0, -90, 0])
+          leftSideSection();
+
+      translate([0, -87, 80])
+        rotate([0, 90, 0])
+          rightSideSection();
+
+      translate([30, 140, 0])
+        connectorMatrix();
+    }
+  }
+}
+
 module ledDisplay() {
   difference() {
     union() {
@@ -112,6 +153,19 @@ module ledDisplay() {
     translate([BOX_WIDTH/2 - COMMON_TRAIL_WIDTH/2, 0 , COMMON_TRAIL_HEIGHT/2]) 
       rotate([0,0,90])
         cube([BOX_DEPTH, COMMON_TRAIL_WIDTH, COMMON_TRAIL_HEIGHT],center=true);        
+
+    /** corner connector pockets **/
+    translate([BOX_WIDTH/2 - 17/2 - 4, BOX_DEPTH/2 - 4/2 - 4, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([-BOX_WIDTH/2 + 17/2 + 4, BOX_DEPTH/2 - 4/2 - 4, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([BOX_WIDTH/2 - 17/2 - 4, -BOX_DEPTH/2 + 4/2 + 6, 1.8])
+      cornerConnectorPocketLong();
+
+    translate([-BOX_WIDTH/2 + 17/2 + 4, -BOX_DEPTH/2 + 4/2 + 6, 1.8])
+      cornerConnectorPocketLong();      
    }
  }
 
@@ -124,6 +178,8 @@ module ledDisplay() {
 module bottomSection() {
   _vent_diameter = 2.5;
   _vent_height = BOX_MATERIAL_THICKNESS;
+  _dht_attach_hole_diameter = 1.8;
+  _dht_attach_hole_length = 3;
   
   difference() {
     union() {
@@ -138,6 +194,10 @@ module bottomSection() {
           translate([0,-15,0])
             cylinder(d=_vent_diameter, h=_vent_height,center=true);
         }
+    translate([0, 27, -1])
+      dht22Sensor();
+    *translate([0, 0, 3.5])
+      cylinder(d = _dht_attach_hole_diameter, h = _dht_attach_hole_length, center = true);
   }
 }
 
@@ -179,6 +239,24 @@ module bottomSection() {
       rotate([0,0,0])
         cube([COMMON_TRAIL_WIDTH, BOX_HEIGHT, FRONT_TRAIL_HEIGHT],center=true);        
 
+    /** corner connector pockets **/
+    translate([BOX_DEPTH/2 - 4/2 - 4 , BOX_HEIGHT/2 - 12/2 - 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([-BOX_DEPTH/2 + 4/2 + 6 , BOX_HEIGHT/2 - 12/2 - 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([BOX_DEPTH/2 - 4/2 - 4, -BOX_HEIGHT/2 + 12/2 + 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();
+
+    translate([-BOX_DEPTH/2 + 4/2 + 6, -BOX_HEIGHT/2 + 12/2 + 1, 1.8])
+      rotate([0, 0, 90])
+        cornerConnectorPocketShort();      
+
+
    }
  }
 
@@ -189,12 +267,24 @@ module bottomSection() {
  **              
  ************************************************************************************************************/
  module leftSideSection() {
+
    difference() {
      union() {
        translate([-BOX_WIDTH/2 + BOX_MATERIAL_THICKNESS/2,0,BOX_HEIGHT/2])
         rotate([90,0,90])
          sideSection();
      }
+
+    c_pos = 20;
+    
+    translate([-84,0,BOX_HEIGHT/2])
+      rotate([0, 90, 0])
+      for(j = [0 : 15])
+        rotate([0,0,j*22.5])
+          for(i=[1 : 4 : c_pos]) {
+            translate([i + 2 + 10, 0, BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 2.5, h = 6, center=true);
+      }
    }
  }
 
@@ -211,6 +301,17 @@ module bottomSection() {
         rotate([-90,0,90])
          sideSection();
      }
+
+     c_pos = 20;
+    
+    translate([84,0,BOX_HEIGHT/2])
+      rotate([0, 90, 0])
+      for(j = [0 : 15])
+        rotate([0,0,j*22.5])
+          for(i=[1 : 4 : c_pos]) {
+            translate([i + 2 + 10, 0, -BOX_MATERIAL_THICKNESS/2])
+              cylinder(d = 2.5, h = 6, center=true);
+      }
    }
  }
 
@@ -232,16 +333,16 @@ module bottomSection() {
        }
      }
      /** FRONT PANEL ATTACH HOLES **/
-     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
 
-     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);      
 
-     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2])
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);            
    }
  }
@@ -315,7 +416,7 @@ module frontPanelExt() {
 
     }
     /** ACTIVATE TO SE THRU THE CONSTRUCTION **/
-    translate([60,0,0])
+    *translate([60,0,0])
       cube([50,100,50],center=true)  ;
   }
 }
@@ -399,25 +500,26 @@ module frontPanelExt() {
 
   /** definion for the neo pixel trail **/
   _neopixel_led_width = 110;
-  _neopixel_led_depth =   5.5;
+  _neopixel_led_depth =   5.7;
   _neopixel_led_height =  2.0;
 
   /** support resistor bar **/
   _support_bar_width = _neopixel_led_width;
-  _support_bar_depth =  4.6;
+  _support_bar_depth =  3.0;
   _support_bar_height = 2.0;
 
    difference() {
      union() {
        /** connection stick trail **/
-       cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
+       /** Removed 2021-02-07, it is not needed. It is better to get more material in fron of the LED to get a more diffuse look **/
+      *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
        
       /** neopixel row trail **/
-      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1,-_led_trail_bar_height/2 - _neopixel_led_height/2])
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5+0.5])
         cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
 
       /** support resistor bar **/
-      translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
+      translate([_led_trail_horiz_offset, -_support_bar_depth-0.9,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
         cube([_support_bar_width, _support_bar_depth-1,_support_bar_height],center=true);        
      }
      
@@ -490,10 +592,22 @@ module templateBackSection() {
  **              
  ************************************************************************************************************/
  module backSecionDesktop() {
+   _modular_pocket_width = 20;
+   _modular_pocket_depth = 20;
+   _modular_pocket_height = 3;
+
+   _modular_contact_width = 15;
+   _modular_contact_depth = 15;
+   _modular_contact_height = 2;
+
+
+
    difference() {
      union() {
        templateBackSection();
      }
+     modularJack();
+     dcJack();
    }
  }
 
@@ -578,7 +692,401 @@ module templateBackSection() {
       translate([_attach_hole_distance,0, _attach_hole_height_offset])
         cylinder(d=_m3Diameter, h=_m3Length, center=true);
       translate([-_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+    }
+  }
+  }
+
+
+/************************************************************************************************************
+ **  Module:      modularJack
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+ module modularJack() {
+     _modular_pocket_width = 20;
+     _modular_pocket_depth = 20;
+     _modular_pocket_height = 3;
+  
+     _modular_contact_width = 15;
+     _modular_contact_depth = 15;
+     _modular_contact_height = 2;
+
+     difference() {
+       union() {
+         /** modular pocket **/
+        translate([0, 0, 0.6])
+          cube([_modular_pocket_width, _modular_pocket_depth, _modular_pocket_height],center=true);   
+        /** modular jack **/
+        translate([0, 0, -1])
+          cube([_modular_contact_width, _modular_contact_depth, _modular_contact_height],center=true);
+       }
+
+   }
+ }
+
+ /************************************************************************************************************
+ **  Module:      dcJack
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/   
+ module dcJack() {
+   _dc_diameter = 12;
+   _dc_length = 6;
+
+   difference() {
+     union() {
+       translate([-50, 0, 0])
+         rotate([0, 0, 90])
+           cylinder(d=_dc_diameter, h=_dc_length, center=true);
+     }
+   }
+ }
+
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ /////                                3D PRINTER MODULES                                    /////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+/************************************************************************************************************
+**  Module:      3dFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dFrontPanel() {
+  _triangle_diameter = 1;    
+   _m3Diameter = 2.7;
+   _m3Length = 4;
+   _panel_hole_offset = 6;  
+  _led_display_edge = 2;   
+  _tighten_cylinder_diam = 4;
+  _tighten_cylinder_height = 5.8;
+  _side_attach_knob_offset = 1.8;
+  _lower_knob_attach_offset = 5.2;
+  _upper_knob_attach_offset = 8.8;  
+ difference() {
+    union() {
+      3dBlindFrontPanel();
+      /** CORNET ATTACHMENT TRIANGLES **/
+
+       translate([-FRONT_PANEL_WIDTH/2 + _triangle_diameter, FRONT_PANEL_DEPTH/2 - _triangle_diameter, 0 ])
+         rotate([0, 0,0])
+           3dCornerTriangle(_triangle_diameter);
+ 
+       translate([-FRONT_PANEL_WIDTH/2 + _triangle_diameter, -FRONT_PANEL_DEPTH/2 + _triangle_diameter, 0 ])
+         rotate([0, 0, 90])
+           3dCornerTriangle(_triangle_diameter);          
+ 
+       translate([FRONT_PANEL_WIDTH/2 - _triangle_diameter, FRONT_PANEL_DEPTH/2 - _triangle_diameter, 0 ])
+         rotate([0, 0, -90])
+           3dCornerTriangle(_triangle_diameter);
+ 
+       translate([FRONT_PANEL_WIDTH/2 - _triangle_diameter, -FRONT_PANEL_DEPTH/2 + _triangle_diameter, 0 ])
+         rotate([0, 0, 180])
+           3dCornerTriangle(_triangle_diameter);                    
+
+      /** THE TWO SECTIONS BELOW ARE USED TO SHOW HOW THE NEOPIXEL STICKS ARE MOUNTED ON THE FRONTPANEL **/
+      ////////////////////////////////////////////
+      *translate([-54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();
+
+      *translate([54/2,-25,4])
+        rotate([0, 180, 180])
+        neopixelStick();   
+
+      /** LED WINDOW SECTION **/
+      translate([1, 7, 0])
+        cube([LED_DISPLAY_WIDTH_3D + 17, LED_DISPLAY_DEPTH_3D + 5, FRONT_PANEL_HEIGHT],center=true);
+
+      /** add a hole sink for the photo resistor **/
+      translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,0])
+        cylinder(d=14, h=FRONT_PANEL_HEIGHT+0.1,center=true);
+       
+      /** neobar led stick block **/
+      translate([0,-25,0])
+        cube([130, 15, FRONT_PANEL_HEIGHT],center=true);
+
+   /** LED INDICATOR BLOCK **/ 
+   translate([-FRONT_PANEL_WIDTH/2 + 9, 7, 0])     
+    rotate([0,0,90])
+      ledIndicatorBlock_3D();        
+        
+    }
+  /** FRONT PANEL ATTACH HOLES **/
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2 + 0.1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);  
+
+    /** LED DISPLAY WINDOW SECTION **/
+        /** create a hole in the panel width that is 1 mm narrower on each side and let it go thru the panel  **/
+    translate([0,7,0])
+      cube([LED_DISPLAY_WIDTH - _led_display_edge,
+            LED_DISPLAY_DEPTH - _led_display_edge,
+            FRONT_PANEL_HEIGHT],
+            center=true);
+
+        /**  create a hole that is 0.5 mm wider than the LED display.  **/
+    translate([0,7,FRONT_PANEL_HEIGHT-5])  
+      cube([LED_DISPLAY_WIDTH,
+              LED_DISPLAY_DEPTH + 0.1,
+              FRONT_PANEL_HEIGHT],
+              center=true);
+
+    /** add a hole for the photo resistor **/
+    translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,0])
+      cylinder(d=5, h=FRONT_PANEL_HEIGHT+0.1,center=true);
+
+    /** add a hole sink for the photo resistor **/
+    translate([(LED_DISPLAY_WIDTH / 2)+((FRONT_PANEL_WIDTH-LED_DISPLAY_WIDTH) / 2)/2,7,1])
+      cylinder(d= 8.8, h=FRONT_PANEL_HEIGHT,center=true); 
+
+    /** bar trail led stick mounting pocket **/
+    translate([-0,-25,4.0])
+      barTrailLedStick_3D();
+     
+    /* neo stick attach holes **/ 
+    translate([-54/2, -28, 1])
+      neoStickAttchHoles(); 
+
+    translate([54/2 + 0.5, -28, 1])
+      neoStickAttchHoles(); 
+
+    /** led attach holes **/
+    translate([LED_DISPLAY_WIDTH/2 + 6, 6, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles(); 
+
+    translate([-LED_DISPLAY_WIDTH/2 - 6, 7, 1])
+      rotate([0, 0, 90])
+        ledAttchHoles();  
+
+   /** LED INDICATOR TRAIL **/ 
+   translate([-FRONT_PANEL_WIDTH/2 + 9, 7,1])     
+    rotate([0,0,90])
+      ledIndicatorTrail_3D();
+
+
+
+
+  }
+}
+
+/************************************************************************************************************
+**  Module:      3dBlindFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dBlindFrontPanel() {
+  _main_pocket_reduce_edge = 4;
+  difference() {
+    union() {
+      blindFrontPanel(); 
+      }  
+      translate([0, 0, 1.5])
+        cube([FRONT_PANEL_WIDTH - _main_pocket_reduce_edge, FRONT_PANEL_DEPTH - _main_pocket_reduce_edge, FRONT_PANEL_HEIGHT],center=true);
+  }
+}
+
+/************************************************************************************************************
+**  Module:      3dBlindFrontPanel()
+**  Parameters : None
+**  Description: Box bottom section
+**              
+************************************************************************************************************/
+module 3dCornerTriangle(tr_diam) {
+_triangle_size = 14;
+  difference() {
+    union() {
+      translate([0,0,-FRONT_PANEL_HEIGHT/2])
+      hull()   {
+        cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+        translate([_triangle_size,0,0])
+          cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+        translate([0,-_triangle_size,0])
+          cylinder(d = tr_diam, h=FRONT_PANEL_HEIGHT);
+      }      
+    }
+  }
+}
+
+ /************************************************************************************************************
+ **  Module:      barTrailLedStick_3D
+ **  Parameters : None
+ **  Description: Module for mounting NEOPIXEL LED stick
+ **              
+ ************************************************************************************************************/
+ module barTrailLedStick_3D() {
+  /** definition for the connection trail **/
+  _led_trail_bar_width = 130;
+  _led_trail_bar_depth =  11;
+  _led_trail_bar_height =  3;  
+  _led_trail_horiz_offset = 0; //10;
+
+  /** definion for the neo pixel trail **/
+  _neopixel_led_width = 110;
+  _neopixel_led_depth =   5.7;
+  _neopixel_led_height =  2.0;
+  _neopixel_led_view_height =  FRONT_PANEL_HEIGHT;
+  _neopixel_led_view_depth =  3;  
+
+  /** support resistor bar **/
+  _support_bar_width = _neopixel_led_width;
+  _support_bar_depth =  4.0;
+  _support_bar_height = 2.0;
+
+   difference() {
+     union() {
+       /** connection stick trail **/
+       /** Removed 2021-02-07, it is not needed. It is better to get more material in fron of the LED to get a more diffuse look **/
+      *cube([_led_trail_bar_width, _led_trail_bar_depth,_led_trail_bar_height],center=true);
+       
+      /** neopixel row trail **/
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.7,-_led_trail_bar_height/2 - _neopixel_led_height/2+0.5])
+        cube([_neopixel_led_width, _neopixel_led_depth+0.3,_neopixel_led_height],center=true);
+
+      translate([_led_trail_horiz_offset,(_led_trail_bar_depth - _neopixel_led_depth)/2 - 1.75,-_led_trail_bar_height/2 - _neopixel_led_height/2-1.5])
+        cube([_neopixel_led_width - 5, _neopixel_led_view_depth,_neopixel_led_view_height+10],center=true);        
+
+      /** support resistor bar **/
+      translate([_led_trail_horiz_offset, -_support_bar_depth-0.2,(-_led_trail_bar_height/2 - _neopixel_led_height/2)+1])
+        cube([_support_bar_width, _support_bar_depth-1,_support_bar_height],center=true);        
+     }
+     
+   }
+ }
+
+   /************************************************************************************************************
+ **  Module:      ledIndicatorBlock_3D
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+  module ledIndicatorBlock_3D() {
+  _led_indicator_block_width  = LED_DISPLAY_DEPTH + 5; // 30;
+  _led_indicator_block_depth  =  12;
+  _led_indicator_block_height = FRONT_PANEL_HEIGHT;
+
+  _m3Diameter = 2.7;
+  _m3Length   = 4;
+  _attach_hole_distance = _led_indicator_block_width/2 + 3;
+  _attach_hole_height_offset = -0;
+
+  difference() {
+    union() {
+      cube([_led_indicator_block_width, _led_indicator_block_depth, _led_indicator_block_height], center=true);
+      *translate([_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+      *translate([-_attach_hole_distance,0, _attach_hole_height_offset])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
     }
   }
   }
+
+
+    /************************************************************************************************************
+ **  Module:      ledIndicatorTrail_3D
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+  module ledIndicatorTrail_3D() {
+  _led_indicator_trail_width  = LED_DISPLAY_DEPTH - 10; // 30;
+  _led_indicator_trail_depth  =  8;
+  _led_indicator_trail_height = FRONT_PANEL_HEIGHT;
+
+  _m3Diameter = 2.7;
+  _m3Length   = 4;
+  _attach_hole_distance = _led_indicator_trail_width/2 + 3;
+  _attach_hole_height_offset = 0;
+
+  difference() {
+    union() {
+
+        cube([_led_indicator_trail_width, _led_indicator_trail_depth, _led_indicator_trail_height], center=true);
+      translate([0,0,-1])
+        cube([_led_indicator_trail_width - 2, _led_indicator_trail_depth - 2, _led_indicator_trail_height], center=true);
+      translate([_attach_hole_distance,0, _attach_hole_height_offset])
+        cylinder(d=_m3Diameter, h=_m3Length, center=true);
+      translate([-_attach_hole_distance,0, _attach_hole_height_offset])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+    }
+  }
+}
+
+/************************************************************************************************************
+ **  Module:      dht22Sensor
+ **  Parameters : None
+ **  Description: 
+ **              
+ ************************************************************************************************************/
+ module dht22Sensor() {
+   _dht_sensor_width            = 21;
+   _dht_sensor_top_width        = 27;
+   _dht_sensor_depth            = 16;
+   _dht_sensor_cabin_height     =  6.2;
+   _dht_sensor_top_plane_height =  1.5;
+   _dht_sensor_screw_diameter   = 2.2;
+   _dht_sensor_center_dist      = 2.6;
+
+   difference() {
+     union() {
+       cube([_dht_sensor_width, _dht_sensor_depth, _dht_sensor_cabin_height],center = true);
+       translate([(-_dht_sensor_width + _dht_sensor_top_width)/2, 0,_dht_sensor_cabin_height/2 + _dht_sensor_top_plane_height/2])
+         cube([_dht_sensor_top_width, _dht_sensor_depth, _dht_sensor_top_plane_height],center = true);
+
+     translate([_dht_sensor_width/2 + _dht_sensor_center_dist, 0, _dht_sensor_cabin_height/2 + 0.1])
+       cylinder(d = _dht_sensor_screw_diameter, h = BOX_MATERIAL_THICKNESS, center = true);              
+     }
+     *translate([_dht_sensor_width/2 + _dht_sensor_center_dist, 0, _dht_sensor_cabin_height/2])
+       cylinder(d = _dht_sensor_screw_diameter, h = BOX_MATERIAL_THICKNESS, center = true);     
+   }
+ }
+
+  /************************************************************************************************************
+ **  Module:      cornerConnectorPocketLong
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+ module cornerConnectorPocketLong() {
+   _pocket_width = 17.2;
+   _pocket_depth = 4.2;
+   _pocket_height = 0.5;
+   difference() {
+     union() {
+       cube([_pocket_width, _pocket_depth, _pocket_height],center = true);
+     }
+   }
+ }
+
+   /************************************************************************************************************
+ **  Module:      cornerConnectorPocketShort
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+ module cornerConnectorPocketShort() {
+   _pocket_width = 17.2 - 3;
+   _pocket_depth = 4.2;
+   _pocket_height = 0.5;
+   difference() {
+     union() {
+       cube([_pocket_width, _pocket_depth, _pocket_height],center = true);
+     }
+   }
+ }
