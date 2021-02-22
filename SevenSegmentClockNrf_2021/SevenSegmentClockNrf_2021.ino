@@ -33,6 +33,10 @@
  |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
  |            |            |            |   reset end updated when the uv-level deceases                              |
  +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-02-22 | b-2.1.3    | v1.1       | Corrected test function for Neopixel stick that runs att startup.           |
+ |            |            |            | Adjustment of Ambient light sensor function to set the LED display brighness|
+ |            |            |            | depending on the ambient light level.                                       |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
  
  -----  NOTE  -----
  Update the constants that comes direct after thos comment section when the program 
@@ -97,7 +101,7 @@
  * ****************************************************************************************************************/
 #define PROGRAM_VERSION 2
 #define UPDATE_VERSION  1
-#define PATCH_VERSION   2
+#define PATCH_VERSION   3
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
