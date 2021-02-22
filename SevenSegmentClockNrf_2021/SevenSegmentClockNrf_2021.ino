@@ -33,9 +33,9 @@
  |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
  |            |            |            |   reset end updated when the uv-level deceases                              |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- | 2021-02-15 |b-2.1.3     |v1.1        | Updated funtion for writing the outdoor temperature to the display so that  |
- |            |            |            | that there is no leading zero when temperature is betewwn 0.0 - 9.9         |
- |            |            |            | degrees C.                                                                  |
+ | 2021-02-15 |b-2.1.3     |v1.1        | Updated funtion for writing the outdoor temperature to the display so that|
+ |            |            |            | that there is no leading zero when temperature is betewwn 0.0 - 9.9       |
+ |            |            |            | degrees C.                                                               |
  +------------+------------+------------+-----------------------------------------------------------------------------+
  | 2021-02-22 | b-2.1.4    | v1.1       | Corrected test function for Neopixel stick that runs att startup.           |
  |            |            |            | Adjustment of Ambient light sensor function to set the LED display brighness|
@@ -136,7 +136,7 @@
 //#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
-//#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
 //#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
 #define CLOCK_NET_DEST_NODES    4  //.. Set the number of destination nodes active in CLockNetNode 
@@ -482,8 +482,8 @@ pixels->setBrightness(10);
    for (int j = 0; j < numPixels; j++) {
      pixels->clear();
       for (int i = numPixels-j; i > 0; i--) {
-        uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
-        pixels->setPixelColor(i, color);
+        uint32_t color = pixels->Color(uvArrayDim[i-1][0], uvArrayDim[i-1][1], uvArrayDim[i-1][2]);
+        pixels->setPixelColor(i-1, color);
         pixels->show();
       }
       delay(200);
@@ -642,9 +642,10 @@ void loop() {
   if (currentTime - lastBrightnessTime > 5000) {
     lastBrightnessTime = millis();
     uint16_t envLightLevel = analogRead(LIGHT_SENSOR_ANALOG_PIN);
-    if (envLightLevel < 200) envLightLevel = 200;  // TEST --- if (envLightLevel < 360) envLightLevel = 360;
-    if (envLightLevel > 1000) envLightLevel = 1000;  // TEST --if (envLightLevel > 860) envLightLevel = 860;
-    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);
+
+    if (envLightLevel < 200) envLightLevel = 200;          // TEST --- 360) envLightLevel = 360;
+    if (envLightLevel > 1000) envLightLevel = 1000;        // TEST --- 860) envLightLevel = 860;
+    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);  // TEST --- map(envLightLevel, 360, 860, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
     ledMatrix.setBrightness(10);  //  // HACK: Set fixed brightness of display temporarily
     ledMatrix.writeDisplay();
@@ -652,7 +653,7 @@ void loop() {
     // Serial.print(F("LED Brightness: "));
     // Serial.print(ledBrightness);
     // Serial.print(F(" "));
-    // Serial.println(envLightLevel);
+    // Serial.println(envLightLevel);    
   }
 
   /**  If no time has been received yet, request it every 10 seconds from controller  **/
@@ -1125,7 +1126,7 @@ void printOutdoorTemperature(float temp, int dotpos) {
 
   ledMatrix.clear();
 
-  if ((temp < 10.0) || (temp >= -10.0)) {
+  if ((temp > 9.9) || (temp < -9.9)) {   // FIXME: Original code: if temp < 10.0 || 
     digit1 = (_temp / 100) % 10;
     ledMatrix.writeDigitNum(1, digit1);
   }
@@ -1203,11 +1204,12 @@ void printOutdoorUvIndex(float uvi, int dotpos) {
   ledMatrix.writeDigitRaw(2, dotpos + DECI_POINT);
   ledMatrix.writeDisplay();
   
-  /** Display the current UV-Ibdex value on NeoPixel stick **/
-  pixels->clear();
-
-  int uvindex = static_cast<int>(round(uvi));
-  for (int i = 0; i < uvindex; i++) {
+  /** Display the current UV-Index value on NeoPixel stick **/
+  int uvindex = static_cast<int>(round(uvi));   //.. transform the measured UV-Index to an integer between 0 - 16
+  pixels->clear();                              //.. clear the UV-stick
+  pixels->show();
+  if (uvindex > 0)
+  for (int i = 0; i <= uvindex-1; i++) {
     uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
     pixels->setPixelColor(i, color);
     pixels->show();
