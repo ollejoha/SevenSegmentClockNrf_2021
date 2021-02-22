@@ -644,11 +644,10 @@ void loop() {
     lastBrightnessTime = millis();
     uint16_t envLightLevel = analogRead(LIGHT_SENSOR_ANALOG_PIN);
 
-    if (envLightLevel < 200) envLightLevel = 200;          // TEST --- 360) envLightLevel = 360;
-    if (envLightLevel > 1000) envLightLevel = 1000;        // TEST --- 860) envLightLevel = 860;
-    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);  // TEST --- map(envLightLevel, 360, 860, 0, 15);
+    if (envLightLevel < 200) envLightLevel = 200;
+    if (envLightLevel > 1000) envLightLevel = 1000;
+    ledBrightness = map(envLightLevel, 200, 1000, 0, 15);
     ledMatrix.setBrightness(ledBrightness);
-    ledMatrix.setBrightness(10);  //  // HACK: Set fixed brightness of display temporarily
     ledMatrix.writeDisplay();
     // TEMPORARY DEBUG CODE
     // Serial.print(F("LED Brightness: "));
