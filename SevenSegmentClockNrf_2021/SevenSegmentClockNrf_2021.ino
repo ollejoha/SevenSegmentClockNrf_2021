@@ -33,10 +33,15 @@
  |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
  |            |            |            |   reset end updated when the uv-level deceases                              |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- | 2021-02-15 |b-2.1.3     |v1.1        | - Updated funtion for writing the outdoor temperature to the display so that|
- |            |            |            |   that there is no leading zero when temperature is betewwn 0.0 - 9.9       |
- |            |            |            |    degrees C.                                                               |
+ | 2021-02-15 |b-2.1.3     |v1.1        | Updated funtion for writing the outdoor temperature to the display so that|
+ |            |            |            | that there is no leading zero when temperature is betewwn 0.0 - 9.9       |
+ |            |            |            | degrees C.                                                               |
  +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-02-22 | b-2.1.4    | v1.1       | Corrected test function for Neopixel stick that runs att startup.           |
+ |            |            |            | Adjustment of Ambient light sensor function to set the LED display brighness|
+ |            |            |            | depending on the ambient light level.                                       |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
+ 
  -----  NOTE  -----
  Update the constants that comes direct after thos comment section when the program 
  is updated so that the current program version is shown on the display
