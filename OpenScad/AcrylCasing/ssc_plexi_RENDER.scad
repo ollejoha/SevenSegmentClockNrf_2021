@@ -74,7 +74,7 @@ box();
         //  rotate([-90, 90, 0])
           //  cornerPanelConnectorFront();
            
-       *translate([80.5, -34.5, 73.5])
+       translate([80.5, -34.5, 73.5])
          rotate([-90, 90, 0])
            cornerPanelFrontSharp();  
 

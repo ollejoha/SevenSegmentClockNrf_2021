@@ -43,7 +43,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
   rotate([0,180,0])
     topSection();           //.. Top section used for both desktop and wall monted casings
 
-sideSection();          //.. Template for side secions
+*sideSection();          //.. Template for side secions
 
 *translate([0,0,80])
   rotate([0,-90,0])
