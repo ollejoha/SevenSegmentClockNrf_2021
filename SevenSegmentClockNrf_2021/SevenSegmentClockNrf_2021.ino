@@ -463,8 +463,8 @@ pixels->setBrightness(10);
    for (int j = 0; j < numPixels; j++) {
      pixels->clear();
       for (int i = numPixels-j; i > 0; i--) {
-        uint32_t color = pixels->Color(uvArrayDim[i][0], uvArrayDim[i][1], uvArrayDim[i][2]);
-        pixels->setPixelColor(i, color);
+        uint32_t color = pixels->Color(uvArrayDim[i-1][0], uvArrayDim[i-1][1], uvArrayDim[i-1][2]);
+        pixels->setPixelColor(i-1, color);
         pixels->show();
       }
       delay(200);
