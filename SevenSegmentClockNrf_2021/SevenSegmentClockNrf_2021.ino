@@ -625,6 +625,7 @@ void receive(const MyMessage &message) {
     #endif
   }
 }
+
 /**************************************************************
  *   Function: loop
  * Parameters: none
