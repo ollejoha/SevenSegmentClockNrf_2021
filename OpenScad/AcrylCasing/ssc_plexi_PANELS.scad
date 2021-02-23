@@ -67,7 +67,7 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
 *neopixelStick();
 
-*connectorMatrix();
+connectorMatrix();
 
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
@@ -75,6 +75,9 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
   /** MILLING MODULES **/
 *boxPanels();   //.. Bottom. sides & top panels
+
+/** PATTERNS **/
+*radioRose();
 
 ////////////////////////////////////////////////////////////////////////////////
 ////                     3D PRINTER MODULES RENDER                          ////
@@ -277,14 +280,19 @@ module bottomSection() {
 
     c_pos = 20;
     
-    translate([-84,0,BOX_HEIGHT/2])
+    *translate([-84,0,BOX_HEIGHT/2])
       rotate([0, 90, 0])
       for(j = [0 : 15])
         rotate([0,0,j*22.5])
           for(i=[1 : 4 : c_pos]) {
             translate([i + 2 + 10, 0, BOX_MATERIAL_THICKNESS/2])
               cylinder(d = 2.5, h = 6, center=true);
+
+        
       }
+      translate([-82,0,38])
+        rotate([0,-45,90])
+          radioRose();
    }
  }
 
@@ -304,7 +312,7 @@ module bottomSection() {
 
      c_pos = 20;
     
-    translate([84,0,BOX_HEIGHT/2])
+    *translate([84,0,BOX_HEIGHT/2])
       rotate([0, 90, 0])
       for(j = [0 : 15])
         rotate([0,0,j*22.5])
@@ -312,7 +320,9 @@ module bottomSection() {
             translate([i + 2 + 10, 0, -BOX_MATERIAL_THICKNESS/2])
               cylinder(d = 2.5, h = 6, center=true);
       }
-   }
+      translate([83,0,38])
+        rotate([0,-45,90])
+          radioRose();   }
  }
 
  /************************************************************************************************************
@@ -1074,7 +1084,7 @@ _triangle_size = 14;
    }
  }
 
-   /************************************************************************************************************
+/************************************************************************************************************
  **  Module:      cornerConnectorPocketShort
  **  Parameters : None
  **  Description: Front panel
@@ -1087,6 +1097,71 @@ _triangle_size = 14;
    difference() {
      union() {
        cube([_pocket_width, _pocket_depth, _pocket_height],center = true);
+     }
+   }
+ }
+
+
+ /************************************************************************************************************
+ **  Module:      radioRose
+ **  Parameters : None
+ **  Description: Front panel
+ **              
+ ************************************************************************************************************/
+ module radioRose() {
+   difference() {
+     union() {
+
+       _step = 15;
+       
+       translate([0, 5, 0])  
+         rotate([90, -_step, 0])
+           rotate_extrude(angle = 150, convexity = 10)
+             translate([10, 0])
+               square([2.5,10]);
+
+       translate([0, -5, 0]) 
+         rotate([-90, _step,0])
+           rotate_extrude(angle = 150, convexity = 10)
+             translate([10, 0])
+               square([2.5, 10]);          
+//********************************************
+       translate([0, 5, 0])         
+         rotate([90, -_step+45+2.5, 0])
+           rotate_extrude(angle = 155, convexity = 10)
+             translate([10+7.5, 0])
+               square([2.5,10]);
+
+       translate([0, -5, 0]) 
+         rotate([-90, _step+45-2.5,0])
+           rotate_extrude(angle = 155, convexity = 10)
+             translate([10+7.5, 0])
+               square([2.5, 10]);          
+//********************************************
+       translate([0, 5, 0])
+         rotate([90, -_step+90+5, 0])
+           rotate_extrude(angle = 160, convexity = 10)
+             translate([10+15, 0])
+               square([2.5, 10]);
+
+       translate([0, -5, 0]) 
+         rotate([-90, _step+90-5,0])
+           rotate_extrude(angle = 160, convexity = 10)
+             translate([10+15, 0])
+               square([2.5, 10]);                         
+//********************************************
+       translate([0, 5, 0])
+         rotate([90, -_step+135+7.5, 0])
+           rotate_extrude(angle = 165, convexity = 10)
+             translate([10+22.5, 0])
+               square([2.5, 10]);
+
+       translate([0, -5, 0]) 
+         rotate([-90, _step+135-7.5,0])
+           rotate_extrude(angle = 165, convexity = 10)
+             translate([10+22.5, 0])
+               square([2.5, 10]);                                        
+
      }
    }
  }
