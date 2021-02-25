@@ -61,13 +61,13 @@ use <ssc_plexi_DETAIL_PARTS.scad>;
 
 *templateBackSection();  //.. Template for the back section
 
-*backSecionDesktop();    //.. Back section for desk top 
+backSecionDesktop();    //.. Back section for desk top 
 
 *barTrailLedStick();     //.. Mounting defintiioon for tha neo pixel stick (UV-index)
 
 *neopixelStick();
 
-connectorMatrix();
+*connectorMatrix();
 
 /** USE ONLY AS REFERENCE **/
 *translate([0,7,8.5])
@@ -715,21 +715,21 @@ module templateBackSection() {
  **              
  ************************************************************************************************************/
  module modularJack() {
-     _modular_pocket_width = 20;
-     _modular_pocket_depth = 20;
-     _modular_pocket_height = 3;
+     _modular_pocket_width = 14.85;
+     _modular_pocket_depth = 19.45;
+     _modular_pocket_height = 5;
   
-     _modular_contact_width = 15;
-     _modular_contact_depth = 15;
-     _modular_contact_height = 2;
+     _modular_contact_width = 19.5;
+     _modular_contact_depth = 24.45;
+     _modular_contact_height = 4;
 
      difference() {
        union() {
          /** modular pocket **/
-        translate([0, 0, 0.6])
+        translate([0, 0, 0])
           cube([_modular_pocket_width, _modular_pocket_depth, _modular_pocket_height],center=true);   
         /** modular jack **/
-        translate([0, 0, -1])
+        translate([0, 0, 1.4])
           cube([_modular_contact_width, _modular_contact_depth, _modular_contact_height],center=true);
        }
 
@@ -743,14 +743,21 @@ module templateBackSection() {
  **              
  ************************************************************************************************************/   
  module dcJack() {
-   _dc_diameter = 12;
+   _dc_diameter = 7.85;
    _dc_length = 6;
+
+   _dc_pocket_diameter = 15;
+   _dc_pocket_length = 4;
 
    difference() {
      union() {
        translate([-50, 0, 0])
          rotate([0, 0, 90])
            cylinder(d=_dc_diameter, h=_dc_length, center=true);
+
+       translate([-50, 0, 1.5])
+         rotate([0, 0, 90])
+           cylinder(d=_dc_pocket_diameter, h=_dc_pocket_length, center=true);              
      }
    }
  }
