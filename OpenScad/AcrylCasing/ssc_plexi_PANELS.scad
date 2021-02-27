@@ -610,7 +610,7 @@ module templateBackSection() {
    _modular_contact_depth = 15;
    _modular_contact_height = 2;
 
-   _m3Diameter = 2.7;
+   _m3Diameter = 3.3;
    _m3Length = 5;
    _panel_hole_offset = 6;
 
@@ -620,7 +620,7 @@ module templateBackSection() {
 
      }
      /** FRONT PANEL ATTACH HOLES **/
-     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
       cylinder(d=_m3Diameter, h=_m3Length, center=true);
 
      translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
