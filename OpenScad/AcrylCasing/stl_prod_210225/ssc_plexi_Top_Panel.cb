@@ -5,7 +5,7 @@
       <ModificationCount>0</ModificationCount>
       <objects>
         <pline id="2">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>6,90,-2</p>
@@ -13,7 +13,7 @@
           </pts>
         </pline>
         <pline id="3">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>6,5,-2</p>
@@ -21,7 +21,7 @@
           </pts>
         </pline>
         <pline id="4">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>174,90,-2</p>
@@ -29,7 +29,7 @@
           </pts>
         </pline>
         <pline id="5">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>174,5,-2</p>
@@ -37,7 +37,7 @@
           </pts>
         </pline>
         <pline id="6">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>10,11,-0.450000762939453</p>
@@ -45,7 +45,7 @@
           </pts>
         </pline>
         <pline id="7">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>170,11,-0.450000762939453</p>
@@ -53,7 +53,7 @@
           </pts>
         </pline>
         <pline id="8">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,11,0</p>
@@ -61,7 +61,7 @@
           </pts>
         </pline>
         <pline id="9">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,11,0</p>
@@ -69,7 +69,7 @@
           </pts>
         </pline>
         <pline id="10">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>170,86,-0.450000762939453</p>
@@ -77,7 +77,7 @@
           </pts>
         </pline>
         <pline id="11">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>10,86,-0.450000762939453</p>
@@ -85,7 +85,7 @@
           </pts>
         </pline>
         <pline id="12">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,86,0</p>
@@ -93,7 +93,7 @@
           </pts>
         </pline>
         <pline id="13">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,86,0</p>
@@ -101,7 +101,7 @@
           </pts>
         </pline>
         <pline id="14">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>10,81.9000015258789,0</p>
@@ -109,7 +109,7 @@
           </pts>
         </pline>
         <pline id="15">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>10,15.0999984741211,0</p>
@@ -117,7 +117,7 @@
           </pts>
         </pline>
         <pline id="16">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>170,81.9000015258789,0</p>
@@ -125,7 +125,7 @@
           </pts>
         </pline>
         <pline id="17">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>170,15.0999984741211,0</p>
@@ -133,7 +133,7 @@
           </pts>
         </pline>
         <pline id="18">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,81.9000015258789,0</p>
@@ -141,7 +141,7 @@
           </pts>
         </pline>
         <pline id="19">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,81.9000015258789,0</p>
@@ -149,7 +149,7 @@
           </pts>
         </pline>
         <pline id="20">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,15.0999984741211,0</p>
@@ -157,7 +157,7 @@
           </pts>
         </pline>
         <pline id="21">
-          <ModificationCount>275</ModificationCount>
+          <ModificationCount>277</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,15.0999984741211,0</p>
@@ -165,7 +165,7 @@
           </pts>
         </pline>
         <pline id="22" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,81.9000015258789,-0.450000762939453</p>
@@ -175,7 +175,7 @@
           </pts>
         </pline>
         <pline id="23" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>174,90,-4</p>
@@ -185,7 +185,7 @@
           </pts>
         </pline>
         <pline id="24" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>174,90,-2</p>
@@ -195,7 +195,7 @@
           </pts>
         </pline>
         <pline id="25" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,15.0999984741211,0</p>
@@ -213,7 +213,7 @@
           </pts>
         </pline>
         <pline id="26" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,15.0999984741211,-0.450000762939453</p>
@@ -223,7 +223,7 @@
           </pts>
         </pline>
         <pline id="27" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>27.0999984741211,15.0999984741211,-0.450000762939453</p>
@@ -233,7 +233,7 @@
           </pts>
         </pline>
         <pline id="28" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>10,11,-2</p>
@@ -243,7 +243,7 @@
           </pts>
         </pline>
         <pline id="29" Closed="true">
-          <ModificationCount>276</ModificationCount>
+          <ModificationCount>278</ModificationCount>
           <mat m="Identity" />
           <pts>
             <p>152.900001525879,81.9000015258789,-0.450000762939453</p>
@@ -256,7 +256,7 @@
     </layer>
   </layers>
   <MachiningOptions>
-    <OutFile>gcode\{$cbfile.name}.nc</OutFile>
+    <OutFile>gcode\{$cbfile.name}_2_5.nc</OutFile>
     <PostProcessor>Mach3-CutViewer</PostProcessor>
     <Stock>
       <PMin>0,0,-4</PMin>
@@ -266,9 +266,9 @@
     <Style>Plexiglass_4mm</Style>
     <StyleLibrary>Standard-mm</StyleLibrary>
     <ToolLibrary>Default-mm</ToolLibrary>
-    <ToolDiameter>2</ToolDiameter>
-    <ToolNumber>2</ToolNumber>
-    <ToolProfile>Unspecified</ToolProfile>
+    <ToolDiameter>2.5</ToolDiameter>
+    <ToolNumber>4</ToolNumber>
+    <ToolProfile>EndMill</ToolProfile>
   </MachiningOptions>
   <parts>
     <part Name="Part1">
@@ -278,8 +278,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Roughing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -325,8 +325,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -372,8 +372,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -405,7 +405,7 @@
           <InsideOutside state="Value">Inside</InsideOutside>
           <MillingDirection state="Default">Conventional</MillingDirection>
           <CollisionDetection state="Default">True</CollisionDetection>
-          <CornerOvercut state="Default">False</CornerOvercut>
+          <CornerOvercut state="Value">True</CornerOvercut>
           <LeadInMove state="Default">
             <LeadInType>Spiral</LeadInType>
             <SpiralAngle>0</SpiralAngle>
@@ -430,8 +430,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Roughing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -460,7 +460,7 @@
           <InsideOutside state="Default">Outside</InsideOutside>
           <MillingDirection state="Default">Conventional</MillingDirection>
           <CollisionDetection state="Default">True</CollisionDetection>
-          <CornerOvercut state="Default">False</CornerOvercut>
+          <CornerOvercut state="Value">True</CornerOvercut>
           <LeadInMove state="Default">
             <LeadInType>Spiral</LeadInType>
             <SpiralAngle>0</SpiralAngle>
@@ -486,8 +486,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -516,7 +516,7 @@
           <InsideOutside state="Default">Outside</InsideOutside>
           <MillingDirection state="Default">Conventional</MillingDirection>
           <CollisionDetection state="Default">True</CollisionDetection>
-          <CornerOvercut state="Default">False</CornerOvercut>
+          <CornerOvercut state="Value">True</CornerOvercut>
           <LeadInMove state="Default">
             <LeadInType>Spiral</LeadInType>
             <SpiralAngle>0</SpiralAngle>
@@ -542,8 +542,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Roughing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -587,8 +587,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -632,8 +632,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Roughing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -688,8 +688,8 @@
           <WorkPlane state="Default">XY</WorkPlane>
           <OptimisationMode state="Default">Experimental</OptimisationMode>
           <RoughingFinishing state="Default">Finishing</RoughingFinishing>
-          <ToolDiameter state="Default">2</ToolDiameter>
-          <ToolNumber state="Default">2</ToolNumber>
+          <ToolDiameter state="Value">2.5</ToolDiameter>
+          <ToolNumber state="Value">4</ToolNumber>
           <ToolProfile state="Default">EndMill</ToolProfile>
           <PlungeFeedrate state="Default">200</PlungeFeedrate>
           <CutFeedrate state="Default">700</CutFeedrate>
@@ -748,9 +748,9 @@
       <Style>Plexiglass_4mm</Style>
       <StyleLibrary>Standard-mm</StyleLibrary>
       <ToolLibrary>Default-mm</ToolLibrary>
-      <ToolDiameter>2</ToolDiameter>
-      <ToolNumber>2</ToolNumber>
-      <ToolProfile>Unspecified</ToolProfile>
+      <ToolDiameter>2.5</ToolDiameter>
+      <ToolNumber>4</ToolNumber>
+      <ToolProfile>EndMill</ToolProfile>
       <Nesting>
         <BasePoint>0,0</BasePoint>
         <NestMethod>None</NestMethod>

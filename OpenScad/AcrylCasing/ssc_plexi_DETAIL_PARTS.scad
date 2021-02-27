@@ -32,9 +32,9 @@ use <ssc_plexi_PANELS.scad>;
 *cornerPanelConnectorFront();
 *cornerPanelConnectorRear();
 *connectorMatrix();
+connectorMatrixSharp();
 
-
-cornerPanelFrontSharp();
+*cornerPanelFrontSharp();
 
 *translate([-65, 7, 4.5])
   rotate([0, 0, 90])
@@ -73,6 +73,27 @@ module connectorMatrix() {
         translate([a*12 - 80, 0,-2])
         cornerPanelConnectorRear();
       }      
+    }
+  }
+}
+
+/************************************************************************************************************
+ **  Module:      connectorMatrixSharp
+ **  Parameters : None
+ **  Description: Combination of connector items to simplify milling
+ **              
+ ************************************************************************************************************/
+module connectorMatrixSharp() {
+  difference() {
+    union() {
+      for (a = [0:3]) {
+        translate([a*18 -25,0,-2])
+        cornerPanelFrontSharp();
+      }
+      // for (a = [0:3]) {
+        // translate([a*12 - 80, 0,-2])
+        // cornerPanelConnectorRear();
+      //}      
     }
   }
 }

@@ -47,12 +47,48 @@ jigg();
  module jigg() {
    difference() {
      union() {
-       cube([JIGG_OUTER_WIDTH, JIGG_OUTER_HEIGHT, 4],center=true);
+       cube([JIGG_OUTER_WIDTH + 10, JIGG_OUTER_HEIGHT, 4],center=true);
        
        translate([0,-70,0])
          cube([50,10,4]);
      }
      translate([0,5,0])
-       cube([BOX_WIDTH+0.2, BOX_DEPTH, BOX_HEIGHT],center= true);
+       cube([BOX_WIDTH, BOX_DEPTH, BOX_HEIGHT],center= true);
+    
+    /** base centar bar **/
+    translate([0, -42.5, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);
+
+   /** base left bar **/
+    translate([-92.5, -42.5, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);
+
+   /** base right bar **/
+       translate([92.5, -42.5, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);        
+
+   /** center left bar **/
+    translate([-92.5, 0, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);                
+
+    /** center right bar **/
+    translate([92.5, 0, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);
+
+    /** top left bar **/
+    translate([-92.5, 42.5, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);                                
+
+    /** top right bar **/
+    translate([92.5, 42.5, 2])
+      rotate([0, 0, 90])
+        cube([4,,10,1],center=true);                                        
+
    }
  }

@@ -610,12 +610,27 @@ module templateBackSection() {
    _modular_contact_depth = 15;
    _modular_contact_height = 2;
 
-
+   _m3Diameter = 2.7;
+   _m3Length = 5;
+   _panel_hole_offset = 6;
 
    difference() {
      union() {
        templateBackSection();
+
      }
+     /** FRONT PANEL ATTACH HOLES **/
+     #translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);
+
+     translate([-FRONT_PANEL_WIDTH/2 + _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, FRONT_PANEL_DEPTH/2 - _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);      
+
+     translate([FRONT_PANEL_WIDTH/2 - _panel_hole_offset, -FRONT_PANEL_DEPTH/2 + _panel_hole_offset, FRONT_PANEL_HEIGHT/2-_m3Length/2+0.1-1])
+      cylinder(d=_m3Diameter, h=_m3Length, center=true);       
      modularJack();
      dcJack();
    }
@@ -720,16 +735,16 @@ module templateBackSection() {
      _modular_pocket_height = 5;
   
      _modular_contact_width = 19.5;
-     _modular_contact_depth = 24.45;
+     _modular_contact_depth = 19.45;
      _modular_contact_height = 4;
 
      difference() {
        union() {
          /** modular pocket **/
-        translate([0, 0, 0])
+        translate([60, -15, 0])
           cube([_modular_pocket_width, _modular_pocket_depth, _modular_pocket_height],center=true);   
         /** modular jack **/
-        translate([0, 0, 1.4])
+        translate([60, -15, 1.6])
           cube([_modular_contact_width, _modular_contact_depth, _modular_contact_height],center=true);
        }
 
@@ -751,11 +766,11 @@ module templateBackSection() {
 
    difference() {
      union() {
-       translate([-50, 0, 0])
+       translate([-65, -15, 0])
          rotate([0, 0, 90])
            cylinder(d=_dc_diameter, h=_dc_length, center=true);
 
-       translate([-50, 0, 1.5])
+       translate([-65, -15, 1.5])
          rotate([0, 0, 90])
            cylinder(d=_dc_pocket_diameter, h=_dc_pocket_length, center=true);              
      }
