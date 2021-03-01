@@ -107,7 +107,7 @@
  * ****************************************************************************************************************/
 #define PROGRAM_VERSION 2
 #define UPDATE_VERSION  1
-#define PATCH_VERSION   4
+#define PATCH_VERSION   5
 // TODO: Add Function to show data if high box temperature, ans send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
@@ -121,7 +121,7 @@
  * Uncomment the line below if sensor shall be connected to the Development plattform
  * 
  * ***********************************************************************************/
-#define DEVELOPMENT_PLATFORM       //.. Uncomment to use development platform, radio channel 83
+//#define DEVELOPMENT_PLATFORM       //.. Uncomment to use development platform, radio channel 83
 
 /***************************************************************************************
  * 
@@ -135,8 +135,8 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-#define LED_state_ID_1           //..  KITCHEN_state        NodeId     = 85
-//#define LED_state_ID_2           //..  OFFICE_state       NodeId     = 86 
+//#define LED_state_ID_1           //..  KITCHEN_state        NodeId     = 85
+#define LED_state_ID_2           //..  OFFICE_state       NodeId     = 86 
 
 
 #define CLOCK_NET_DEST_NODES    1  //.. Set the number of destination nodes active in CLockNetNode 
@@ -180,10 +180,6 @@
     #define SN "7-SefClkNrf-ClkId-2"
   #endif
 #endif
-
-
-#endif
-
 
 
 
@@ -513,47 +509,30 @@ void receive(const MyMessage &message) {
         //Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
         break;
 
-        case 31:  //.. Weater station
-          if (message.type == V_PRESSURE) {    //.. Get air preassure from weather station
+
+        case 5:   //..  Frontyard UV & Light sensor
+          if (message.type == V_PRESSURE)   {
             bRelayAirPresMsg = true;
-            airPressure = message.getFloat();
+            airPressure = message.getFloat();   //.. Get air pressure from Frontyard
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New air pressure: "));
               Serial.println(airPressure);
             #endif
           }
 
-          if (message.type == V_UV) {          //.. Get UV-Index from weather station
-            //if (tm.Hour < 14) {
-              bRelayUviMsg = true;
-              outdoorUvIndex = message.getFloat();
-              #ifdef RECIEVE_MSG_DEBUG
-                Serial.print(F("New UV level received from garden: "));
-                Serial.println(outdoorUvIndex);
-              #endif
-            //}
-          }          
-          break;
-
-        case 5:   //..  Frontyard UV & Light sensor
-          if (message.type == V_LEVEL) {
-            //.. not implemented in clock node. Message is sent from Frontyard
-          }
 
           if (message.type == V_UV) {
-           // if (tm.Hour >= 14) {
               bRelayUviMsg = true;
-              outdoorUvIndex = message.getFloat();
+              outdoorUvIndex = message.getFloat();   //.. Get UV-Index from Frontyard
               #ifdef RECIEVE_MSG_DEBUG
                 Serial.print(F("New UV level received from frontyard: "));
                 Serial.println(outdoorUvIndex);
               #endif
-           // }
           }
           break;
 
     #else
-      case 95:  //.. Patio node. Relay node
+      case 85:  //.. Patio node. Relay node
         switch (message.type) {
           case V_TEMP:
             //bBelowZero = (message.getFloat() < 0.0) ? true : false;
