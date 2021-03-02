@@ -33,16 +33,17 @@
  |            |            |            | - Updated the function for uv-level on the neopixel stick so that it is     |
  |            |            |            |   reset end updated when the uv-level deceases                              |
  +------------+------------+------------+-----------------------------------------------------------------------------+
- | 2021-02-15 |b-2.1.3     |v1.1        | Updated funtion for writing the outdoor temperature to the display so that  |
- |            |            |            | that there is no leading zero when temperature is betewwn 0.0 - 9.9         |
- |            |            |            | degrees C.                                                                  |
+ | 2021-02-15 |b-2.1.3     |v1.1        | Updated funtion for writing the outdoor temperature to the display so that|
+ |            |            |            | that there is no leading zero when temperature is betewwn 0.0 - 9.9       |
+ |            |            |            | degrees C.                                                               |
  +------------+------------+------------+-----------------------------------------------------------------------------+
  | 2021-02-22 | b-2.1.4    | v1.1       | Corrected test function for Neopixel stick that runs att startup.           |
  |            |            |            | Adjustment of Ambient light sensor function to set the LED display brighness|
  |            |            |            | depending on the ambient light level.                                       |
  +------------+------------+------------+-----------------------------------------------------------------------------+
  | 2021-02-28 | b-2.1.5    | v1.1       | System split.                                                               |
- |            |            |            | This version is for the Frontyard side and includes Kitchen and Office clock|
+ |            |            |            | This version is for the Garden side and includes Pation (main node), bedroom|
+ |            |            |            | and livingroom.
  +------------+------------+------------+-----------------------------------------------------------------------------+
  
  -----  NOTE  -----
@@ -60,9 +61,9 @@
  * NOTE TO ABOVE: TLS Sensors has been omitted initially. Standard for LED brigtness will use photoresistor
  * 
  * Message transport implemnented as: Node 27 -> Node 95 (7) ->96/97/98/99 where
- * 85 = KITCHEN_state
- * 86 = OFFICE_state
-
+ * 95 = PATIO_state
+ * 96 = BEDROOM_state
+ * 97 = LIVINGROOM_state
  * 
  * Node 27, SensbenderMicro acts as the temperature and humidity sensor. Data for temperature and humidity is sent to
  * NodeId 1, wich acts as a relay node for other LED states that shall get information from Node 27.
@@ -134,12 +135,14 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  KITCHEN_state        NodeId     = 85
-#define LED_state_ID_2           //..  OFFICE_state       NodeId     = 86 
+#define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
+//#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
+//#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
+//**#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
+//**#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
 
-
-#define CLOCK_NET_DEST_NODES    1  //.. Set the number of destination nodes active in CLockNetNode 
-#define CLOCK_NET_DEST_OFFSET  86  //.. Start offset for the first destination  nodes
+#define CLOCK_NET_DEST_NODES    2  //.. Set the number of destination nodes active in CLockNetNode 
+#define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
                                    //.. This offset value has to be changed if other values are set for the clockNet.
                                    //.. Main node NodeId 1 and its child nodes must be in a consequtive serie.
 
@@ -156,29 +159,66 @@
 //#define RECIEVE_MSG_DEBUG    //.. Debug information for receiving messages
 //#define RELAY_MSG_DEBUG      //.. Debug information for relaying messages
 
-#ifdef LED_state_ID_1          //.. Kitchen
+#ifdef LED_state_ID_1          //.. Patio state
   #ifdef DEVELOPMENT_PLATFORM
     #define state_ID        1   
-    #define MY_NODE_ID     85
+    #define MY_NODE_ID     95
     #define SN "7-SefClkNrf-ClkId-1"
   #else
     #define state_ID        1
-    #define MY_NODE_ID     85
+    #define MY_NODE_ID     95
     #define SN "7-SefClkNrf-ClkId-1"
   #endif
 #endif
 
-#ifdef LED_state_ID_2          //.. Office
+#ifdef LED_state_ID_2          //.. Bedroom state
   #ifdef DEVELOPMENT_PLATFORM
     #define state_ID        2   
-    #define MY_NODE_ID     86
+    #define MY_NODE_ID     96
     #define SN "7-SefClkNrf-ClkId-2"
   #else
     #define state_ID        2
-    #define MY_NODE_ID     86
+    #define MY_NODE_ID     96
     #define SN "7-SefClkNrf-ClkId-2"
   #endif
 #endif
+
+#ifdef LED_state_ID_3          //.. Livingroom state
+  #ifdef DEVELOPMENT_PLATFORM
+    #define state_ID        3   
+    #define MY_NODE_ID     97
+    #define SN "7-SefClkNrf-ClkId-3"
+  #else
+    #define state_ID        3
+    #define MY_NODE_ID     97
+    #define SN "7-SefClkNrf-ClkId-3"
+  #endif
+#endif
+
+#ifdef LED_state_ID_4          //.. Office state
+  #ifdef DEVELOPMENT_PLATFORM
+    #define state_ID        4   
+    #define MY_NODE_ID     98
+    #define SN "7-SefClkNrf-ClkId-4"
+  #else
+    #define state_ID        4
+    #define MY_NODE_ID     98
+    #define SN "7-SefClkNrf-ClkId-4"
+  #endif
+#endif
+
+#ifdef LED_state_ID_5          //.. Kitchen state
+  #ifdef DEVELOPMENT_PLATFORM
+    #define state_ID        5   
+    #define MY_NODE_ID     99
+    #define SN "7-SefClkNrf-ClkId-5"
+  #else
+    #define state_ID        5
+    #define MY_NODE_ID     99
+    #define SN "7-SefClkNrf-ClkId-5"
+  #endif
+#endif
+
 
 
 
@@ -482,7 +522,7 @@ void receive(const MyMessage &message) {
 
   switch (message.sender) {
     #ifdef LED_state_ID_1
-      case 9:  //.. Pergola sensor
+      case 27:  //.. Pergola sensor
 
         if (message.type == V_TEMP) {           //.. Get temperature from Pegola sensor
           bRelayTempMsg = true;
@@ -508,30 +548,47 @@ void receive(const MyMessage &message) {
         //Serial.print(F("H:"));Serial.print(bRelayTempMsg);Serial.print(bRelayHumMsg);Serial.print(bRelayUviMsg);Serial.println(bRelayAirPresMsg);
         break;
 
-
-        case 5:   //..  Frontyard UV & Light sensor
-          if (message.type == V_PRESSURE)   {
+        case 31:  //.. Weater station
+          if (message.type == V_PRESSURE) {    //.. Get air preassure from weather station
             bRelayAirPresMsg = true;
-            airPressure = message.getFloat();   //.. Get air pressure from Frontyard
+            airPressure = message.getFloat();
             #ifdef RECIEVE_MSG_DEBUG
               Serial.print(F("New air pressure: "));
               Serial.println(airPressure);
             #endif
           }
 
-
-          if (message.type == V_UV) {
+          if (message.type == V_UV) {          //.. Get UV-Index from weather station
+            //if (tm.Hour < 14) {
               bRelayUviMsg = true;
-              outdoorUvIndex = message.getFloat();   //.. Get UV-Index from Frontyard
+              outdoorUvIndex = message.getFloat();
               #ifdef RECIEVE_MSG_DEBUG
-                Serial.print(F("New UV level received from frontyard: "));
+                Serial.print(F("New UV level received from garden: "));
                 Serial.println(outdoorUvIndex);
               #endif
-          }
+            //}
+          }          
           break;
 
+        // case 5:   //..  Frontyard UV & Light sensor
+        //   if (message.type == V_LEVEL) {
+        //     //.. not implemented in clock node. Message is sent from Frontyard
+        //   }
+
+        //   if (message.type == V_UV) {
+        //    // if (tm.Hour >= 14) {
+        //       bRelayUviMsg = true;
+        //       outdoorUvIndex = message.getFloat();
+        //       #ifdef RECIEVE_MSG_DEBUG
+        //         Serial.print(F("New UV level received from frontyard: "));
+        //         Serial.println(outdoorUvIndex);
+        //       #endif
+        //    // }
+        //   }
+        //   break;
+
     #else
-      case 85:  //.. Patio node. Relay node
+      case 95:  //.. Patio node. Relay node
         switch (message.type) {
           case V_TEMP:
             //bBelowZero = (message.getFloat() < 0.0) ? true : false;

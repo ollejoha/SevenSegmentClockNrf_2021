@@ -2,5 +2,5 @@
     "board": "arduino:avr:uno",
     "programmer": "AVRISP mkII",
     "port": "COM8",
-    "sketch": "SevSegClockNrfFrontyard_2021\\SevSegClockNrfFrontyard_2021.ino"
+    "sketch": "SevSegClockNrfGarden_2021\\SevSegClockNrfGarden_2021.ino"
 }

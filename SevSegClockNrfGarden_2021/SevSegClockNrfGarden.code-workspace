@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "SSH FS - openhab-prod",
+			"uri": "ssh://openhab-prod/"
+		},
+		{
+			"name": "SSH FS - openhab-dev",
+			"uri": "ssh://openhab-dev/"
+		}
+	],
+	"settings": {}
+}
