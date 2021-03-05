@@ -90,10 +90,10 @@ module connectorMatrixSharp() {
         translate([a*18 -25,0,-2])
         cornerPanelFrontSharp();
       }
-      // for (a = [0:3]) {
-        // translate([a*12 - 80, 0,-2])
-        // cornerPanelConnectorRear();
-      //}      
+      for (a = [0:3]) {
+        translate([a*18 - 25, 20, -2])
+        cornerPanelRearSharp();
+      }      
     }
   }
 }
@@ -207,7 +207,7 @@ module cornerPanelConnectorFront() {
  ************************************************************************************************************/
 module cornerPanelFrontSharp() {
   _angle_connector_width = 17;
-  _angle_screw_hole_diam = 3;
+  _angle_screw_hole_diam = 3.1;
   _angle_screw_height    = 4.2;
   difference() {
     union() {
@@ -258,7 +258,7 @@ module cornerPanelConnectorRear() {
  ************************************************************************************************************/
 module cornerPanelRearSharp() {
   _angle_connector_width = 17;
-  _angle_screw_hole_diam = 3;
+  _angle_screw_hole_diam = 2.6;
   _angle_screw_height    = 4.2;
   difference() {
     union() {
