@@ -44,6 +44,13 @@
  | 2021-02-28 | b-2.1.5    | v1.1       | System split.                                                               |
  |            |            |            | This version is for the Frontyard side and includes Kitchen and Office clock|
  +------------+------------+------------+-----------------------------------------------------------------------------+
+ | 2021-03-10 | b-2.1.6    | v1.1       | Added command to select between possible resolution alternatives for DS18B20|
+ |            |            |            | Resultion set to 12 bits = 750 ms (max). Unsure if thos will affect the     |
+ |            |            |            | function of the clock. Test initially set tonode 86-2, next step is to      |
+ |            |            |            | implement it on node 85-1 (main node)                                       |
+ |            |            |            | Also added debug print code for Inbox and Outdoor print functions for temp  |
+ |            |            |            | Measuring air pressure is now implemented and verified.                     |
+ +------------+------------+------------+-----------------------------------------------------------------------------+
  
  -----  NOTE  -----
  Update the constants that comes direct after thos comment section when the program 
@@ -57,9 +64,10 @@
  * 
  * LED brightness are adjusted by a SI2591 Light sensor. It is possible to use an older light sensor, DS2561. 
  * It is also possible to adjust LED brighness by a photoresistor.
- * NOTE TO ABOVE: TLS Sensors has been omitted initially. Standard for LED brigtness will use photoresistor
+ * NOTE TO ABOVE: TLS Sensors has been omitted initially. Standard for LED brigtness will use a photoresistor
+ * as the light sensing device.
  * 
- * Message transport implemnented as: Node 27 -> Node 95 (7) ->96/97/98/99 where
+ * Message transport implemented as: Node 27 -> Node 95 (7) ->96/97/98/99 where
  * 85 = KITCHEN_state
  * 86 = OFFICE_state
 
@@ -106,11 +114,10 @@
  * ****************************************************************************************************************/
 #define PROGRAM_VERSION 2
 #define UPDATE_VERSION  1
-#define PATCH_VERSION   5
-// TODO: Add Function to show data if high box temperature, ans send warning to controller
+#define PATCH_VERSION   6
+// TODO: Add Function to show data if high box temperature, and send warning to controller
 // TODO: Add Function to visualise UV Index outside the LED display. In progress
 // TODO: Add function to indicate if the measured value (except for UVI) is rising/falling 
-// TODO: Implement function to show air preassure. Implemented. In test phase.
 
 
 
@@ -134,8 +141,8 @@
  * Uncomment the line to select target node
  * 
  * ***********************************************************************************/
-//#define LED_state_ID_1           //..  KITCHEN_state        NodeId     = 85
-#define LED_state_ID_2           //..  OFFICE_state       NodeId     = 86 
+#define LED_state_ID_1           //..  KITCHEN_state        NodeId     = 85
+//#define LED_state_ID_2           //..  OFFICE_state       NodeId     = 86 
 
 
 #define CLOCK_NET_DEST_NODES    1  //.. Set the number of destination nodes active in CLockNetNode 
@@ -194,11 +201,11 @@
 
 /**  SET TEMPERATURE RESOLUTION AND CONVERSION TIME  **/
 /** It is not recomended to use higher resolution than 9 because of timing issues  **/
-#define TEMPERATURE_PRECISION 9             //.. Resolution: 0.5000 C, conversion time:  93.75 ms  (max) This is the
+//#define TEMPERATURE_PRECISION 9             //.. Resolution: 0.5000 C, conversion time:  93.75 ms  (max) This is the
                                             //.. preffered resulotion because it has the shortest conversion time.
 //#define TEMPERATURE_PRECISION 10            //.. Resolution: 0.2500 C, conversion time: 187.50 ms  (max) 
 //#define TEMPERATURE_PRECISION 11            //.. Resolution: 0.1250 C, conversion time: 375.00 ms  (max) 
-//#define TEMPERATURE_PRECISION 12            //.. Resolution: 0.0625 C, conversion time: 750.00 ms  (max) 
+#define TEMPERATURE_PRECISION 12            //.. Resolution: 0.0625 C, conversion time: 750.00 ms  (max) 
 
 /********************* PIN DEFINES **********************/
 #define LIGHT_SENSOR_ANALOG_PIN  A0  //.. Used for automatic LED brightness control
@@ -741,7 +748,7 @@ void loop() {
 
   /** Query conversion time and wait until conversion completed  **/
   int16_t conversionTime = sensors.millisToWaitForConversion(sensors.getResolution());
-  wait(conversionTime);
+  wait(conversionTime);  // Let the microcontroller handle background processes during conversion
 
     if (temperatureBox != lastTemperatureBox) {
       lastTemperatureBox = temperatureBox;
@@ -903,6 +910,14 @@ void temperatureSensorSetup() {
     Serial.print(F("Found "));
     Serial.print(sensors.getDeviceCount(), DEC);
     Serial.println(F(" devices."));
+
+    // Set precision for Soil temperature sensors
+   sensors.setResolution(TEMPERATURE_PRECISION);
+      // Get global resolution of soil sensors
+  #ifdef DS18B20_DEBUG
+    Serial.print(F("Global resolution: "));
+    Serial.println(sensors.getResolution());
+  #endif
   
     /** Report parasite power requirements  **/
     Serial.print(F("Parasite power is "));
@@ -1023,8 +1038,20 @@ void printIndoorTemperature(DeviceAddress address, int dotpos) {
   int8_t digit2;
   int8_t digit3;
   float c = sensors.getTempC(address);
-  
+
+  #ifdef DS18B20_DEBUG
+  Serial.print(F(" Indoor temp:"));
+  Serial.print(c);
+  Serial.print(F(" <-> "));
+  #endif
+
   int _c = static_cast<int>((c * 10.));
+
+  #ifdef DS18B20_DEBUG
+  Serial.print(F("Indoor_temp:"));
+  Serial.println(_c);
+  
+  #endif
   
   ledMatrix.clear();
   if (abs(_c) > 99 ) {
@@ -1054,6 +1081,12 @@ void printOutdoorTemperature(float temp, int dotpos) {
   int8_t digit2;
   int8_t digit3;
 
+  #ifdef DS18B20_DEBUG
+  Serial.print(F("Outdoor temp:"));
+  Serial.print(temp);
+  Serial.print(F(" <-> "));
+  #endif
+
    /** Check if temperature is below 0.0 degrees C **/
    bBelowZero = temp < 0.0 ? true : false;
 
@@ -1061,6 +1094,11 @@ void printOutdoorTemperature(float temp, int dotpos) {
   int _temp = static_cast<int>(round((temp * 10.0)));  // Multiply the float value to get rid of the decimal
   /** if it is a negative number, convert it to positive by multiplying with -1  **/
   if (_temp < 0) _temp *= -1;
+    
+  #ifdef DS18B20_DEBUG
+  Serial.print(F("Outdoor_temp:"));
+  Serial.println(_temp);
+  #endif
 
   #ifdef RECIEVE_MSG_DEBUG
     Serial.print(F("Outdoor Temperature: "));
