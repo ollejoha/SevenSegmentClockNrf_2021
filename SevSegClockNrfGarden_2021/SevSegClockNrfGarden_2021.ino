@@ -146,8 +146,8 @@
 #define LED_state_ID_1           //..  PATIO_state              NodeId     = 95
 //#define LED_state_ID_2           //..  LIVINGROOM_state         Livingroom = 96 
 //#define LED_state_ID_3           //..  BEDROOM_state            Bedroom    = 97
-//**#define LED_state_ID_4           //..  OFFICE_state             Office     = 98
-//**#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99
+//**#define LED_state_ID_4           //..  OFFICE_state             Office     = 98  // Moved to Frontyard definition
+//**#define LED_state_ID_5           //..  KITCHEN_state            Kitchen    = 99  // Moved to Frontyard definition
 
 #define CLOCK_NET_DEST_NODES    2  //.. Set the number of destination nodes active in CLockNetNode 
 #define CLOCK_NET_DEST_OFFSET  96  //.. Start offset for the first destination  nodes
